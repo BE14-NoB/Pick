@@ -1,0 +1,14 @@
+name: "👚 style"
+description: "코드 formatting, 세미콜론 누락, 코드 자체의 변경이 없는 경우"
+title : "[] "
+labels: [":womans_clothes: style"]
+projects: ["BE14-NoB/1"]
+body:
+  - type: textarea
+    attributes:
+      label: 📄 코드 스타일 수정 내용
+      description: 코드 스타일 수정 이유에 대해 적어주세요.
+      placeholder: 최대한 자세하게 작성해주세요!
+      value:
+    validations:
+      required: true

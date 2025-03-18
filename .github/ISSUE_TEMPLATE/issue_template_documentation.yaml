@@ -1,0 +1,14 @@
+name: "📄 documentation"
+description: "문서 작업한 내용"
+title : "[] "
+labels: [":page_facing_up: documentation"]
+projects: ["BE14-NoB/1"]
+body:
+  - type: textarea
+    attributes:
+      label: 📄 작업한 내용 설명
+      description: 작업한 문서에 대해 설명해주세요.
+      placeholder: 최대한 자세하게 작성해주세요!
+      value:
+    validations:
+      required: true
