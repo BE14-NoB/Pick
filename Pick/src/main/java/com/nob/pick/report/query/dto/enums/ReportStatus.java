@@ -6,7 +6,7 @@ import lombok.Getter;
 public enum ReportStatus {
     PROCESSING(0, "처리중"),         // 처리중
     WAITING(1, "보류"),             // 보류
-    COMPLETED(2," 승인");           // 승인
+    COMPLETED(2,"승인");           // 승인
 
     private final int NUM;
     private final String DESCRIPTION;
