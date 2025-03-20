@@ -10,4 +10,5 @@ import java.util.List;
 @Mapper
 public interface ReportMapper {
     List<ReportDTO> selectAllReports();
+    List<ReportDTO> selectReportsByMemberId(int memberId);
 }

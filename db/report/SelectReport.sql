@@ -1,29 +1,27 @@
 -- 신고 목록 조회 (전체 조회)
 SELECT
-       R.id
-     , R.reported_at
-     , R.status
-     , R.category
-     , R.reported_id
-     , RR.reason
-     , M.id
-  FROM REPORT R
-  JOIN REPORT_REASON RR ON R.report_reason_id = RR.id
-  JOIN MEMBER M ON R.member_id = M.id;
+    R.ID
+     , R.REPORTED_AT
+     , R.STATUS
+     , R.CATEGORY
+     , R.REPORTED_ID
+     , R.REPORT_REASON_ID
+     , R.MEMBER_ID
+FROM REPORT R;
 
 
 -- 신고 상세 조회 (회원 1번)
 -- 회원(직접 신고된 경우)
 SELECT
-       R.id
-     , R.reported_at
-     , R.status
-     , R.category
-     , R.reported_id
-     , RR.reason
-  FROM REPORT R
-  JOIN REPORT_REASON RR ON R.report_reason_id = RR.id
- WHERE R.category = 0 AND R.reported_id = 1;
+    R.ID
+     , R.REPORTED_AT
+     , R.STATUS
+     , R.CATEGORY
+     , R.REPORTED_ID
+     , R.REPORT_REASON_ID
+     , R.MEMBER_ID
+FROM REPORT R
+WHERE R.CATEGORY = 0 AND R.REPORTED_ID = 1; # #{parameterType}
 
 -- 게시글(POST 테이블을 통해 회원 1번이 작성한 게시글이 신고된 경우)
 SELECT

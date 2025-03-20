@@ -24,4 +24,8 @@ public class ReportService {
 
         return reportMapper.selectAllReports();
     }
+
+    public List<ReportDTO> findReportsByMemberId(int memberId) {
+        return reportMapper.selectReportsByMemberId(memberId);
+    }
 }
