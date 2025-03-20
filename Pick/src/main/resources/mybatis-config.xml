@@ -20,14 +20,8 @@
         </environment>
     </environments>
 
-    <!--    쿼리 등록-->
-<!--    <mappers>-->
-<!--        <mapper resource="mapper/ReportMapper.xml"/>-->
-<!--    </mappers>-->
-
         <mappers>
-            <package name="mapper"/>
-            <!--            <mapper resource="mapper/ReportMapper.xml"/>-->
+            <mapper resource="com/nob/pick/report/query/dao/ReportMapper.xml"/>
         </mappers>
 
 </configuration>
