@@ -22,8 +22,10 @@
              , R.reported_id
              , R.report_reason_id
              , R.member_id
+             , RR.reason
+             , M.id                   AS 신고자
           FROM REPORT R
-<!--          JOIN REPORT_REASON RR ON R.report_reason_id = RR.id-->
-<!--          JOIN MEMBER M ON R.member_id = M.id;-->
+          JOIN REPORT_REASON RR ON R.report_reason_id = RR.id
+          JOIN MEMBER M ON R.member_id = M.id;
     </select>
 </mapper>

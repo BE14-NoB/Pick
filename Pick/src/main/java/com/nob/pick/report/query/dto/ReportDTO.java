@@ -17,8 +17,4 @@ public class ReportDTO {
     private int reportedId;
     private int reportReasonId;
     private int memberId;
-
-    public String getReportState() {
-        return status.getDESCRIPTION();
-    }
 }
