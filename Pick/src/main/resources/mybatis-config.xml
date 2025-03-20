@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <typeHandlers>
+        <typeHandler handler="com.nob.pick.report.query.dto.typehandler.ReportStatusEnumTypeHandler" javaType="com.nob.pick.report.query.dto.enums.ReportStatus"/>
+        <typeHandler handler="com.nob.pick.report.query.dto.typehandler.ReportCategoryEnumTypeHandler" javaType="com.nob.pick.report.query.dto.enums.ReportCategory"/>
+    </typeHandlers>
+
+    <environments default="dev">
+        <environment id="dev">
+            <transactionManager type="JDBC"/>
+            <dataSource type="POOLED">
+                <property name="driver" value="com.mysql.cj.jdbc.Driver"/>
+                <property name="url" value="jdbc:mysql://localhost:3306/nobdb"/>
+                <property name="username" value="nob"/>
+                <property name="password" value="nob"/>
+            </dataSource>
+        </environment>
+    </environments>
+
+    <!--    쿼리 등록-->
+<!--    <mappers>-->
+<!--        <mapper resource="mapper/ReportMapper.xml"/>-->
+<!--    </mappers>-->
+
+        <mappers>
+            <package name="mapper"/>
+            <!--            <mapper resource="mapper/ReportMapper.xml"/>-->
+        </mappers>
+
+</configuration>

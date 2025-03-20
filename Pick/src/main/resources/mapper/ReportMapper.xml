@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nob.pick.report.query.dao.ReportMapper">
+    <resultMap type="com.nob.pick.report.query.dto.ReportDTO" id="reportResultMap">
+        <id property="id" column="ID"/>
+        <result property="reportedAt" column="REPORTED_AT"/>
+        <result property="status" column="STATUS" typeHandler="com.nob.pick.report.query.dto.typehandler.ReportStatusEnumTypeHandler"/>
+        <result property="category" column="CATEGORY" typeHandler="com.nob.pick.report.query.dto.typehandler.ReportCategoryEnumTypeHandler"/>
+        <result property="reportedId" column="REPORTED_ID"/>
+        <result property="reportReasonId" column="REPORTED_REASON_ID"/>
+        <result property="memberId" column="MEMBER_ID"/>
+    </resultMap>
+    <select id="selectAllReports" resultMap="reportResultMap">
+        SELECT
+               R.id
+             , R.reported_at
+             , R.status
+             , R.category
+             , R.reported_id
+             , R.report_reason_id
+             , R.member_id
+          FROM REPORT R
+<!--          JOIN REPORT_REASON RR ON R.report_reason_id = RR.id-->
+<!--          JOIN MEMBER M ON R.member_id = M.id;-->
+    </select>
+</mapper>
