@@ -1,4 +1,4 @@
-package com.nob.pick.report.query.dto.typehandler;
+package com.nob.pick.common.config.typehandler;
 
 import com.nob.pick.report.query.dto.enums.ReportStatus;
 import org.apache.ibatis.type.BaseTypeHandler;

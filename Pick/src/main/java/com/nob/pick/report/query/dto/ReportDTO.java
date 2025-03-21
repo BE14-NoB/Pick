@@ -15,6 +15,7 @@ public class ReportDTO {
     private ReportStatus status;
     private ReportCategory category;
     private int reportedId;
+    private boolean isDeleted;
     private int reportReasonId;
     private int memberId;
 

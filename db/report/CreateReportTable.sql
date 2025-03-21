@@ -20,6 +20,7 @@ CREATE TABLE IF NOT EXISTS REPORT
 ,   status              TINYINT NOT NULL DEFAULT 0              COMMENT '처리 상태 (ENUM("처리중", "보류", "승인"))'
 ,   category            TINYINT NOT NULL                        COMMENT '신고 유형 (ENUM("회원", "게시글", "댓글"))'
 ,   reported_id         INTEGER NOT NULL                        COMMENT '신고 대상 id'
+,   is_deleted          VARCHAR(4) NOT NULL DEFAULT 'N'         COMMENT '신고 삭제 여부'
 ,   report_reason_id    INTEGER NOT NULL                        COMMENT '신고 사유 번호'
 ,   member_id           INTEGER NOT NULL                        COMMENT '신고 신청자'
 ,   CONSTRAINT pk_id PRIMARY KEY (id)
@@ -30,10 +31,11 @@ CREATE TABLE IF NOT EXISTS REPORT
 -- REGULATION 테이블
 CREATE TABLE IF NOT EXISTS REGULATION
 (
-    id              INT AUTO_INCREMENT           COMMENT '규제 번호'
-,   start_date      VARCHAR(255) NOT NULL        COMMENT '시작 날짜'
-,   end_date        VARCHAR(255) NOT NULL        COMMENT '종료 날짜'
-,   member_id       INTEGER NOT NULL             COMMENT '규제 대상 회원'
+    id              INT AUTO_INCREMENT                      COMMENT '규제 번호'
+,   start_date      VARCHAR(255) NOT NULL                   COMMENT '시작 날짜'
+,   end_date        VARCHAR(255) NOT NULL                   COMMENT '종료 날짜'
+,   is_deleted      VARCHAR(4) NOT NULL DEFAULT 'N'         COMMENT '신고 삭제 여부'
+,   member_id       INTEGER NOT NULL                        COMMENT '규제 대상 회원'
 ,   CONSTRAINT pk_id PRIMARY KEY (id)
 ,   CONSTRAINT fk_regulation_member_id FOREIGN KEY (member_id) REFERENCES MEMBER (id)
 );
