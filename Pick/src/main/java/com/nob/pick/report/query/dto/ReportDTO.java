@@ -18,7 +18,6 @@ public class ReportDTO {
     private int reportReasonId;
     private int memberId;
 
-    // 고민중인 부분
     private Integer reportedMemberId;
 
 }
