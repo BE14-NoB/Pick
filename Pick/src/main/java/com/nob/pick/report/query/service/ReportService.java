@@ -5,6 +5,6 @@ import com.nob.pick.report.query.dto.ReportDTO;
 import java.util.List;
 
 public interface ReportService {
-    public List<ReportDTO> findAllReports();
+    List<ReportDTO> findAllReports();
     List<ReportDTO> findReportsByMemberId(int memberId);
 }
