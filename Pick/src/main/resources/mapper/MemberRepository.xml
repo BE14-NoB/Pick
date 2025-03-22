@@ -1,0 +1,153 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nob.pick.member.query.infrastructure.repository.MemberRepository">
+    <!-- 회원 관련 resultMap -->
+    <resultMap id="memberDTOMap" type="com.nob.pick.member.query.dto.MemberDTO">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="age" column="age"/>
+        <result property="ihidnum" column="ihidnum"/>
+        <result property="phoneNumber" column="phone_number"/>
+        <result property="email" column="email"/>
+        <result property="password" column="password"/>
+        <result property="nickname" column="nickname"/>
+        <result property="status" column="status" typeHandler="com.nob.pick.common.typehandler.StatusEnumTypeHandler"/>
+        <result property="reportedCount" column="reported_count"/>
+        <result property="userGrant" column="user_grant"
+                typeHandler="com.nob.pick.common.typehandler.UserGrantEnumTypeHandler"/>
+    </resultMap>
+
+    <!-- 프로필 페이지 관련 resultMap -->
+    <resultMap id="memberProfilePageDTOMap" type="com.nob.pick.member.query.dto.MemberProfilePageDTO">
+        <id property="id" column="id"/>
+        <result property="level" column="level"/>
+        <result property="intro" column="intro"/>
+        <result property="preferredArea" column="preferred_area"/>
+        <result property="score" column="score"/>
+        <result property="imagePath" column="image_path"/>
+        <result property="memberId" column="member_id"/>
+    </resultMap>
+
+    <!-- 프로그래밍 언어 관련 resultMap -->
+    <resultMap id="programmingLanguageInfoMap" type="com.nob.pick.member.query.dto.ProgrammingLanguageInfoDTO">
+        <id property="id" column="id"/>
+        <result property="memberLanguageId" column="programming_language_id"/>
+        <result property="language" column="language"/>
+    </resultMap>
+
+    <!-- 이름과 전화번호로 이메일 찾기 -->
+    <select id="findEmailByNameAndPhone" parameterType="map" resultType="string">
+        SELECT email
+        FROM member
+        WHERE name = #{name}
+          AND phone_number = #{phoneNumber}
+    </select>
+
+    <!-- 이름, 전화번호, 이메일로 비밀번호 찾기 -->
+    <select id="findPasswordByNamePhoneAndEmail" parameterType="map" resultType="string">
+        SELECT password
+        FROM member
+        WHERE name = #{name}
+          AND phone_number = #{phoneNumber}
+          AND email = #{email}
+    </select>
+
+    <!-- 모든 회원 조회 -->
+    <select id="findAllMembers" resultType="com.nob.pick.member.query.dto.MemberDTO">
+        SELECT id,
+               name,
+               age,
+               ihidnum,
+               phone_number,
+               email,
+               password,
+               nickname,
+               status,
+               reported_count,
+               user_grant
+        FROM member
+    </select>
+
+    <!-- ID로 특정 회원 조회 -->
+    <select id="findMemberById" parameterType="int" resultType="com.nob.pick.member.query.dto.MemberDTO">
+        SELECT id,
+               name,
+               age,
+               ihidnum,
+               phone_number,
+               email,
+               password,
+               nickname,
+               status,
+               reported_count,
+               user_grant
+        FROM member
+        WHERE id = #{id}
+    </select>
+
+    <!-- ID로 회원 상태 조회 -->
+    <select id="findMemberStatusById" parameterType="int" resultType="com.nob.pick.member.query.dto.Status">
+        SELECT status
+        FROM member
+        WHERE id = #{id}
+    </select>
+
+    <!-- 이메일 중복 여부 확인 -->
+    <select id="existsByEmail" parameterType="string" resultType="boolean">
+        SELECT EXISTS(SELECT 1
+                      FROM member
+                      WHERE email = #{email})
+    </select>
+
+    <!-- 전화번호 중복 여부 확인 -->
+    <select id="existsByPhoneNumber" parameterType="string" resultType="boolean">
+        SELECT EXISTS(SELECT 1
+                      FROM member
+                      WHERE phone_number = #{phoneNumber})
+    </select>
+
+    <!-- 유저 권한 확인  -->
+    <select id="findUserGrantById" parameterType="int" resultType="com.nob.pick.member.query.dto.MemberDTO">
+        SELECT user_grant
+        FROM member
+        WHERE id = #{id}
+    </select>
+
+    <select id="findProfilePageByMemberId" parameterType="int" resultMap="memberProfilePageDTOMap">
+        SELECT mp.id,
+               mp.level,
+               mp.introduce,
+               mp.preferred_area,
+               mp.score,
+               mp.image_path,
+               mp.member_id,
+               m.name AS member_name
+        FROM member_profile_page mp
+                 LEFT JOIN member m ON mp.member_id = m.id
+        WHERE mp.member_id = #{memberId}
+    </select>
+
+    <!-- 회원별 사용 언어 조회 -->
+    <select id="findProgrammingLanguagesByProfilePageId" parameterType="int" resultMap="programmingLanguageInfoMap">
+        SELECT mpl.id,
+               mpl.programming_language_id,
+               pl.language
+        FROM member_profile_page mp
+                 JOIN member_programming_language mpl ON mp.id = mpl.member_profile_page_id
+                 JOIN programming_language pl ON mpl.programming_language_id = pl.id
+        WHERE mp.id = #{profilePageId}
+          AND pl.is_deleted = 'N'
+    </select>
+
+    <!-- 프로그래밍 언어 목록 조회 (N인 경우만) -->
+    <select id="findActiveProgrammingLanguages" resultMap="programmingLanguageInfoMap">
+        SELECT id,
+               NULL AS programming_language_id,
+               language
+        FROM programming_language
+        WHERE is_deleted = 'N'
+    </select>
+
+</mapper>
