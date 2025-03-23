@@ -3,7 +3,6 @@ package com.nob.pick.member.command.controller;
 import com.nob.pick.member.command.dto.SignUpCommand;
 import com.nob.pick.member.command.dto.UpdateMemberCommand;
 import com.nob.pick.member.command.service.MemberCommandService;
-import com.nob.pick.member.query.dto.MemberDTO;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

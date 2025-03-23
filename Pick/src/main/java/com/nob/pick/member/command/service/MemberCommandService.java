@@ -61,20 +61,6 @@ public class MemberCommandService {
 		return savedMember.getId();
 	}
 
-	// 회원정보 조회
-	@Transactional(readOnly = true)
-	public MemberCommandDTO getMemberByEmail(String email) {
-		Member member = memberRepository.findByEmail(email)
-			.orElseThrow(() -> new IllegalArgumentException("회원을 찾을 수 없습니다."));
-		MemberCommandDTO memberCommandDTO = new MemberCommandDTO();
-		memberCommandDTO.setName(member.getName());
-		memberCommandDTO.setAge(member.getAge());
-		memberCommandDTO.setPhoneNumber(member.getPhoneNumber());
-		memberCommandDTO.setEmail(member.getEmail());
-		memberCommandDTO.setNickname(member.getNickname());
-		return memberCommandDTO;
-	}
-
 	// 회원정보 수정
 	@Transactional
 	public void updateMember(String email, UpdateMemberCommand command) {
