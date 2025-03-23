@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nob.pick.matching.query.mapper.MatchingMapper">
+    <resultMap id="matchingResultMap" type="com.nob.pick.matching.query.aggregate.Matching">
+        <id property="id" column="MATCHING_ID"/>
+        <result property="createdDateAt" column="CREATED_DATE_AT"/>
+        <result property="isCompleted" column="IS_COMPLETED"/>
+        <result property="levelRange" column="LEVEL_RANGE"/>
+        <result property="memberId" column="MEMBER_ID"/>
+        <collection property="technologyCategories" ofType="com.nob.pick.matching.query.aggregate.TechnologyCategory">
+            <id property="id" column="TECHNOLOGY_ID"/>
+            <result property="name" column="NAME"/>
+            <result property="isDeleted" column="IS_DELETED"/>
+            <result property="refTechnologyCategoryId" column="REF_TECHNOLOGY_CATEGORY_ID"/>
+        </collection>
+    </resultMap>
+
+    <resultMap id="matchingEntryResultMap" type="com.nob.pick.matching.query.aggregate.MatchingEntry">
+        <id property="id" column="MATCHING_ENTRY_ID"/>
+        <result property="appliedDateAt" column="APPLIED_DATE_AT"/>
+        <result property="isCanceled" column="IS_CANCELED"/>
+        <result property="memberId" column="MEMBER_ID"/>
+        <result property="matchingId" column="MATCHING_ID"/>
+    </resultMap>
+
+    <resultMap id="technologyCategoryResultMap" type="com.nob.pick.matching.query.aggregate.TechnologyCategory">
+        <id property="id" column="TECHNOLOGY_CATEGORY_ID"/>
+        <result property="name" column="NAME"/>
+        <result property="isDeleted" column="IS_DELETED"/>
+        <result property="refTechnologyCategoryId" column="REF_TECHNOLOGY_CATEGORY_ID"/>
+    </resultMap>
+
+    <!-- 전체 매칭방 조회 -->
+    <select id="selectAllMatching" resultMap="matchingResultMap">
+        SELECT
+               A.ID AS MATCHING_ID
+             , A.CREATED_DATE_AT
+             , A.IS_COMPLETED
+             , A.LEVEL_RANGE
+             , A.MEMBER_ID
+             , B.ID AS TECHNOLOGY_ID
+             , B.NAME
+             , B.IS_DELETED
+             , B.REF_TECHNOLOGY_CATEGORY_ID
+          FROM MATCHING A
+          JOIN TECHNOLOGY_CATEGORY B ON A.TECHNOLOGY_CATEGORY_ID = B.ID
+         WHERE A.IS_COMPLETED = 'N'
+         ORDER BY 1 DESC
+    </select>
+
+    <!-- 매칭방 id로 조회-->
+    <select id="selectMatchingByMatchingId" resultMap="matchingResultMap" parameterType="_int">
+        SELECT
+               A.ID AS MATCHING_ID
+             , A.CREATED_DATE_AT
+             , A.IS_COMPLETED
+             , A.LEVEL_RANGE
+             , A.MEMBER_ID
+             , B.ID AS TECHNOLOGY_ID
+             , B.NAME
+             , B.IS_DELETED
+             , B.REF_TECHNOLOGY_CATEGORY_ID
+          FROM MATCHING A
+          JOIN TECHNOLOGY_CATEGORY B ON A.TECHNOLOGY_CATEGORY_ID = B.ID
+         WHERE A.IS_COMPLETED = 'N'
+           AND A.ID = #{matchingId}
+         ORDER BY 1 DESC
+    </select>
+
+    <!-- 카테고리 id로 매칭방 조회 -->
+    <select id="selectMatchingByTechnologyCategoryId" resultMap="matchingResultMap" parameterType="_int">
+        SELECT
+               A.ID AS MATCHING_ID
+             , A.CREATED_DATE_AT
+             , A.IS_COMPLETED
+             , A.LEVEL_RANGE
+             , A.MEMBER_ID
+             , B.ID AS TECHNOLOGY_ID
+             , B.NAME
+             , B.IS_DELETED
+             , B.REF_TECHNOLOGY_CATEGORY_ID
+          FROM MATCHING A
+          JOIN TECHNOLOGY_CATEGORY B ON A.TECHNOLOGY_CATEGORY_ID = B.ID
+         WHERE (B.ID = #{technologyCategoryId}
+            OR B.REF_TECHNOLOGY_CATEGORY_ID = #{technologyCategoryId})
+           AND A.IS_COMPLETED = 'N'
+           AND B.IS_DELETED = 'N'
+         ORDER BY 1 DESC
+    </select>
+
+    <!-- 매칭방 id로 신청자 id 조회 -->
+    <select id="selectMatchingEntryByMatchingId" resultMap="matchingEntryResultMap" parameterType="_int">
+        SELECT
+               A.ID AS MATCHING_ENTRY_ID
+             , A.APPLIED_DATE_AT
+             , A.IS_CANCELED
+             , A.MEMBER_ID
+             , A.MATCHING_ID
+          FROM MATCHING_ENTRY A
+         WHERE A.IS_CANCELED = 'N'
+           AND A.MATCHING_ID = #{matchingId}
+         ORDER BY 1
+    </select>
+
+    <!-- 전체 기술 카테고리 조회 -->
+    <select id="selectAllTechnologyCategory" resultMap="technologyCategoryResultMap">
+        SELECT
+               A.ID AS TECHNOLOGY_CATEGORY_ID
+             , A.NAME
+             , A.IS_DELETED
+             , A.REF_TECHNOLOGY_CATEGORY_ID
+          FROM TECHNOLOGY_CATEGORY A
+         WHERE A.IS_DELETED = 'N'
+         ORDER BY 1
+    </select>
+
+    <!-- 카테고리 id로 조회 -->
+    <select id="selectTechnologyCategoryByTechnologyCategoryId" resultMap="technologyCategoryResultMap" parameterType="_int">
+        SELECT
+               A.ID AS TECHNOLOGY_CATEGORY_ID
+             , A.NAME
+             , A.IS_DELETED
+             , A.REF_TECHNOLOGY_CATEGORY_ID
+          FROM TECHNOLOGY_CATEGORY A
+         WHERE A.IS_DELETED = 'N'
+           AND A.ID = #{technologyCategoryId}
+         ORDER BY 1
+    </select>
+
+    <!-- 카테고리 id로 하위 카테고리 조회 -->
+    <select id="selectSubTechnologyCategoryByRefTechnologyCategoryId" resultMap="technologyCategoryResultMap" parameterType="_int">
+        SELECT
+               A.ID AS TECHNOLOGY_CATEGORY_ID
+             , A.NAME
+             , A.IS_DELETED
+             , A.REF_TECHNOLOGY_CATEGORY_ID
+          FROM TECHNOLOGY_CATEGORY A
+         WHERE A.IS_DELETED = 'N'
+           AND A.REF_TECHNOLOGY_CATEGORY_ID = #{refTechnologyCategoryId}
+         ORDER BY 1
+    </select>
+
+    <!-- 상위 카테고리만 조회 -->
+    <select id="selectParentTechnologyCategory" resultMap="technologyCategoryResultMap">
+        SELECT
+               A.ID AS TECHNOLOGY_CATEGORY_ID
+             , A.NAME
+             , A.IS_DELETED
+             , A.REF_TECHNOLOGY_CATEGORY_ID
+          FROM TECHNOLOGY_CATEGORY A
+         WHERE A.IS_DELETED = 'N'
+           AND A.REF_TECHNOLOGY_CATEGORY_ID IS NULL
+         ORDER BY 1
+    </select>
+</mapper>
