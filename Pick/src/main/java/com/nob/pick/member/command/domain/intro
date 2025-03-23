@@ -1,7 +1,0 @@
-domain단
-Member.java
-MemberAggregate.java
-MemberStatus.java (Enum)
-
-*Entity.java, *Enum.java, *Aggregate.java (선택), *DomainService.java (선택)
-도메인 모델 및 비즈니스 규칙 정의

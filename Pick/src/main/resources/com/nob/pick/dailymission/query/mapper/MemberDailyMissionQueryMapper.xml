@@ -5,7 +5,7 @@
 <mapper namespace="com.nob.pick.dailymission.query.mapper.MemberDailyMissionQueryMapper">
     <resultMap type="com.nob.pick.dailymission.query.dto.MemberDailyMissionQueryDTO" id="dailyMissionByMemberResultMap">
         <id property="id" column="id"/>
-        <result property="isCompleted" column="is_completed" typeHandler="com.nob.pick.config.typehandler.StringYnTypeHandler"/>
+        <result property="isCompleted" column="is_completed" typeHandler="com.nob.pick.common.config.typehandler.StringYnTypeHandler"/>
         <result property="acceptedDate" column="accepted_date"/>
         <result property="dailyMissionId" column="daily_mission_id"/>
         <result property="memberId" column="member_id"/>
