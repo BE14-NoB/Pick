@@ -26,20 +26,20 @@ public class ReportController {
 
     // 신고 사유 등록
     @PostMapping("reason")
-    public ResponseEntity<?> registReportReason(@RequestBody ReportReasonDTO reportReasonDTO) {
-        log.info("ReportController : registReportReason reportReasonDTO: {}", reportReasonDTO);
+    public ResponseEntity<?> registReportReason(@RequestBody ReportReasonDTO newReportReason) {
+        log.info("ReportController : registReportReason reportReasonDTO: {}", newReportReason);
 
-        reportReasonService.registReportReason(reportReasonDTO);
+        reportReasonService.registReportReason(newReportReason);
         return ResponseEntity.ok().build();
     }
 
     // 신고 등록
     @PostMapping("report")
-    public ResponseEntity<?> registReport(@RequestBody ReportDTO newReportDTO) {
-        log.info("ReportController - regist Report : newReportDTO = {}", newReportDTO);
+    public ResponseEntity<?> registReport(@RequestBody ReportDTO newReport) {
+        log.info("ReportController - regist Report : newReportDTO = {}", newReport);
 
-        reportService.registReport(newReportDTO);
+        reportService.registReport(newReport);
         return ResponseEntity.ok().build();
     }
-
+    
 }
