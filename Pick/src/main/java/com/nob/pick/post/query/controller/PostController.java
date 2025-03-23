@@ -34,6 +34,7 @@ public class PostController {
 		this.postService = postService;
 	}
 	
+	/* 설명. 전체 게시글 목록 조회 */
 	@GetMapping("/list/{status}")
 	public ResponseEntity<List<ResponsePostListVO>> getPostByStatus(@PathVariable String status) {
 		// log.info("PostController got status: {}", status);
@@ -44,6 +45,7 @@ public class PostController {
 		return ResponseEntity.ok(returnValue);
 	}
 	
+	/* 설명. 단일 게시글 조회 */
 	@GetMapping("/{id}")
 	public ResponseEntity<ResponsePostCommentVO> getPostComment(@PathVariable int id) {
 		PostCommentDTO postCommentDTO = postService.getPostCommentById(id);
@@ -52,6 +54,7 @@ public class PostController {
 		return ResponseEntity.ok(returnValue);
 	}
 	
+	/* 설명. 게시글 목록에서 제목으로 검색 */
 	@GetMapping("/search/{keyword}")
 	public ResponseEntity<List<ResponsePostListVO>> getPostByTitle(@PathVariable String keyword) {
 		List<PostListDTO> postDTOList = postService.getPostListByTitle(keyword);
