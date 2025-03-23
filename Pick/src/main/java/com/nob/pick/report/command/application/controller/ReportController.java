@@ -24,6 +24,7 @@ public class ReportController {
         this.reportReasonService = reportReasonService;
     }
 
+    // 신고 사유 등록
     @PostMapping("reason")
     public ResponseEntity<?> registReportReason(@RequestBody ReportReasonDTO reportReasonDTO) {
         log.info("ReportController : registReportReason reportReasonDTO: {}", reportReasonDTO);
@@ -32,9 +33,7 @@ public class ReportController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("report")
-    public void registReportPage() {}
-
+    // 신고 등록
     @PostMapping("report")
     public ResponseEntity<?> registReport(@RequestBody ReportDTO newReportDTO) {
         log.info("ReportController - regist Report : newReportDTO = {}", newReportDTO);
