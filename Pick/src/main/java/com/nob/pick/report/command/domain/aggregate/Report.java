@@ -1,14 +1,15 @@
 package com.nob.pick.report.command.domain.aggregate;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@ToString
+@Builder
+@Table(name="report")
 public class Report {
 
     @Id
@@ -19,6 +20,7 @@ public class Report {
     @Column(name="reported_at", nullable = false)
     private String reportedAt;
 
+    @Builder.Default
     @Column(name="status", nullable = false)
     private int status = 0;
 
@@ -28,7 +30,8 @@ public class Report {
     @Column(name="reported_id", nullable = false)
     private int reportedId;
 
-    @Column(name="is_deleted", nullable = false)
+    @Builder.Default
+    @Column(name="is_deleted", nullable = false, length = 4)
     private String isDeleted = "N";
 
     @Column(name="report_reason_id", nullable = false)
