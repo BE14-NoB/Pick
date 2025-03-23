@@ -40,11 +40,26 @@ public class PostServiceImpl implements PostService {
 		return postMapper.selectPostListByTitle(keyword);
 	}
 	
+	@Override
+	public List<PostListDTO> getPostListByCategory(String category) {
+		log.info("Service from Controller");
+		log.info("parsed category: {}", parseCategory(category));
+		return postMapper.selectPostListByCategory(parseCategory(category));
+	}
+	
 	private int parseStatus(String status) {	//ENUM으로 바꾸기
 		return switch (status) {
 			case "default" -> 0;
 			case "deleted" -> 1;
 			case "blinded" -> 2;
+			default -> -1;
+		};
+	}
+	
+	private int parseCategory(String category) {
+		return switch (category) {
+			case "default" -> 1;
+			case "Q&A" -> 2;
 			default -> -1;
 		};
 	}

@@ -14,4 +14,6 @@ public interface PostService {
 	PostCommentDTO getPostCommentById(int id);
 	
 	List<PostListDTO> getPostListByTitle(String keyword);
+	
+	List<PostListDTO> getPostListByCategory(String category);
 }

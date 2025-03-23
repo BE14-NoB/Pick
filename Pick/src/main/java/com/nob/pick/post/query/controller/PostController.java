@@ -62,6 +62,16 @@ public class PostController {
 		return ResponseEntity.ok(returnValue);
 	}
 	
+	/* 설명. 게시글 목록에서 카테고리 별로 조회 */
+	@GetMapping("/category/{category}")
+	public ResponseEntity<List<ResponsePostListVO>> getPostByCategory(@PathVariable String category) {
+		log.info("Controller to Service");
+		List<PostListDTO> postDTOList = postService.getPostListByCategory(category);
+		log.info("Controller from Service");
+		List<ResponsePostListVO> returnValue = postListDTOToResponsePostListVO(postDTOList);
+		return ResponseEntity.ok(returnValue);
+	}
+	
 	private ResponsePostCommentVO postCommentDTOToResponsePostCommentVO(PostCommentDTO pcDTO) {
 		ResponsePostCommentVO rpcVO = new ResponsePostCommentVO();
 		

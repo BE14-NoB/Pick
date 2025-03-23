@@ -14,4 +14,6 @@ public interface PostMapper {
 	PostCommentDTO selectPostCommentById(int id);
 	
 	List<PostListDTO> selectPostListByTitle(String keyword);
+	
+	List<PostListDTO> selectPostListByCategory(int i);
 }

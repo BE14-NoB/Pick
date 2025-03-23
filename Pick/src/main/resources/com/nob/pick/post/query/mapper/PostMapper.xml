@@ -119,4 +119,21 @@
          WHERE P.TITLE LIKE CONCAT('%', #{keyword},'%')
          ORDER BY P.ID ASC
     </select>
+
+    <!-- 설명. 게시글 목록에서 카테고리 별로 조회 -->
+    <select id="selectPostListByCategory" resultMap="PostListResultMap" parameterType="int">
+        SELECT
+               P.ID
+             , P.TITLE
+             , P.CATEGORY
+             , P.UPLOAD_AT
+             , P.UPDATE_AT
+             , P.STATUS
+             , P.MEMBER_ID
+             , M.NICKNAME AS MEMBER_NICKNAME
+          FROM POST P
+          JOIN MEMBER M ON (P.MEMBER_ID = M.ID)
+         WHERE P.CATEGORY = #{category}
+         ORDER BY P.ID ASC
+    </select>
 </mapper>
