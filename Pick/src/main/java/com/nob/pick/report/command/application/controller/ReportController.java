@@ -41,5 +41,14 @@ public class ReportController {
         reportService.registReport(newReport);
         return ResponseEntity.ok().build();
     }
-    
+
+    // 신고 내역 삭제 - soft delete 처리
+    @PostMapping("softdelete")
+    public ResponseEntity<?> deleteReport(@RequestBody ReportDTO deleteReport) {
+        log.info("ReportController - delete Report : reportDTO = {}", deleteReport);
+
+        reportService.deleteReport(deleteReport);
+        return ResponseEntity.ok().build();
+    }
+
 }

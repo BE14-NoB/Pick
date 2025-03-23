@@ -39,4 +39,10 @@ public class Report {
 
     @Column(name="member_id", nullable = false)
     private int memberId;
+
+
+    // soft delete 처리 메서드
+    public void markAsDeleted() {
+        this.isDeleted = "Y";
+    }
 }

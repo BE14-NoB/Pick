@@ -8,6 +8,7 @@ import lombok.*;
 @Setter
 @ToString
 public class ReportDTO {
+    int id;
     private ReportCategory category;
     private int reportedId;
     private int reportReasonId;

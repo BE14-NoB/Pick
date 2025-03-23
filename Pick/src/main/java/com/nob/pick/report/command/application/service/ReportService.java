@@ -10,4 +10,6 @@ import org.springframework.stereotype.Service;
 public interface ReportService {
 
     void registReport(ReportDTO reportDTO);
+
+    void deleteReport(ReportDTO reportDTO);
 }

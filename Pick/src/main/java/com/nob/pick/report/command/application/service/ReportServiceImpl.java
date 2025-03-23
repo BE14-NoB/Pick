@@ -49,4 +49,14 @@ public class ReportServiceImpl implements ReportService {
 
         reportRepository.save(report);
     }
+
+
+    // 신고 내역 삭제 - soft delete
+    @Override
+    @Transactional
+    public void deleteReport(ReportDTO deleteReport) {
+        Report foundReport = reportRepository.findById(deleteReport.getId()).get();
+        foundReport.markAsDeleted();
+    }
+
 }
