@@ -1,5 +1,6 @@
 package com.nob.pick.report.command.application.controller;
 
+import com.nob.pick.report.command.application.dto.ReportCategory;
 import com.nob.pick.report.command.application.dto.ReportDTO;
 import com.nob.pick.report.command.application.dto.ReportReasonDTO;
 import com.nob.pick.report.command.application.service.ReportReasonService;
@@ -43,11 +44,22 @@ public class ReportController {
     }
 
     // 신고 내역 삭제 - soft delete 처리
-    @PostMapping("softdelete")
-    public ResponseEntity<?> deleteReport(@RequestBody ReportDTO deleteReport) {
-        log.info("ReportController - delete Report : reportDTO = {}", deleteReport);
+    @DeleteMapping("{id}")
+    public ResponseEntity<?> deleteReport(@PathVariable int id) {
+        log.info("ReportController - delete Report : id = {}", id);
 
-        reportService.deleteReport(deleteReport);
+        reportService.deleteReport(id);
+        return ResponseEntity.ok().build();
+    }
+
+    // 신고 처리 상태 수정
+    @PatchMapping("{id}/status")
+    public ResponseEntity<?> updateStatus(
+            @PathVariable int id,
+            @RequestBody ReportDTO updateReport) {
+        log.info("ReportController - update Status : updateReport = {}", updateReport);
+
+        reportService.updateReportStatus(id, updateReport);
         return ResponseEntity.ok().build();
     }
 

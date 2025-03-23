@@ -10,6 +10,7 @@ import lombok.*;
 public class ReportDTO {
     int id;
     private ReportCategory category;
+    private ReportStatus status;
     private int reportedId;
     private int reportReasonId;
     private int memberId;

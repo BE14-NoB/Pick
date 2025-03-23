@@ -11,5 +11,7 @@ public interface ReportService {
 
     void registReport(ReportDTO reportDTO);
 
-    void deleteReport(ReportDTO reportDTO);
+    void deleteReport(int id);
+
+    void updateReportStatus(int id, ReportDTO updateReport);
 }

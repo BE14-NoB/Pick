@@ -1,5 +1,7 @@
 package com.nob.pick.report.command.domain.aggregate;
 
+import com.nob.pick.report.command.application.dto.ReportCategory;
+import com.nob.pick.report.command.application.dto.ReportStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -44,5 +46,10 @@ public class Report {
     // soft delete 처리 메서드
     public void markAsDeleted() {
         this.isDeleted = "Y";
+    }
+
+    // 상태 처리에 따른 status 변경 메서드
+    public void changeStatus(ReportStatus status) {
+        this.status = status.getNUM();
     }
 }

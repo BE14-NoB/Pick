@@ -54,9 +54,20 @@ public class ReportServiceImpl implements ReportService {
     // 신고 내역 삭제 - soft delete
     @Override
     @Transactional
-    public void deleteReport(ReportDTO deleteReport) {
-        Report foundReport = reportRepository.findById(deleteReport.getId()).get();
+    public void deleteReport(int id) {
+        Report foundReport = reportRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(id + " 신고 내역이 없습니다."));
         foundReport.markAsDeleted();
+    }
+
+    // 신고 처리 상태 수정
+    @Override
+    @Transactional
+    public void updateReportStatus(int id, ReportDTO updateReport) {
+        Report report = reportRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(id + " 신고 내역이 없습니다."));
+
+        report.changeStatus(updateReport.getStatus());
     }
 
 }
