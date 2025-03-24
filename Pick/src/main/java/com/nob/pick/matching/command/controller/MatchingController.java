@@ -1,10 +1,9 @@
 package com.nob.pick.matching.command.controller;
 
 import com.nob.pick.matching.command.dto.CommandMatchingDTO;
+import com.nob.pick.matching.command.dto.RegistMatchingEntryDTO;
 import com.nob.pick.matching.command.service.MatchingService;
-import com.nob.pick.matching.command.vo.RequestModifyMatchingVO;
-import com.nob.pick.matching.command.vo.RequestRegistMatchingVO;
-import com.nob.pick.matching.command.vo.ResponseMatchingVO;
+import com.nob.pick.matching.command.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -28,11 +27,10 @@ public class MatchingController {
         this.matchingService = matchingService;
     }
 
+    // 매칭방 등록
     @PostMapping("/matching/regist")
     public ResponseEntity<ResponseMatchingVO> registMatching(@RequestBody RequestRegistMatchingVO newMatching) {
-        log.info("request matching: {}", newMatching);
         CommandMatchingDTO matchingDTO = registMatching2MatchingDTO(newMatching);
-        log.info("request2matchingDTO: {}", matchingDTO);
 
         matchingService.registMatching(matchingDTO);
 
@@ -41,6 +39,7 @@ public class MatchingController {
         return ResponseEntity.status(HttpStatus.OK).body(successRegistMatching);
     }
 
+    // 매칭방 수정
     @PostMapping("/matching/modify")
     public ResponseEntity<ResponseMatchingVO> modifyMatching(@RequestBody RequestModifyMatchingVO modifyMatching) {
         CommandMatchingDTO matchingDTO = modifyMatching2MatchingDTO(modifyMatching);
@@ -52,6 +51,7 @@ public class MatchingController {
         return ResponseEntity.status(HttpStatus.OK).body(successModifyMatching);
     }
 
+    // 매칭방 삭제
     @PostMapping("/matching/delete/{matchingId}")
     public ResponseEntity<ResponseMatchingVO> deleteMatching(@PathVariable int matchingId) {
         CommandMatchingDTO matchingDTO = new CommandMatchingDTO();
@@ -62,6 +62,39 @@ public class MatchingController {
         ResponseMatchingVO successDeleteMatching = matchingDTO2ResponseMatchingVO(matchingDTO);
 
         return ResponseEntity.status(HttpStatus.OK).body(successDeleteMatching);
+    }
+
+    // 해당 매칭방에 신청
+    @PostMapping("/matchingEntry/regist")
+    public ResponseEntity<ResponseMatchingEntryVO> registMatchingEntry(@RequestBody RequestRegistMatchingEntryVO newMatchingEntry) {
+        RegistMatchingEntryDTO matchingEntryDTO = new RegistMatchingEntryDTO();
+        matchingEntryDTO.setMatchingId(newMatchingEntry.getMatchingId());
+        matchingEntryDTO.setMemberId(newMatchingEntry.getMemberId());
+        matchingService.registMatchingEntry(matchingEntryDTO);
+
+        ResponseMatchingEntryVO successRegistMatchingEntry = matchingEntryDTO2ResponseMatchingEntryVO(matchingEntryDTO);
+
+        return ResponseEntity.status(HttpStatus.OK).body(successRegistMatchingEntry);
+    }
+
+    @PostMapping("/matchingEntry/delete/{matchingEntryId}")
+    public ResponseEntity<ResponseMatchingEntryVO> deleteMatchingEntry(@PathVariable int matchingEntryId) {
+        RegistMatchingEntryDTO matchingEntryDTO = new RegistMatchingEntryDTO();
+        matchingEntryDTO.setId(matchingEntryId);
+        matchingService.deleteMatchingEntry(matchingEntryDTO);
+
+        ResponseMatchingEntryVO successRegistMatchingEntry = matchingEntryDTO2ResponseMatchingEntryVO(matchingEntryDTO);
+
+        return ResponseEntity.status(HttpStatus.OK).body(successRegistMatchingEntry);
+    }
+
+    private ResponseMatchingEntryVO matchingEntryDTO2ResponseMatchingEntryVO(RegistMatchingEntryDTO matchingEntryDTO) {
+        ResponseMatchingEntryVO responseMatchingEntry = new ResponseMatchingEntryVO();
+        responseMatchingEntry.setId(matchingEntryDTO.getId());
+        responseMatchingEntry.setAppliedDateAt(matchingEntryDTO.getAppliedDateAt());
+        responseMatchingEntry.setMatchingId(matchingEntryDTO.getMatchingId());
+        responseMatchingEntry.setMemberId(matchingEntryDTO.getMemberId());
+        return responseMatchingEntry;
     }
 
     private ResponseMatchingVO matchingDTO2ResponseMatchingVO(CommandMatchingDTO matchingDTO) {

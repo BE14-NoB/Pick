@@ -1,8 +1,12 @@
 package com.nob.pick.matching.command.service;
 
 import com.nob.pick.matching.command.aggregate.MatchingEntity;
+import com.nob.pick.matching.command.aggregate.MatchingEntryEntity;
 import com.nob.pick.matching.command.dto.CommandMatchingDTO;
+import com.nob.pick.matching.command.dto.RegistMatchingEntryDTO;
+import com.nob.pick.matching.command.repository.MatchingEntryRepository;
 import com.nob.pick.matching.command.repository.MatchingRepository;
+import com.nob.pick.matching.command.repository.TechnologyCategoryRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,25 +14,31 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 @Service("CommandMatchingService")
 @Slf4j
 public class MatchingServiceImpl implements MatchingService {
 
-    private static final SimpleDateFormat FORMATTER = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private MatchingRepository matchingRepository;
+    private MatchingEntryRepository matchingEntryRepository;
+    private TechnologyCategoryRepository technologyCategoryRepository;
 
     @Autowired
-    public MatchingServiceImpl(MatchingRepository matchingRepository) {
+    public MatchingServiceImpl(MatchingRepository matchingRepository, MatchingEntryRepository matchingEntryRepository, TechnologyCategoryRepository technologyCategoryRepository) {
         this.matchingRepository = matchingRepository;
+        this.matchingEntryRepository = matchingEntryRepository;
+        this.technologyCategoryRepository = technologyCategoryRepository;
     }
 
     @Override
     @Transactional
     public void registMatching(CommandMatchingDTO matchingDTO) {
         MatchingEntity registMatching = matchingDTO2MatchingEntity(matchingDTO);
-        registMatching.setCreatedDateAt(formatCurrentDate());
+        registMatching.setCreatedDateAt(formatCurrentDateTime());
         registMatching.setIsCompleted("N");
         registMatching.setIsDeleted("N");
         matchingRepository.save(registMatching);
@@ -69,6 +79,40 @@ public class MatchingServiceImpl implements MatchingService {
         resultMatchingEntity2MatchingDTO(findMatching, matchingDTO);
     }
 
+    @Override
+    public void registMatchingEntry(RegistMatchingEntryDTO matchingEntryDTO) {
+        MatchingEntryEntity registMatchingEntry = matchingEntryDTO2MatchingEntryEntity(matchingEntryDTO);
+        registMatchingEntry.setAppliedDateAt(formatCurrentDateTime());
+        registMatchingEntry.setIsCanceled("N");
+        registMatchingEntry.setIsAccepted("N");
+        matchingEntryRepository.save(registMatchingEntry);
+        resultMatchingEntryEntity2MatchingDTO(registMatchingEntry, matchingEntryDTO);
+    }
+
+    @Override
+    public void deleteMatchingEntry(RegistMatchingEntryDTO matchingEntryDTO) {
+        MatchingEntryEntity findMatchingEntry = matchingEntryRepository.findById(matchingEntryDTO.getId())
+                .orElseThrow(() -> new EntityNotFoundException("MatchingEntryEntity not found"));
+
+        findMatchingEntry.setIsCanceled("Y");
+        matchingEntryRepository.save(findMatchingEntry);
+        resultMatchingEntryEntity2MatchingDTO(findMatchingEntry, matchingEntryDTO);
+    }
+
+    private void resultMatchingEntryEntity2MatchingDTO(MatchingEntryEntity registMatchingEntry, RegistMatchingEntryDTO matchingEntryDTO) {
+        matchingEntryDTO.setId(registMatchingEntry.getId());
+        matchingEntryDTO.setMemberId(registMatchingEntry.getMemberId());
+        matchingEntryDTO.setMatchingId(registMatchingEntry.getMatchingId());
+        matchingEntryDTO.setAppliedDateAt(registMatchingEntry.getAppliedDateAt());
+    }
+
+    private MatchingEntryEntity matchingEntryDTO2MatchingEntryEntity(RegistMatchingEntryDTO matchingEntryDTO) {
+        MatchingEntryEntity matchingEntryEntity = new MatchingEntryEntity();
+        matchingEntryEntity.setMemberId(matchingEntryDTO.getMemberId());
+        matchingEntryEntity.setMatchingId(matchingEntryDTO.getMatchingId());
+        return matchingEntryEntity;
+    }
+
     private void resultMatchingEntity2MatchingDTO(MatchingEntity resultMatchingEntity, CommandMatchingDTO matchingDTO) {
         matchingDTO.setId(resultMatchingEntity.getId());
         matchingDTO.setCreatedDateAt(resultMatchingEntity.getCreatedDateAt());
@@ -106,7 +150,7 @@ public class MatchingServiceImpl implements MatchingService {
         return matchingEntity;
     }
 
-    public String formatCurrentDate() {
-        return FORMATTER.format(new Date());
+    public String formatCurrentDateTime() {
+        return LocalDateTime.now().format(formatter);
     }
 }

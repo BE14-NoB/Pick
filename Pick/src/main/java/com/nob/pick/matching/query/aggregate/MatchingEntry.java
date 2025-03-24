@@ -3,13 +3,13 @@ package com.nob.pick.matching.query.aggregate;
 import lombok.Getter;
 import lombok.ToString;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Getter
 @ToString
 public class MatchingEntry {
     private int id;
-    private Date appliedDateAt;
+    private LocalDateTime appliedDateAt;
     private boolean isCanceled;
     private boolean isAccepted;
     private int memberId;
