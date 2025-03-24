@@ -24,6 +24,12 @@ public class MatchingEntity {
     @Column(name="is_completed", nullable = false, columnDefinition = "VARCHAR(4) DEFAULT 'N'")
     private String isCompleted;
 
+    @Column(name="is_deleted", nullable = false, columnDefinition = "VARCHAR(4) DEFAULT 'N'")
+    private String isDeleted;
+
+    @Column(name="maximum_participant", nullable = false)
+    private int maximumParticipant;
+
     @Column(name="level_range", nullable = false)
     private int levelRange;
 

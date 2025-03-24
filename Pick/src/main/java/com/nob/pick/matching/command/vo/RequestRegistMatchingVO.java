@@ -8,6 +8,7 @@ import lombok.*;
 @Setter
 @ToString
 public class RequestRegistMatchingVO {
+    private int maximumParticipant;
     private int levelRange;
     private int memberId;
     private int technologyCategoryId;

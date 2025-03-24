@@ -1,4 +1,4 @@
-package com.nob.pick.matching.command.vo;
+package com.nob.pick.matching.command.dto;
 
 import lombok.*;
 
@@ -7,10 +7,12 @@ import lombok.*;
 @Getter
 @Setter
 @ToString
-public class ResponseModifyMatchingVO {
+public class CommandMatchingDTO {
     private int id;
     private String createdDateAt;
     private String isCompleted;
+    private String isDeleted;
+    private int maximumParticipant;
     private int levelRange;
     private int memberId;
     private int technologyCategoryId;

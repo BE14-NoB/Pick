@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 @Slf4j
-@Service
+@Service("QueryMatchingService")
 public class MatchingServiceImpl implements MatchingService{
 
     private final MatchingMapper matchingMapper;
@@ -129,6 +129,7 @@ public class MatchingServiceImpl implements MatchingService{
             matchingDTO.setId(matching.getId());
             matchingDTO.setMemberId(matching.getMemberId());
             matchingDTO.setLevelRange(matching.getLevelRange());
+            matchingDTO.setMaximumParticipant(matching.getMaximumParticipant());
 
             List<TechnologyCategory> technologyCategoryList = matching.getTechnologyCategories();
             List<TechnologyCategoryDTO> technologyCategoryDTOList = technologyCategory2TechnologyCategoryDTO(technologyCategoryList);

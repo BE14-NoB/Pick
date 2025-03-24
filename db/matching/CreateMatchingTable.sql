@@ -17,6 +17,8 @@ CREATE TABLE IF NOT EXISTS MATCHING
   id                     INTEGER      NOT NULL AUTO_INCREMENT
 , created_date_at        VARCHAR(255) NOT NULL
 , is_completed           VARCHAR(4)   NOT NULL DEFAULT 'N'
+, is_deleted               VARCHAR(4) NOT NULL DEFAULT 'N'
+, maximum_participant INTEGER NOT NULL DEFAULT 1
 , level_range            INTEGER      NOT NULL DEFAULT 5
 , member_id              INTEGER      NOT NULL
 , technology_category_id INTEGER      NOT NULL

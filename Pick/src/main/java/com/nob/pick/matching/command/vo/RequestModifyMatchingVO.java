@@ -8,8 +8,9 @@ import lombok.*;
 @Setter
 @ToString
 public class RequestModifyMatchingVO {
+    private int id;
     private String isCompleted;
-    private int levelRange;
-    private int memberId;
-    private int technologyCategoryId;
+    private Integer maximumParticipant;
+    private Integer levelRange;
+    private Integer technologyCategoryId;
 }

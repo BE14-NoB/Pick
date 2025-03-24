@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.List;
 
-@RestController
+@RestController("QueryMatchingController")
 @Slf4j
 public class MatchingController {
 
@@ -159,6 +159,7 @@ public class MatchingController {
             responseMatching.setMemberId(matchingDTO.getMemberId());
             responseMatching.setLevelRange(matchingDTO.getLevelRange());
             responseMatching.setTechnologyCategories(matchingDTO.getTechnologyCategories());
+            responseMatching.setMaximumParticipant(matchingDTO.getMaximumParticipant());
 
             responseList.add(responseMatching);
         }
