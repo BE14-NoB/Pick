@@ -75,6 +75,7 @@ public class MatchingServiceImpl implements MatchingService {
         matchingDTO.setIsCompleted(resultMatchingEntity.getIsCompleted());
         matchingDTO.setIsDeleted(resultMatchingEntity.getIsDeleted());
         matchingDTO.setMaximumParticipant(resultMatchingEntity.getMaximumParticipant());
+        matchingDTO.setCurrentParticipant(resultMatchingEntity.getCurrentParticipant());
         matchingDTO.setLevelRange(resultMatchingEntity.getLevelRange());
         matchingDTO.setMemberId(resultMatchingEntity.getMemberId());
         matchingDTO.setTechnologyCategoryId(resultMatchingEntity.getTechnologyCategoryId());
@@ -83,13 +84,22 @@ public class MatchingServiceImpl implements MatchingService {
     private MatchingEntity matchingDTO2MatchingEntity(CommandMatchingDTO matchingDTO) {
         MatchingEntity matchingEntity = new MatchingEntity();
 
-        if(matchingDTO.getLevelRange() != 0) { matchingEntity.setLevelRange(matchingDTO.getLevelRange()); }
-        else { matchingEntity.setLevelRange(5); }
+        if(matchingDTO.getLevelRange() != 0) {
+            matchingEntity.setLevelRange(matchingDTO.getLevelRange());
+        } else {
+            matchingEntity.setLevelRange(5);
+        }
         if(matchingDTO.getMaximumParticipant() != 0) {
             matchingEntity.setMaximumParticipant(matchingDTO.getMaximumParticipant());
         } else {
             matchingEntity.setMaximumParticipant(5);
         }
+        if(matchingDTO.getCurrentParticipant() != 0) {
+            matchingEntity.setCurrentParticipant(matchingDTO.getCurrentParticipant());
+        } else {
+            matchingEntity.setCurrentParticipant(1);
+        }
+
         matchingEntity.setMemberId(matchingDTO.getMemberId());
         matchingEntity.setTechnologyCategoryId(matchingDTO.getTechnologyCategoryId());
 

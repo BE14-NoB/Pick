@@ -13,6 +13,7 @@ public class CommandMatchingDTO {
     private String isCompleted;
     private String isDeleted;
     private int maximumParticipant;
+    private int currentParticipant;
     private int levelRange;
     private int memberId;
     private int technologyCategoryId;

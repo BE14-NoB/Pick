@@ -12,7 +12,7 @@ import lombok.*;
 @Table(name="matching_entry")
 public class MatchingEntryEntity {
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name="id")
     private int id;
 
@@ -21,6 +21,9 @@ public class MatchingEntryEntity {
 
     @Column(name="is_canceled", nullable=false)
     private String isCanceled;
+
+    @Column(name="is_accepted", nullable = false)
+    private String isAccepted;
 
     @Column(name="member_id", nullable=false)
     private int memberId;

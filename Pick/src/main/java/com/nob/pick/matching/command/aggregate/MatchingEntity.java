@@ -30,6 +30,9 @@ public class MatchingEntity {
     @Column(name="maximum_participant", nullable = false)
     private int maximumParticipant;
 
+    @Column(name="current_participant", nullable = false)
+    private int currentParticipant;
+
     @Column(name="level_range", nullable = false)
     private int levelRange;
 
