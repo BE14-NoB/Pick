@@ -7,7 +7,7 @@ import lombok.*;
 @Getter
 @Setter
 @ToString
-public class RegistMatchingEntryDTO {
+public class CommandMatchingEntryDTO {
     private int id;
     private int memberId;
     private int matchingId;

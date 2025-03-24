@@ -1,7 +1,7 @@
 package com.nob.pick.matching.command.controller;
 
 import com.nob.pick.matching.command.dto.CommandMatchingDTO;
-import com.nob.pick.matching.command.dto.RegistMatchingEntryDTO;
+import com.nob.pick.matching.command.dto.CommandMatchingEntryDTO;
 import com.nob.pick.matching.command.service.MatchingService;
 import com.nob.pick.matching.command.vo.*;
 import lombok.extern.slf4j.Slf4j;
@@ -67,7 +67,7 @@ public class MatchingController {
     // 해당 매칭방에 신청
     @PostMapping("/matchingEntry/regist")
     public ResponseEntity<ResponseMatchingEntryVO> registMatchingEntry(@RequestBody RequestRegistMatchingEntryVO newMatchingEntry) {
-        RegistMatchingEntryDTO matchingEntryDTO = new RegistMatchingEntryDTO();
+        CommandMatchingEntryDTO matchingEntryDTO = new CommandMatchingEntryDTO();
         matchingEntryDTO.setMatchingId(newMatchingEntry.getMatchingId());
         matchingEntryDTO.setMemberId(newMatchingEntry.getMemberId());
         matchingService.registMatchingEntry(matchingEntryDTO);
@@ -77,9 +77,10 @@ public class MatchingController {
         return ResponseEntity.status(HttpStatus.OK).body(successRegistMatchingEntry);
     }
 
+    // 매칭 신청 취소
     @PostMapping("/matchingEntry/delete/{matchingEntryId}")
     public ResponseEntity<ResponseMatchingEntryVO> deleteMatchingEntry(@PathVariable int matchingEntryId) {
-        RegistMatchingEntryDTO matchingEntryDTO = new RegistMatchingEntryDTO();
+        CommandMatchingEntryDTO matchingEntryDTO = new CommandMatchingEntryDTO();
         matchingEntryDTO.setId(matchingEntryId);
         matchingService.deleteMatchingEntry(matchingEntryDTO);
 
@@ -88,7 +89,18 @@ public class MatchingController {
         return ResponseEntity.status(HttpStatus.OK).body(successRegistMatchingEntry);
     }
 
-    private ResponseMatchingEntryVO matchingEntryDTO2ResponseMatchingEntryVO(RegistMatchingEntryDTO matchingEntryDTO) {
+    @PostMapping("/matchingEntry/accept/{matchingEntryId}")
+    public ResponseEntity<ResponseMatchingEntryVO> acceptMatchingEntry(@PathVariable int matchingEntryId) {
+        CommandMatchingEntryDTO matchingEntryDTO = new CommandMatchingEntryDTO();
+        matchingEntryDTO.setId(matchingEntryId);
+        matchingService.acceptMatchingEntry(matchingEntryDTO);
+
+        ResponseMatchingEntryVO successRegistMatchingEntry = matchingEntryDTO2ResponseMatchingEntryVO(matchingEntryDTO);
+
+        return ResponseEntity.status(HttpStatus.OK).body(successRegistMatchingEntry);
+    }
+
+    private ResponseMatchingEntryVO matchingEntryDTO2ResponseMatchingEntryVO(CommandMatchingEntryDTO matchingEntryDTO) {
         ResponseMatchingEntryVO responseMatchingEntry = new ResponseMatchingEntryVO();
         responseMatchingEntry.setId(matchingEntryDTO.getId());
         responseMatchingEntry.setAppliedDateAt(matchingEntryDTO.getAppliedDateAt());

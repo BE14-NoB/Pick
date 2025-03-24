@@ -1,7 +1,7 @@
 package com.nob.pick.matching.command.service;
 
 import com.nob.pick.matching.command.dto.CommandMatchingDTO;
-import com.nob.pick.matching.command.dto.RegistMatchingEntryDTO;
+import com.nob.pick.matching.command.dto.CommandMatchingEntryDTO;
 
 public interface MatchingService {
     void registMatching(CommandMatchingDTO matchingDTO);
@@ -10,7 +10,9 @@ public interface MatchingService {
 
     void deleteMatching(CommandMatchingDTO matchingDTO);
 
-    void registMatchingEntry(RegistMatchingEntryDTO matchingEntryDTO);
+    void registMatchingEntry(CommandMatchingEntryDTO matchingEntryDTO);
 
-    void deleteMatchingEntry(RegistMatchingEntryDTO matchingEntryDTO);
+    void deleteMatchingEntry(CommandMatchingEntryDTO matchingEntryDTO);
+
+    void acceptMatchingEntry(CommandMatchingEntryDTO matchingEntryDTO);
 }
