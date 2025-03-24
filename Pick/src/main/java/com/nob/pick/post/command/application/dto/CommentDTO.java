@@ -17,8 +17,8 @@ public class CommentDTO {
 	private String commentUploadAt;
 	private String commentUpdateAt;
 	private String commentContent;
-	private int commentStatus;
+	private PostStatus commentStatus;
 	private int commentPostId;
-	private int commentRootCommentId;
+	private Integer commentRootCommentId;	// nullable
 	private MemberNicknameDTO commentMember;
 }

@@ -12,7 +12,7 @@ public class ResponseCommentVO {
 	private String commentUpdateAt;
 	private String commentContent;
 	private int commentStatus;
-	private int commentRootCommentId;
+	private Integer commentRootCommentId;
 	private int commentMemberId;
 	private String commentMemberNickname;
 }

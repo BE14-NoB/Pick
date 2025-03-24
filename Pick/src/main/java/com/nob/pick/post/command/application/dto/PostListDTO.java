@@ -14,9 +14,9 @@ import lombok.ToString;
 public class PostListDTO {
 	private int id;
 	private String title;
-	private int category;
+	private PostCategory category;
 	private String uploadAt;
 	private String updateAt;
-	private int status;
+	private PostStatus status;
 	private MemberNicknameDTO member;
 }

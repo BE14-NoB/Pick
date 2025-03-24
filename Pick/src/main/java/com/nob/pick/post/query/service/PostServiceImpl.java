@@ -5,7 +5,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.nob.pick.post.command.application.dto.PostCommentDTO;
+import com.nob.pick.post.command.application.dto.CommentDTO;
+import com.nob.pick.post.command.application.dto.PostDTO;
+import com.nob.pick.post.command.application.dto.PostImageDTO;
 import com.nob.pick.post.command.application.dto.PostListDTO;
 import com.nob.pick.post.query.mapper.PostMapper;
 
@@ -31,11 +33,6 @@ public class PostServiceImpl implements PostService {
 	}
 	
 	@Override
-	public PostCommentDTO getPostCommentById(int id) {
-		return postMapper.selectPostCommentById(id);
-	}
-	
-	@Override
 	public List<PostListDTO> getPostListByTitle(String keyword) {
 		return postMapper.selectPostListByTitle(keyword);
 	}
@@ -45,6 +42,21 @@ public class PostServiceImpl implements PostService {
 		log.info("Service from Controller");
 		log.info("parsed category: {}", parseCategory(category));
 		return postMapper.selectPostListByCategory(parseCategory(category));
+	}
+	
+	@Override
+	public PostDTO getPostById(int id) {
+		return postMapper.selectPostById(id);
+	}
+	
+	@Override
+	public List<PostImageDTO> getPostImageListByPostId(int id) {
+		return postMapper.selectPostImageListByPostId(id);
+	}
+	
+	@Override
+	public List<CommentDTO> getCommentListByPostId(int id) {
+		return postMapper.selectCommentListByPostId(id);
 	}
 	
 	private int parseStatus(String status) {	//ENUM으로 바꾸기
