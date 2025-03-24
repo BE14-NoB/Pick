@@ -6,7 +6,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+
+import com.nob.pick.member.query.dto.UserGrant;
 
 @Entity
 @Table(name = "MEMBER")
@@ -64,10 +67,9 @@ public class Member {
 		this.userGrant = 1; // 가입시 Member 권한 상태
 	}
 
+
 	public List<String> getRoles() {
-		if (this.userGrant == 0) {
-			return Arrays.asList("ADMIN");
-		}
-			return Arrays.asList("MEMBER");
+		String role = userGrant == UserGrant.ADMIN.getValue() ? "ADMIN" : "MEMBER";
+		return Collections.singletonList("ROLE_" + role); // ROLE_ 접두사 추가
 	}
 }

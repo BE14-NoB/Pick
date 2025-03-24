@@ -50,16 +50,20 @@ public class MemberService {
 			.orElseThrow(() -> new IllegalArgumentException("ID로 회원을 찾을 수 없습니다."));
 	}
 
-	public boolean existsEmail(String email) {
-		return memberMapper.existsByEmail(email);
-	}
-
-	public boolean existsPhoneNumber(String phoneNumber) {
-		return memberMapper.existsByPhoneNumber(phoneNumber);
-	}
-
 	public Status findMemberStatus(int id) {
 		return memberMapper.findMemberStatusById(id);
+	}
+
+	public boolean checkEmailExists(String email) {
+		int count = memberMapper.checkExistsByEmail(email);
+		// logger.info("checkEmailExists - Email: {}, Count: {}", email, count);
+		return count > 0;
+	}
+
+	public boolean checkPhoneNumberExists(String phoneNumber) {
+		int count = memberMapper.checkExistsByPhoneNumber(phoneNumber);
+		// logger.info("checkPhoneNumberExists - PhoneNumber: {}, Count: {}", phoneNumber, count);
+		return count > 0;
 	}
 
 	public UserGrant findUserGrant(int id) {
@@ -78,4 +82,6 @@ public class MemberService {
 	public List<ProgrammingLanguageInfoDTO> findActiveProgrammingLanguages() {
 		return memberMapper.findActiveProgrammingLanguages();
 	}
+
+
 }

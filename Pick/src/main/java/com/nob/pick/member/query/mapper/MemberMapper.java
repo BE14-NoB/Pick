@@ -24,9 +24,9 @@ public interface MemberMapper {
 
 	Status findMemberStatusById(@Param("id") int id);
 
-	boolean existsByEmail(@Param("email") String email);
+	int checkExistsByEmail(@Param("email") String email);
 
-	boolean existsByPhoneNumber(@Param("phoneNumber") String phoneNumber);
+	int checkExistsByPhoneNumber(@Param("phoneNumber") String phoneNumber);
 
 	MemberDTO findUserGrantById(@Param("id") int id);
 
@@ -34,7 +34,6 @@ public interface MemberMapper {
 	MemberProfilePageDTO findProfilePageByMemberId(@Param("memberId") int memberId);
 
 	//프로그래밍 언어, 회원별 프로그래밍 언어 관련
-
 
 	List<ProgrammingLanguageInfoDTO> findProgrammingLanguagesByProfilePageId(@Param("profilePageId") int profilePageId);
 

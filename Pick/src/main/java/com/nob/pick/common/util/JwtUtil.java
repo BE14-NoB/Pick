@@ -5,38 +5,48 @@ import com.nob.pick.member.command.repository.MemberRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.security.Key;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 @Component
-@RequiredArgsConstructor
+// @RequiredArgsConstructor
 public class JwtUtil {
 
 	private final MemberRepository memberRepository;
 
-	@Value("${jwt.secret}")
-	private String secretKey;
+	private final Key secretKey;
+	private final long expiration;
 
-	@Value("${jwt.expiration}")
-	private Long expiration;
-
-	private byte[] getSigningKey() {
-		return Base64.getDecoder().decode(secretKey);
+	public JwtUtil(
+		@Value("${jwt.secret}") String secret,
+		@Value("${jwt.expiration}") long expiration,
+		MemberRepository memberRepository
+	) {
+		byte[] keyBytes = Base64.getDecoder().decode(secret);
+		this.secretKey = Keys.hmacShaKeyFor(keyBytes);
+		this.expiration = expiration;
+		this.memberRepository = memberRepository;
 	}
 
 	public String createToken(String email) {
 		Member member = memberRepository.findByEmail(email)
 			.orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다: " + email));
-		String role = member.getUserGrant() == 1 ? "ADMIN" : "MEMBER";
+		String role = member.getUserGrant() == 0 ? "ADMIN" : "MEMBER";
+
+		// ROLE_ 접두사 추가
+		String roleWithPrefix = "ROLE_" + role;
+		// System.out.println("Role with prefix: " + roleWithPrefix); // 디버깅 로그 추가
 
 		Claims claims = Jwts.claims().setSubject(email);
-		claims.put("roles", Collections.singletonList(role));
+		claims.put("roles", Collections.singletonList(roleWithPrefix));
 		Date now = new Date();
 		Date validity = new Date(now.getTime() + expiration);
 
@@ -44,14 +54,15 @@ public class JwtUtil {
 			.setClaims(claims)
 			.setIssuedAt(now)
 			.setExpiration(validity)
-			.signWith(SignatureAlgorithm.HS256, getSigningKey()) // Base64 디코딩된 키 사용
+			.signWith(secretKey, SignatureAlgorithm.HS256)
 			.compact();
 	}
 
 	public String getEmail(String token) {
 		validateTokenFormat(token);
-		return Jwts.parser()
-			.setSigningKey(getSigningKey())
+		return Jwts.parserBuilder()
+			.setSigningKey(secretKey)
+			.build()
 			.parseClaimsJws(token)
 			.getBody()
 			.getSubject();
@@ -59,8 +70,9 @@ public class JwtUtil {
 
 	public List<String> getRoles(String token) {
 		validateTokenFormat(token);
-		return Jwts.parser()
-			.setSigningKey(getSigningKey())
+		return Jwts.parserBuilder()
+			.setSigningKey(secretKey)
+			.build()
 			.parseClaimsJws(token)
 			.getBody()
 			.get("roles", List.class);
@@ -69,7 +81,10 @@ public class JwtUtil {
 	public boolean validateToken(String token) {
 		try {
 			validateTokenFormat(token);
-			Jwts.parser().setSigningKey(getSigningKey()).parseClaimsJws(token);
+			Jwts.parserBuilder()
+				.setSigningKey(secretKey)
+				.build()
+				.parseClaimsJws(token);
 			return true;
 		} catch (Exception e) {
 			return false;
@@ -79,8 +94,9 @@ public class JwtUtil {
 	public boolean isTokenExpired(String token) {
 		try {
 			validateTokenFormat(token);
-			Claims claims = Jwts.parser()
-				.setSigningKey(getSigningKey())
+			Claims claims = Jwts.parserBuilder()
+				.setSigningKey(secretKey)
+				.build()
 				.parseClaimsJws(token)
 				.getBody();
 			return claims.getExpiration().before(new Date());

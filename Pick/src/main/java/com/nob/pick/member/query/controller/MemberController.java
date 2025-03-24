@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,6 +13,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.nob.pick.member.query.dto.EmailCheckRequestDTO;
+import com.nob.pick.member.query.dto.EmailCheckResponseDTO;
+import com.nob.pick.member.query.dto.PhoneCheckRequestDTO;
+import com.nob.pick.member.query.dto.PhoneCheckResponseDTO;
 import com.nob.pick.member.query.service.MemberService;
 import com.nob.pick.member.query.dto.MemberDTO;
 import com.nob.pick.member.query.dto.MemberProfilePageDTO;
@@ -19,6 +24,7 @@ import com.nob.pick.member.query.dto.ProgrammingLanguageInfoDTO;
 import com.nob.pick.member.query.dto.Status;
 import com.nob.pick.member.query.dto.UserGrant;
 
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
@@ -74,39 +80,39 @@ public class MemberController {
 	}
 
 	@PostMapping("/check-email")
-	public ResponseEntity<MemberDTO> checkEmail(@RequestBody MemberDTO request) {
-		if (request.getEmail().isEmpty()) {
-			return ResponseEntity.badRequest().body(new MemberDTO());
+	public ResponseEntity<EmailCheckResponseDTO> checkEmail(@RequestBody @Valid EmailCheckRequestDTO request) {
+		boolean isDuplicated = memberService.checkEmailExists(request.getEmail());
+		if (isDuplicated) {
+			return ResponseEntity.status(HttpStatus.CONFLICT)
+				.body(new EmailCheckResponseDTO(true, "이미 존재하는 이메일입니다."));
+		} else {
+			return ResponseEntity.ok()
+				.body(new EmailCheckResponseDTO(false, "사용 가능한 이메일입니다."));
 		}
-		boolean exists = memberService.existsEmail(request.getEmail());
-		MemberDTO response = new MemberDTO();
-		response.setEmail(exists ? request.getEmail() : "");
-		return ResponseEntity.ok(response);
 	}
 
 	@PostMapping("/check-phone")
-	public ResponseEntity<MemberDTO> checkPhoneNumber(@RequestBody MemberDTO request) {
-		if (request.getPhoneNumber().isEmpty()) {
-			return ResponseEntity.badRequest().body(new MemberDTO());
+	public ResponseEntity<PhoneCheckResponseDTO> checkPhone(@RequestBody @Valid PhoneCheckRequestDTO request) {
+		boolean isDuplicated = memberService.checkPhoneNumberExists(request.getPhoneNumber());
+		if (isDuplicated) {
+			return ResponseEntity.status(HttpStatus.CONFLICT)
+				.body(new PhoneCheckResponseDTO(true, "이미 존재하는 전화번호입니다."));
+		} else {
+			return ResponseEntity.ok()
+				.body(new PhoneCheckResponseDTO(false, "사용 가능한 전화번호입니다."));
 		}
-		boolean exists = memberService.existsPhoneNumber(request.getPhoneNumber());
-		MemberDTO response = new MemberDTO();
-		response.setPhoneNumber(exists ? request.getPhoneNumber() : "");
-		return ResponseEntity.ok(response);
 	}
 
 	@GetMapping("/status/{id}")
-	public ResponseEntity<MemberDTO> getMemberStatus(@PathVariable("id") int id) {
+	public ResponseEntity<Status> getMemberStatus(@PathVariable("id") int id) {
 		if (id <= 0) {
-			return ResponseEntity.badRequest().body(null);
+			return ResponseEntity.badRequest().build();
 		}
 		Status status = memberService.findMemberStatus(id);
 		if (status == null) {
 			return ResponseEntity.notFound().build();
 		}
-		MemberDTO response = new MemberDTO();
-		response.setStatus(status);
-		return ResponseEntity.ok(response);
+		return ResponseEntity.ok(status);
 	}
 
 	@GetMapping("/user-grant/{id}")
