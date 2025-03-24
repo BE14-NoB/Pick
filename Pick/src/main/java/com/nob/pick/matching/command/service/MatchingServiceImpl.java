@@ -2,8 +2,10 @@ package com.nob.pick.matching.command.service;
 
 import com.nob.pick.matching.command.aggregate.MatchingEntity;
 import com.nob.pick.matching.command.aggregate.MatchingEntryEntity;
+import com.nob.pick.matching.command.aggregate.TechnologyCategoryEntity;
 import com.nob.pick.matching.command.dto.CommandMatchingDTO;
 import com.nob.pick.matching.command.dto.CommandMatchingEntryDTO;
+import com.nob.pick.matching.command.dto.CommandTechnologyCategoryDTO;
 import com.nob.pick.matching.command.repository.MatchingEntryRepository;
 import com.nob.pick.matching.command.repository.MatchingRepository;
 import com.nob.pick.matching.command.repository.TechnologyCategoryRepository;
@@ -15,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 @Service("CommandMatchingService")
 @Slf4j
@@ -120,11 +123,66 @@ public class MatchingServiceImpl implements MatchingService {
         * */
     }
 
-    private void resultMatchingEntryEntity2MatchingDTO(MatchingEntryEntity registMatchingEntry, CommandMatchingEntryDTO matchingEntryDTO) {
-        matchingEntryDTO.setId(registMatchingEntry.getId());
-        matchingEntryDTO.setMemberId(registMatchingEntry.getMemberId());
-        matchingEntryDTO.setMatchingId(registMatchingEntry.getMatchingId());
-        matchingEntryDTO.setAppliedDateAt(registMatchingEntry.getAppliedDateAt());
+    @Override
+    @Transactional
+    public void registTechnologyCategory(CommandTechnologyCategoryDTO technologyCategoryDTO) {
+        TechnologyCategoryEntity registTechnologyCategory = technologyCategoryDTO2TechnologyCategoryEntity(technologyCategoryDTO);
+        registTechnologyCategory.setIsDeleted("N");
+        technologyCategoryRepository.save(registTechnologyCategory);
+        resultTechnologyCategoryEntity2TechnologyCategoryDTO(registTechnologyCategory, technologyCategoryDTO);
+    }
+
+    @Override
+    @Transactional
+    public void modifyTechnologyCategory(CommandTechnologyCategoryDTO technologyCategoryDTO) {
+
+        TechnologyCategoryEntity findTechnologyCategory = technologyCategoryRepository.findById(technologyCategoryDTO.getId())
+                .orElseThrow(() -> new EntityNotFoundException("TechnologyCategoryEntity not found"));
+
+        if(technologyCategoryDTO.getName() != null) {
+            findTechnologyCategory.setName(technologyCategoryDTO.getName());
+        }
+        if(technologyCategoryDTO.getRefTechnologyCategoryId() != null) {
+            findTechnologyCategory.setRefTechnologyCategoryId(technologyCategoryDTO.getRefTechnologyCategoryId());
+        } else if(!Objects.equals(technologyCategoryDTO.getRefTechnologyCategoryId(), findTechnologyCategory.getRefTechnologyCategoryId())) {
+            findTechnologyCategory.setRefTechnologyCategoryId(technologyCategoryDTO.getRefTechnologyCategoryId());
+        }
+        technologyCategoryRepository.save(findTechnologyCategory);
+        resultTechnologyCategoryEntity2TechnologyCategoryDTO(findTechnologyCategory, technologyCategoryDTO);
+    }
+
+    @Override
+    @Transactional
+    public void deleteTechnologyCategory(CommandTechnologyCategoryDTO technologyCategoryDTO) {
+        TechnologyCategoryEntity findTechnologyCategory = technologyCategoryRepository.findById(technologyCategoryDTO.getId())
+                .orElseThrow(() -> new EntityNotFoundException("TechnologyCategoryEntity not found"));
+
+        findTechnologyCategory.setIsDeleted("Y");
+        technologyCategoryRepository.save(findTechnologyCategory);
+        resultTechnologyCategoryEntity2TechnologyCategoryDTO(findTechnologyCategory, technologyCategoryDTO);
+    }
+
+    private void resultTechnologyCategoryEntity2TechnologyCategoryDTO(TechnologyCategoryEntity technologyCategoryEntity, CommandTechnologyCategoryDTO technologyCategoryDTO) {
+        technologyCategoryDTO.setId(technologyCategoryEntity.getId());
+        technologyCategoryDTO.setName(technologyCategoryEntity.getName());
+        technologyCategoryDTO.setIsDeleted(technologyCategoryEntity.getIsDeleted());
+        technologyCategoryDTO.setRefTechnologyCategoryId(technologyCategoryEntity.getRefTechnologyCategoryId());
+    }
+
+    private TechnologyCategoryEntity technologyCategoryDTO2TechnologyCategoryEntity(CommandTechnologyCategoryDTO technologyCategoryDTO) {
+        TechnologyCategoryEntity technologyCategoryEntity = new TechnologyCategoryEntity();
+        technologyCategoryEntity.setName(technologyCategoryDTO.getName());
+        technologyCategoryEntity.setRefTechnologyCategoryId(technologyCategoryDTO.getRefTechnologyCategoryId());
+        return technologyCategoryEntity;
+    }
+
+    private void resultMatchingEntryEntity2MatchingDTO(MatchingEntryEntity matchingEntryEntity, CommandMatchingEntryDTO matchingEntryDTO) {
+        matchingEntryDTO.setId(matchingEntryEntity.getId());
+        matchingEntryDTO.setMemberId(matchingEntryEntity.getMemberId());
+        matchingEntryDTO.setIsAccepted(matchingEntryEntity.getIsAccepted());
+        matchingEntryDTO.setIsCanceled(matchingEntryEntity.getIsCanceled());
+        matchingEntryDTO.setMatchingId(matchingEntryEntity.getMatchingId());
+        matchingEntryDTO.setAppliedDateAt(matchingEntryEntity.getAppliedDateAt());
     }
 
     private MatchingEntryEntity matchingEntryDTO2MatchingEntryEntity(CommandMatchingEntryDTO matchingEntryDTO) {

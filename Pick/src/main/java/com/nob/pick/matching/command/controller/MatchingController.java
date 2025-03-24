@@ -2,9 +2,11 @@ package com.nob.pick.matching.command.controller;
 
 import com.nob.pick.matching.command.dto.CommandMatchingDTO;
 import com.nob.pick.matching.command.dto.CommandMatchingEntryDTO;
+import com.nob.pick.matching.command.dto.CommandTechnologyCategoryDTO;
 import com.nob.pick.matching.command.service.MatchingService;
 import com.nob.pick.matching.command.vo.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -89,6 +91,7 @@ public class MatchingController {
         return ResponseEntity.status(HttpStatus.OK).body(successRegistMatchingEntry);
     }
 
+    // 매칭 수락
     @PostMapping("/matchingEntry/accept/{matchingEntryId}")
     public ResponseEntity<ResponseMatchingEntryVO> acceptMatchingEntry(@PathVariable int matchingEntryId) {
         CommandMatchingEntryDTO matchingEntryDTO = new CommandMatchingEntryDTO();
@@ -100,10 +103,76 @@ public class MatchingController {
         return ResponseEntity.status(HttpStatus.OK).body(successRegistMatchingEntry);
     }
 
+    // 기술 카테고리 등록
+    @PostMapping("/technologyCategory/regist")
+    public ResponseEntity<ResponseTechnologyCategoryVO> registTechnologyCategory(@RequestBody RequestRegistTechnologyCategoryVO newTechnologyCategory) {
+        CommandTechnologyCategoryDTO technologyCategoryDTO = registTechnologyCategory2TechnologyCategoryDTO(newTechnologyCategory);
+
+        matchingService.registTechnologyCategory(technologyCategoryDTO);
+
+        ResponseTechnologyCategoryVO successRegistTechnologyCategory = technologyCategoryDTO2ResponseTechnologyCategory(technologyCategoryDTO);
+
+        return ResponseEntity.status(HttpStatus.OK).body(successRegistTechnologyCategory);
+    }
+
+    // 기술 카테고리 수정
+    @PostMapping("/technologyCategory/modify")
+    public ResponseEntity<ResponseTechnologyCategoryVO> modifyTechnologyCategory(@RequestBody RequestModifyTechnologyCategoryVO modifyTechnologyCategory) {
+        CommandTechnologyCategoryDTO technologyCategoryDTO = modifyTechnologyCategory2TechnologyCategoryDTO(modifyTechnologyCategory);
+
+        matchingService.modifyTechnologyCategory(technologyCategoryDTO);
+
+        ResponseTechnologyCategoryVO successModifyTechnologyCategory = technologyCategoryDTO2ResponseTechnologyCategory(technologyCategoryDTO);
+
+        return ResponseEntity.status(HttpStatus.OK).body(successModifyTechnologyCategory);
+    }
+
+    // 기술 카테고리 삭제
+    @PostMapping("/technologyCategory/delete/{technologyCategoryId}")
+    public ResponseEntity<ResponseTechnologyCategoryVO> deleteTechnologyCategory(@PathVariable int technologyCategoryId) {
+        CommandTechnologyCategoryDTO technologyCategoryDTO = new CommandTechnologyCategoryDTO();
+        technologyCategoryDTO.setId(technologyCategoryId);
+        matchingService.deleteTechnologyCategory(technologyCategoryDTO);
+        ResponseTechnologyCategoryVO successDeleteTechnologyCategory = technologyCategoryDTO2ResponseTechnologyCategory(technologyCategoryDTO);
+
+        return ResponseEntity.status(HttpStatus.OK).body(successDeleteTechnologyCategory);
+    }
+
+    private CommandTechnologyCategoryDTO modifyTechnologyCategory2TechnologyCategoryDTO(RequestModifyTechnologyCategoryVO modifyTechnologyCategory) {
+        CommandTechnologyCategoryDTO technologyCategoryDTO = new CommandTechnologyCategoryDTO();
+
+        technologyCategoryDTO.setId(modifyTechnologyCategory.getId());
+        technologyCategoryDTO.setName(modifyTechnologyCategory.getName());
+        technologyCategoryDTO.setRefTechnologyCategoryId(modifyTechnologyCategory.getRefTechnologyCategoryId());
+
+        return technologyCategoryDTO;
+    }
+
+
+    private ResponseTechnologyCategoryVO technologyCategoryDTO2ResponseTechnologyCategory(CommandTechnologyCategoryDTO technologyCategoryDTO) {
+        ResponseTechnologyCategoryVO responseTechnologyCategory = new ResponseTechnologyCategoryVO();
+        responseTechnologyCategory.setId(technologyCategoryDTO.getId());
+        responseTechnologyCategory.setName(technologyCategoryDTO.getName());
+        responseTechnologyCategory.setIsDeleted(technologyCategoryDTO.getIsDeleted());
+        responseTechnologyCategory.setRefTechnologyCategoryId(technologyCategoryDTO.getRefTechnologyCategoryId());
+        return responseTechnologyCategory;
+    }
+
+    private CommandTechnologyCategoryDTO registTechnologyCategory2TechnologyCategoryDTO(RequestRegistTechnologyCategoryVO newTechnologyCategory) {
+        CommandTechnologyCategoryDTO technologyCategoryDTO = new CommandTechnologyCategoryDTO();
+
+        technologyCategoryDTO.setName(newTechnologyCategory.getName());
+        technologyCategoryDTO.setRefTechnologyCategoryId(newTechnologyCategory.getRefTechnologyCategoryId());
+
+        return technologyCategoryDTO;
+    }
+
     private ResponseMatchingEntryVO matchingEntryDTO2ResponseMatchingEntryVO(CommandMatchingEntryDTO matchingEntryDTO) {
         ResponseMatchingEntryVO responseMatchingEntry = new ResponseMatchingEntryVO();
         responseMatchingEntry.setId(matchingEntryDTO.getId());
         responseMatchingEntry.setAppliedDateAt(matchingEntryDTO.getAppliedDateAt());
+        responseMatchingEntry.setIsAccepted(matchingEntryDTO.getIsAccepted());
+        responseMatchingEntry.setIsCanceled(matchingEntryDTO.getIsCanceled());
         responseMatchingEntry.setMatchingId(matchingEntryDTO.getMatchingId());
         responseMatchingEntry.setMemberId(matchingEntryDTO.getMemberId());
         return responseMatchingEntry;

@@ -12,4 +12,6 @@ public class CommandMatchingEntryDTO {
     private int memberId;
     private int matchingId;
     private String appliedDateAt;
+    private String isCanceled;
+    private String isAccepted;
 }

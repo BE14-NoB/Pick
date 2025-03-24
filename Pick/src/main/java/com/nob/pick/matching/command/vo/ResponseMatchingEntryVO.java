@@ -10,6 +10,8 @@ import lombok.*;
 public class ResponseMatchingEntryVO {
     private int id;
     private String appliedDateAt;
+    private String isCanceled;
+    private String isAccepted;
     private int memberId;
     private int matchingId;
 }
