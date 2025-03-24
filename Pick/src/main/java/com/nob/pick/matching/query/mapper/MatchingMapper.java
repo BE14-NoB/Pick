@@ -3,6 +3,7 @@ package com.nob.pick.matching.query.mapper;
 import com.nob.pick.matching.query.aggregate.Matching;
 import com.nob.pick.matching.query.aggregate.MatchingEntry;
 import com.nob.pick.matching.query.aggregate.TechnologyCategory;
+import com.nob.pick.matching.query.dto.MatchingInfoDTO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -25,4 +26,8 @@ public interface MatchingMapper {
     List<TechnologyCategory> selectSubTechnologyCategoryByRefTechnologyCategoryId(int refTechnologyCategoryId);
 
     List<TechnologyCategory> selectParentTechnologyCategory();
+
+    List<Matching> selectMatching(MatchingInfoDTO matchingInfoDTO);
+
+    List<Matching> searchMatching(MatchingInfoDTO a);
 }

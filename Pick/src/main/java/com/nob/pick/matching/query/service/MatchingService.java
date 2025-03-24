@@ -23,4 +23,6 @@ public interface MatchingService {
     List<TechnologyCategoryDTO> getSubTechnologyCategoryByRefTechnologyCategoryId(int refTechnologyCategoryId);
 
     List<TechnologyCategoryDTO> getParentTechnologyCategory();
+
+    List<MatchingDTO> getMatchingByLevel(int memberId);
 }

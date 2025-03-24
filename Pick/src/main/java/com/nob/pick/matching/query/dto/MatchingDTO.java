@@ -16,5 +16,6 @@ public class MatchingDTO {
     private int maximumParticipant;
     private int currentParticipant;
 
+
     private List<TechnologyCategoryDTO> technologyCategories;
 }

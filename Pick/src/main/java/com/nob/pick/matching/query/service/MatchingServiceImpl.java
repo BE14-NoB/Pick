@@ -2,26 +2,30 @@ package com.nob.pick.matching.query.service;
 
 import com.nob.pick.matching.query.aggregate.Matching;
 import com.nob.pick.matching.query.aggregate.MatchingEntry;
+import com.nob.pick.matching.query.dto.*;
 import com.nob.pick.matching.query.aggregate.TechnologyCategory;
-import com.nob.pick.matching.query.dto.MatchingDTO;
-import com.nob.pick.matching.query.dto.MatchingEntryDTO;
-import com.nob.pick.matching.query.dto.TechnologyCategoryDTO;
 import com.nob.pick.matching.query.mapper.MatchingMapper;
+import com.nob.pick.member.query.service.MemberService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
 @Slf4j
 @Service("QueryMatchingService")
 public class MatchingServiceImpl implements MatchingService{
 
     private final MatchingMapper matchingMapper;
+    private final MemberService memberService;
 
     @Autowired
-    public MatchingServiceImpl(MatchingMapper matchingMapper) {
+    public MatchingServiceImpl(MatchingMapper matchingMapper, MemberService memberService) {
         this.matchingMapper = matchingMapper;
+        this.memberService = memberService;
     }
 
     @Override
@@ -86,6 +90,35 @@ public class MatchingServiceImpl implements MatchingService{
         List<TechnologyCategory> parentTechnologyCategoryList = matchingMapper.selectParentTechnologyCategory();
 
         return technologyCategory2TechnologyCategoryDTO(parentTechnologyCategoryList);
+    }
+
+    @Override
+    @Transactional
+    public List<MatchingDTO> getMatchingByLevel(int memberId) {
+        // 신청자 레벨
+        int memberLevel = memberService.findOneMemberLevel(memberId);
+
+        // 전체 방 조회
+        List<Matching> matchingList = matchingMapper.selectAllMatching();
+
+        // test
+        List<MatchingInfo> matchingInfoList = matchingList.stream()
+                .map(matching -> {
+                    int level = memberService.findOneMemberLevel(matching.getMemberId());
+                    return new MatchingInfo(matching.getId(), matching.getMemberId(), level);
+                })
+                .collect(Collectors.toList());
+
+        log.info("managerList: {}", matchingInfoList);
+        MatchingInfoDTO matchingInfoDTO = new MatchingInfoDTO();
+        matchingInfoDTO.setMemberLevel(memberLevel);
+        matchingInfoDTO.setMatchingInfoList(matchingInfoList);
+
+        log.info("a: {}", matchingInfoDTO);
+
+        List<Matching> Result = matchingMapper.searchMatching(matchingInfoDTO);
+
+        return matching2MatchingDTO(Result);
     }
 
     private List<TechnologyCategoryDTO> technologyCategory2TechnologyCategoryDTO(List<TechnologyCategory> technologyCategoryList) {

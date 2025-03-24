@@ -39,4 +39,6 @@ public interface MemberMapper {
 	List<ProgrammingLanguageInfoDTO> findProgrammingLanguagesByProfilePageId(@Param("profilePageId") int profilePageId);
 
 	List<ProgrammingLanguageInfoDTO> findActiveProgrammingLanguages();
+
+	int findOneMemberLevel(int memberId);
 }

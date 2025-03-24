@@ -78,4 +78,8 @@ public class MemberService {
 	public List<ProgrammingLanguageInfoDTO> findActiveProgrammingLanguages() {
 		return memberMapper.findActiveProgrammingLanguages();
 	}
+
+	public int findOneMemberLevel(int memberId) {
+		return memberMapper.findOneMemberLevel(memberId);
+	}
 }
