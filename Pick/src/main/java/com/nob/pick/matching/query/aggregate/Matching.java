@@ -14,6 +14,7 @@ public class Matching {
     private boolean isDeleted;
     private int levelRange;
     private int maximumParticipant;
+    private int currentParticipant;
     private int memberId;
 
     private List<TechnologyCategory> technologyCategories;

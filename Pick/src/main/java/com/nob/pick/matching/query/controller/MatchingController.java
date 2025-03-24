@@ -160,6 +160,7 @@ public class MatchingController {
             responseMatching.setLevelRange(matchingDTO.getLevelRange());
             responseMatching.setTechnologyCategories(matchingDTO.getTechnologyCategories());
             responseMatching.setMaximumParticipant(matchingDTO.getMaximumParticipant());
+            responseMatching.setCurrentParticipant(matchingDTO.getCurrentParticipant());
 
             responseList.add(responseMatching);
         }

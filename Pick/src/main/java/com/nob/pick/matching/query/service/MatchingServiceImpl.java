@@ -130,6 +130,7 @@ public class MatchingServiceImpl implements MatchingService{
             matchingDTO.setMemberId(matching.getMemberId());
             matchingDTO.setLevelRange(matching.getLevelRange());
             matchingDTO.setMaximumParticipant(matching.getMaximumParticipant());
+            matchingDTO.setCurrentParticipant(matching.getCurrentParticipant());
 
             List<TechnologyCategory> technologyCategoryList = matching.getTechnologyCategories();
             List<TechnologyCategoryDTO> technologyCategoryDTOList = technologyCategory2TechnologyCategoryDTO(technologyCategoryList);

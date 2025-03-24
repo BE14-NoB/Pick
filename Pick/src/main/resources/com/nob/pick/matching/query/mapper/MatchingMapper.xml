@@ -9,6 +9,7 @@
         <result property="isCompleted" column="IS_COMPLETED"/>
         <result property="isDeleted" column="IS_DELETED"/>
         <result property="maximumParticipant" column="MAXIMUM_PARTICIPANT"/>
+        <result property="currentParticipant" column="CURRENT_PARTICIPANT"/>
         <result property="levelRange" column="LEVEL_RANGE"/>
         <result property="memberId" column="MEMBER_ID"/>
         <collection property="technologyCategories" ofType="com.nob.pick.matching.query.aggregate.TechnologyCategory">
@@ -23,6 +24,7 @@
         <id property="id" column="MATCHING_ENTRY_ID"/>
         <result property="appliedDateAt" column="APPLIED_DATE_AT"/>
         <result property="isCanceled" column="IS_CANCELED"/>
+        <result property="isAccepted" column="IS_ACCEPTED"/>
         <result property="memberId" column="MEMBER_ID"/>
         <result property="matchingId" column="MATCHING_ID"/>
     </resultMap>
@@ -42,6 +44,7 @@
              , A.IS_COMPLETED
              , A.IS_DELETED
              , A.MAXIMUM_PARTICIPANT
+             , A.CURRENT_PARTICIPANT
              , A.LEVEL_RANGE
              , A.MEMBER_ID
              , B.ID AS TECHNOLOGY_ID
@@ -63,6 +66,7 @@
              , A.IS_COMPLETED
              , A.IS_DELETED
              , A.MAXIMUM_PARTICIPANT
+             , A.CURRENT_PARTICIPANT
              , A.LEVEL_RANGE
              , A.MEMBER_ID
              , B.ID AS TECHNOLOGY_ID
@@ -85,6 +89,7 @@
              , A.IS_COMPLETED
              , A.IS_DELETED
              , A.MAXIMUM_PARTICIPANT
+             , A.CURRENT_PARTICIPANT
              , A.LEVEL_RANGE
              , A.MEMBER_ID
              , B.ID AS TECHNOLOGY_ID
@@ -107,6 +112,7 @@
                A.ID AS MATCHING_ENTRY_ID
              , A.APPLIED_DATE_AT
              , A.IS_CANCELED
+             , A.IS_ACCEPTED
              , A.MEMBER_ID
              , A.MATCHING_ID
           FROM MATCHING_ENTRY A

@@ -11,6 +11,7 @@ public class MatchingEntry {
     private int id;
     private Date appliedDateAt;
     private boolean isCanceled;
+    private boolean isAccepted;
     private int memberId;
     private int matchingId;
 }
