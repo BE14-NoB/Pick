@@ -7,7 +7,7 @@
         <id property="id" column="id"/>
         <result property="requirement" column="requirement"/>
         <result property="exp" column="exp"/>
-        <result property="isDeleted" column="is_deleted" typeHandler="com.nob.pick.config.typehandler.StringYnTypeHandler"/>
+        <result property="isDeleted" column="is_deleted" typeHandler="com.nob.pick.common.config.typehandler.StringYnTypeHandler"/>
         <result property="challengeId" column="challenge_id"/>
         <result property="challengeName" column="challenge_name"/>
     </resultMap>
