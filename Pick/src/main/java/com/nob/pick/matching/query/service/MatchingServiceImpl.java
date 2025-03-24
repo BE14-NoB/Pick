@@ -94,10 +94,11 @@ public class MatchingServiceImpl implements MatchingService{
 
     @Override
     @Transactional
-    public List<MatchingDTO> getMatchingByLevel(int memberId) {
+    public List<MatchingDTO> getSearchMatching(SearchMatchingDTO searchMatchingDTO) {
         // 신청자 레벨
-        int memberLevel = memberService.findOneMemberLevel(memberId);
+        int memberLevel = memberService.findOneMemberLevel(searchMatchingDTO.getMemberId());
 
+        log.info("searchMatchingDTO: {}", searchMatchingDTO);
         // 전체 방 조회
         List<Matching> matchingList = matchingMapper.selectAllMatching();
 
@@ -113,6 +114,9 @@ public class MatchingServiceImpl implements MatchingService{
         MatchingInfoDTO matchingInfoDTO = new MatchingInfoDTO();
         matchingInfoDTO.setMemberLevel(memberLevel);
         matchingInfoDTO.setMatchingInfoList(matchingInfoList);
+        if(searchMatchingDTO.getTechnologyCategoryCode() != null ) {
+            matchingInfoDTO.setTechnologyCategoryId(searchMatchingDTO.getTechnologyCategoryCode());
+        }
 
         log.info("a: {}", matchingInfoDTO);
 

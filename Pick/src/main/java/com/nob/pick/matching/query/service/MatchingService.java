@@ -2,6 +2,7 @@ package com.nob.pick.matching.query.service;
 
 import com.nob.pick.matching.query.dto.MatchingDTO;
 import com.nob.pick.matching.query.dto.MatchingEntryDTO;
+import com.nob.pick.matching.query.dto.SearchMatchingDTO;
 import com.nob.pick.matching.query.dto.TechnologyCategoryDTO;
 
 import java.util.List;
@@ -24,5 +25,5 @@ public interface MatchingService {
 
     List<TechnologyCategoryDTO> getParentTechnologyCategory();
 
-    List<MatchingDTO> getMatchingByLevel(int memberId);
+    List<MatchingDTO> getSearchMatching(SearchMatchingDTO searchMatchingDTO);
 }

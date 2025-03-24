@@ -2,8 +2,10 @@ package com.nob.pick.matching.query.controller;
 
 import com.nob.pick.matching.query.dto.MatchingDTO;
 import com.nob.pick.matching.query.dto.MatchingEntryDTO;
+import com.nob.pick.matching.query.dto.SearchMatchingDTO;
 import com.nob.pick.matching.query.dto.TechnologyCategoryDTO;
 import com.nob.pick.matching.query.service.MatchingService;
+import com.nob.pick.matching.query.vo.RequestSearchMatchingVO;
 import com.nob.pick.matching.query.vo.ResponseMatchingEntryVO;
 import com.nob.pick.matching.query.vo.ResponseMatchingVO;
 import com.nob.pick.matching.query.vo.ResponseTechnologyCategoryVO;
@@ -12,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -118,13 +120,23 @@ public class MatchingController {
         return ResponseEntity.ok().body(returnValue);
     }
 
-    @PostMapping("/matching/searchMatching/{memberId}")
-    public ResponseEntity<List<ResponseMatchingVO>> findMatchingByLevel(@PathVariable int memberId) {
-        List<MatchingDTO> matchingDTOList = matchingService.getMatchingByLevel(memberId);
+    @GetMapping("/matching/searchMatching")
+    public ResponseEntity<List<ResponseMatchingVO>> findMatchingByLevel(@RequestBody RequestSearchMatchingVO request) {
+        SearchMatchingDTO searchMatchingDTO = requestSearchMatching2SearchMatchingDTO(request);
+        List<MatchingDTO> matchingDTOList = matchingService.getSearchMatching(searchMatchingDTO);
 
         List<ResponseMatchingVO> returnValue = matchingDTO2ResponseMatching(matchingDTOList);
 
         return ResponseEntity.ok().body(returnValue);
+    }
+
+    private SearchMatchingDTO requestSearchMatching2SearchMatchingDTO(RequestSearchMatchingVO request) {
+        SearchMatchingDTO searchMatchingDTO = new SearchMatchingDTO();
+        searchMatchingDTO.setMemberId(request.getMemberId());
+        if(request.getTechnologyCategoryId() != null) {
+            searchMatchingDTO.setTechnologyCategoryCode(request.getTechnologyCategoryId());
+        }
+        return searchMatchingDTO;
     }
 
     private List<ResponseMatchingEntryVO> matchingEntryDTO2ResponseMatchingEntry(List<MatchingEntryDTO> matchingEntryDTOList) {
