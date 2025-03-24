@@ -15,7 +15,7 @@ public interface MatchingService {
 
     List<MatchingDTO> getMatchingByTechnologyCategoryId(int technologyCategoryId);
 
-    List<MatchingEntryDTO> getMatchingEntryByMatchingId(int matchingId);
+    List<MatchingEntryDTO> getMatchingEntryByMatchingId(int matchingId, boolean status);
 
     List<TechnologyCategoryDTO> getTechnologyCategory();
 

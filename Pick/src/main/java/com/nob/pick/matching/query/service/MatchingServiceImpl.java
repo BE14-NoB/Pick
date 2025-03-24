@@ -53,9 +53,12 @@ public class MatchingServiceImpl implements MatchingService{
     }
 
     @Override
-    public List<MatchingEntryDTO> getMatchingEntryByMatchingId(int matchingId) {
-
-        List<MatchingEntry> matchingEntryList = matchingMapper.selectMatchingEntryByMatchingId(matchingId);
+    public List<MatchingEntryDTO> getMatchingEntryByMatchingId(int matchingId, boolean status) {
+        List<MatchingEntry> matchingEntryList = new ArrayList<>();
+        if(status == true)
+            matchingEntryList = matchingMapper.selectMatchingEntryByAccepted(matchingId);
+        else if(status == false)
+            matchingEntryList = matchingMapper.selectMatchingEntryByMatchingId(matchingId);
 
         return matchingEntry2MatchingEntryDTO(matchingEntryList);
     }

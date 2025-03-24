@@ -19,6 +19,8 @@ public interface MatchingMapper {
 
     List<MatchingEntry> selectMatchingEntryByMatchingId(int matchingId);
 
+    List<MatchingEntry> selectMatchingEntryByAccepted(int matchingId);
+
     List<TechnologyCategory> selectAllTechnologyCategory();
 
     List<TechnologyCategory> selectTechnologyCategoryByTechnologyCategoryId(int technologyCategoryId);

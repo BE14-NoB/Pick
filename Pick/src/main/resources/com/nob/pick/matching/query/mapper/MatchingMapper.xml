@@ -121,6 +121,22 @@
          ORDER BY 1
     </select>
 
+    <!-- 수락한 신청자 id만 조회 -->
+    <select id="selectMatchingEntryByAccepted" resultMap="matchingEntryResultMap" parameterType="_int">
+        SELECT
+               A.ID AS MATCHING_ENTRY_ID
+             , A.APPLIED_DATE_AT
+             , A.IS_CANCELED
+             , A.IS_ACCEPTED
+             , A.MEMBER_ID
+             , A.MATCHING_ID
+          FROM MATCHING_ENTRY A
+         WHERE A.IS_CANCELED = 'N'
+           AND A.MATCHING_ID = #{matchingId}
+           AND A.IS_ACCEPTED = 'Y'
+         ORDER BY 1
+    </select>
+
     <!-- 전체 기술 카테고리 조회 -->
     <select id="selectAllTechnologyCategory" resultMap="technologyCategoryResultMap">
         SELECT

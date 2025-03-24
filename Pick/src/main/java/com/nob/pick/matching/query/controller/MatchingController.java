@@ -65,10 +65,21 @@ public class MatchingController {
     }
 
     // 매칭방 id로 신청자 조회
-    @GetMapping("/matchingEntry/matching/{matchingId}")
+    @GetMapping("/matchingEntry/matching/{matchingId}/all")
     public ResponseEntity<List<ResponseMatchingEntryVO>> findMatchingEntryByMatchingId(@PathVariable int matchingId) {
 
-        List<MatchingEntryDTO> matchingEntryDTOList = matchingService.getMatchingEntryByMatchingId(matchingId);
+        List<MatchingEntryDTO> matchingEntryDTOList = matchingService.getMatchingEntryByMatchingId(matchingId, false);
+
+        List<ResponseMatchingEntryVO> returnValue = matchingEntryDTO2ResponseMatchingEntry(matchingEntryDTOList);
+
+        return ResponseEntity.ok().body(returnValue);
+    }
+
+    // 매칭방 id로 수락한 신청자 조회
+    @GetMapping("/matchingEntry/matching/{matchingId}/accepted")
+    public ResponseEntity<List<ResponseMatchingEntryVO>> findMatchingEntryByAccepted(@PathVariable int matchingId) {
+
+        List<MatchingEntryDTO> matchingEntryDTOList = matchingService.getMatchingEntryByMatchingId(matchingId, true);
 
         List<ResponseMatchingEntryVO> returnValue = matchingEntryDTO2ResponseMatchingEntry(matchingEntryDTOList);
 
