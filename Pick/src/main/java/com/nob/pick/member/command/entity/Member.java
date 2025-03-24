@@ -5,11 +5,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Arrays;
+import java.util.List;
+
 @Entity
 @Table(name = "MEMBER")
 @Getter
 @Setter
 @NoArgsConstructor
+// Member와 매칭되는 엔티티
 public class Member {
 
 	@Id
@@ -45,7 +49,7 @@ public class Member {
 	private Integer reportedCount;
 
 	@Column(name = "USER_GRANT", nullable = false)
-	private Integer userGrant; 	// ADMIN(1), MEMBER(0)
+	private Integer userGrant; // ADMIN(0), MEMBER(1)
 
 	public Member(String name, Integer age, String ihidnum, String phoneNumber, String email, String password, String nickname) {
 		this.name = name;
@@ -55,8 +59,15 @@ public class Member {
 		this.email = email;
 		this.password = password;
 		this.nickname = nickname;
-		this.status = 1; 		 // 가입시 기본 활성화 상태
-		this.reportedCount = 0;  // 가입시 신고 횟수 0
-		this.userGrant = 2;		 // 가입시 Member 권한 상태
+		this.status = 0; // 가입시 기본 활성화 상태
+		this.reportedCount = 0; // 가입시 신고 횟수 0
+		this.userGrant = 1; // 가입시 Member 권한 상태
+	}
+
+	public List<String> getRoles() {
+		if (this.userGrant == 0) {
+			return Arrays.asList("ADMIN");
+		}
+			return Arrays.asList("MEMBER");
 	}
 }

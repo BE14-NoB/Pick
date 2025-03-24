@@ -1,12 +1,14 @@
 package com.nob.pick.member.command.dto;
 
+import com.nob.pick.member.query.dto.Status;
+
 import lombok.Getter;
 import lombok.Setter;
 import jakarta.validation.constraints.*;
 
 @Getter
 @Setter
-public class UpdateMemberCommand {
+public class UpdateMemberCommandDTO {
 	@Size(max = 30, message = "이름은 30자를 초과할 수 없습니다.")
 	private String name;
 
@@ -23,4 +25,9 @@ public class UpdateMemberCommand {
 
 	@Size(max = 20, message = "닉네임은 20자를 초과할 수 없습니다.")
 	private String nickname;
+
+	@Size(min = 8, max = 20, message = "비밀번호는 8자리 이상 20자리 이하입니다.")
+	private String password;
+
+	private Status status;
 }

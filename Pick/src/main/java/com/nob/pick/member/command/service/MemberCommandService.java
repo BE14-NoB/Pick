@@ -1,98 +1,66 @@
 package com.nob.pick.member.command.service;
 
+import com.nob.pick.member.command.dto.UpdateMemberCommandDTO;
+import com.nob.pick.member.command.dto.UpdateStatusCommandDTO;
 import com.nob.pick.member.command.entity.Member;
-import com.nob.pick.member.command.dto.SignUpCommand;
-import com.nob.pick.member.command.dto.UpdateMemberCommand;
 import com.nob.pick.member.command.repository.MemberRepository;
-import com.nob.pick.member.command.vo.SignUpVO;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@RequiredArgsConstructor
 public class MemberCommandService {
-
 	private final MemberRepository memberRepository;
 	private final BCryptPasswordEncoder passwordEncoder;
 
-	// 회원가입
-	@Transactional
-	public Long signUp(SignUpCommand command) {
-		// DTO -> VO
-		SignUpVO signUpVO = new SignUpVO(
-			command.getName(),
-			command.getAge(),
-			command.getIhidnum(),
-			command.getPhoneNumber(),
-			command.getEmail(),
-			command.getPassword(),
-			command.getNickname()
-		);
-
-		// 중복 검증
-		if (memberRepository.existsByEmail(signUpVO.getEmail())) {
-			throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
-		}
-		if (memberRepository.existsByPhoneNumber(signUpVO.getPhoneNumber())) {
-			throw new IllegalArgumentException("이미 존재하는 전화번호입니다.");
-		}
-		if (memberRepository.existsByIhidnum(signUpVO.getIhidnum())) {
-			throw new IllegalArgumentException("이미 존재하는 주민등록번호입니다.");
-		}
-		if (memberRepository.existsByNickname(signUpVO.getNickname())) {
-			throw new IllegalArgumentException("이미 존재하는 닉네임입니다.");
-		}
-
-		// VO -> Entity
-		Member member = new Member(
-			signUpVO.getName(),
-			signUpVO.getAge(),
-			signUpVO.getIhidnum(),
-			signUpVO.getPhoneNumber(),
-			signUpVO.getEmail(),
-			passwordEncoder.encode(signUpVO.getPassword()),
-			signUpVO.getNickname()
-		);
-
-		Member savedMember = memberRepository.save(member);
-		return savedMember.getId();
+	public MemberCommandService(MemberRepository memberRepository, BCryptPasswordEncoder passwordEncoder) {
+		this.memberRepository = memberRepository;
+		this.passwordEncoder = passwordEncoder;
 	}
 
-	// 회원정보 수정
 	@Transactional
-	public void updateMember(String email, UpdateMemberCommand command) {
+	public void updateMember(String email, UpdateMemberCommandDTO dto) {
 		Member member = memberRepository.findByEmail(email)
-			.orElseThrow(() -> new IllegalArgumentException("회원을 찾을 수 없습니다."));
+			.orElseThrow(() -> new IllegalArgumentException("Member not found"));
 
-		// 중복 검증
-		if (command.getEmail() != null && !command.getEmail().equals(member.getEmail())) {
-			if (memberRepository.existsByEmail(command.getEmail())) {
+		// 사용자가 입력한 필드만 업데이트
+		if (dto.getName() != null && !dto.getName().isEmpty()) {
+			member.setName(dto.getName());
+		}
+		if (dto.getAge() != null) {
+			member.setAge(dto.getAge());
+		}
+		if (dto.getPhoneNumber() != null && !dto.getPhoneNumber().isEmpty()) {
+			member.setPhoneNumber(dto.getPhoneNumber());
+		}
+		if (dto.getEmail() != null && !dto.getEmail().isEmpty()) {
+			if (!email.equals(dto.getEmail()) && memberRepository.existsByEmail(dto.getEmail())) {
 				throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
 			}
-			member.setEmail(command.getEmail());
+			member.setEmail(dto.getEmail());
 		}
-		if (command.getPhoneNumber() != null && !command.getPhoneNumber().equals(member.getPhoneNumber())) {
-			if (memberRepository.existsByPhoneNumber(command.getPhoneNumber())) {
-				throw new IllegalArgumentException("이미 존재하는 전화번호입니다.");
-			}
-			member.setPhoneNumber(command.getPhoneNumber());
+		if (dto.getNickname() != null && !dto.getNickname().isEmpty()) {
+			member.setNickname(dto.getNickname());
 		}
-		if (command.getNickname() != null && !command.getNickname().equals(member.getNickname())) {
-			if (memberRepository.existsByNickname(command.getNickname())) {
-				throw new IllegalArgumentException("이미 존재하는 닉네임입니다.");
-			}
-			member.setNickname(command.getNickname());
+		if (dto.getPassword() != null && !dto.getPassword().isEmpty()) {
+			member.setPassword(passwordEncoder.encode(dto.getPassword()));
+		}
+		if (dto.getStatus() != null) {
+			member.setStatus(dto.getStatus().getValue()); // Status Enum -> Integer 변환
 		}
 
-		// 사용자가 입력한것만 수정할 예정
-		if (command.getName() != null) {
-			member.setName(command.getName());
-		}
-		if (command.getAge() != null) {
-			member.setAge(command.getAge());
-		}
+		memberRepository.save(member);
+	}
 
+	@Transactional
+	public void updateMemberStatus(Long id, UpdateStatusCommandDTO dto) {
+		Member member = memberRepository.findById(id)
+			.orElseThrow(() -> new IllegalArgumentException("Member not found with ID: " + id));
+
+		if (dto.getStatus() == null) {
+			throw new IllegalArgumentException("Status cannot be null");
+		}
+		member.setStatus(dto.getStatus().getValue());
+		memberRepository.save(member);
 	}
 }
