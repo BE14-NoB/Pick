@@ -2,7 +2,7 @@ package com.nob.pick.member.command.repository;
 
 import java.util.Optional;
 
-import com.nob.pick.domain.Member;
+import com.nob.pick.member.command.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {

@@ -1,7 +1,6 @@
 package com.nob.pick.member.command.service;
 
-import com.nob.pick.domain.Member;
-import com.nob.pick.member.command.dto.MemberCommandDTO;
+import com.nob.pick.member.command.entity.Member;
 import com.nob.pick.member.command.dto.SignUpCommand;
 import com.nob.pick.member.command.dto.UpdateMemberCommand;
 import com.nob.pick.member.command.repository.MemberRepository;

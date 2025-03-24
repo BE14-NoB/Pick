@@ -1,4 +1,4 @@
-package com.nob.pick.domain;
+package com.nob.pick.member.command.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
