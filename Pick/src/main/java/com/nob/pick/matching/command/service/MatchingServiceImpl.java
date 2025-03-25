@@ -29,7 +29,7 @@ import java.util.Objects;
 @Slf4j
 public class MatchingServiceImpl implements MatchingService {
 
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private final MatchingRepository matchingRepository;
     private final MatchingEntryRepository matchingEntryRepository;
     private final TechnologyCategoryRepository technologyCategoryRepository;
