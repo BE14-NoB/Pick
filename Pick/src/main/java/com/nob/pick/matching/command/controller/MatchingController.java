@@ -38,7 +38,7 @@ public class MatchingController {
     }
 
     // 매칭방 수정
-    @PostMapping("/matching/modify")
+    @PutMapping("/matching/modify")
     public ResponseEntity<ResponseMatchingVO> modifyMatching(@RequestBody RequestModifyMatchingVO modifyMatching) {
         CommandMatchingDTO matchingDTO = modifyMatching2MatchingDTO(modifyMatching);
 
@@ -112,7 +112,7 @@ public class MatchingController {
     }
 
     // 기술 카테고리 수정
-    @PostMapping("/technologyCategory/modify")
+    @PutMapping("/technologyCategory/modify")
     public ResponseEntity<ResponseTechnologyCategoryVO> modifyTechnologyCategory(@RequestBody RequestModifyTechnologyCategoryVO modifyTechnologyCategory) {
         CommandTechnologyCategoryDTO technologyCategoryDTO = modifyTechnologyCategory2TechnologyCategoryDTO(modifyTechnologyCategory);
 
