@@ -17,7 +17,7 @@ public class RegulationImpl implements RegulationService {
 
     @Override
     @Transactional
-    public void registRegulation(RegulationDTO regulationDTO) {
+    public LocalDate registRegulation(RegulationDTO regulationDTO) {
 //        Member member = memberRepository.findById(reportDTO.getMemberId())
 //                .orElseThrow(() -> new IllegalArgumentException("회원 없음"));
 
@@ -32,6 +32,7 @@ public class RegulationImpl implements RegulationService {
                 .build();
 
         regulationRepository.save(regulation);
+        return endDate;
     }
 
     // endDate 구하는 함수

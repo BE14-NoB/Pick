@@ -7,6 +7,7 @@ import com.nob.pick.report.command.application.service.ReportReasonService;
 import com.nob.pick.report.command.application.service.ReportService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,8 +31,14 @@ public class ReportController {
     public ResponseEntity<?> registReportReason(@RequestBody ReportReasonDTO newReportReason) {
         log.info("ReportController : registReportReason reportReasonDTO: {}", newReportReason);
 
-        reportReasonService.registReportReason(newReportReason);
-        return ResponseEntity.ok().build();
+        try {
+            reportReasonService.registReportReason(newReportReason);
+            return ResponseEntity.ok("사유 : " + newReportReason.getReason() + "가 성공적으로 등록되었습니다.");
+        } catch (Exception e) {
+            log.error("신고 사유 등록 실패: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("신고 사유 등록에 실패했습니다.");
+        }
     }
 
     // 신고 등록
@@ -39,8 +46,14 @@ public class ReportController {
     public ResponseEntity<?> registReport(@RequestBody ReportDTO newReport) {
         log.info("ReportController - regist Report : newReportDTO = {}", newReport);
 
-        reportService.registReport(newReport);
-        return ResponseEntity.ok().build();
+        try {
+            reportService.registReport(newReport);
+            return ResponseEntity.ok(newReport.getReportedId() + "번 " + newReport.getCategory()+ "의 신고가 성공적으로 등록되었습니다.");
+        } catch (Exception e) {
+            log.error("신고 등록 실패: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("신고 등록에 실패했습니다.");
+        }
     }
 
     // 신고 내역 삭제 - soft delete 처리
@@ -48,8 +61,14 @@ public class ReportController {
     public ResponseEntity<?> deleteReport(@PathVariable int id) {
         log.info("ReportController - delete Report : id = {}", id);
 
-        reportService.deleteReport(id);
-        return ResponseEntity.ok().build();
+        try {
+            reportService.deleteReport(id);
+            return ResponseEntity.ok(id + "번 신고가 성공적으로 삭제되었습니다.");
+        } catch (Exception e) {
+            log.error("신고 삭제 실패: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("신고 삭제에 실패했습니다.");
+        }
     }
 
     // 신고 처리 상태 수정
@@ -59,8 +78,14 @@ public class ReportController {
             @RequestBody ReportDTO updateReport) {
         log.info("ReportController - update Status : updateReport = {}", updateReport);
 
-        reportService.updateReportStatus(id, updateReport);
-        return ResponseEntity.ok().build();
+        try {
+            reportService.updateReportStatus(id, updateReport);
+            return ResponseEntity.ok(id + "번의 신고 상태가 " + updateReport.getStatus() + "으로 변경되었습니다.");
+        } catch (Exception e) {
+            log.error("신고 상태 변경 실패: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("신고 상태 변경에 실패했습니다.");
+        }
     }
 
 }
