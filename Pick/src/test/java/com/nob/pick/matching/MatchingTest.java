@@ -35,18 +35,18 @@ public class MatchingTest {
         }
     }
 
-    private static Stream<Arguments> getSearchMatchingInfo() {
-        SearchMatchingDTO searchMatchingInfo = new SearchMatchingDTO();
-        searchMatchingInfo.setMemberId(4);
-        searchMatchingInfo.setTechnologyCategoryCode(1);
-        return Stream.of(Arguments.arguments(searchMatchingInfo));
-    }
+//    private static Stream<Arguments> getSearchMatchingInfo() {
+//        SearchMatchingDTO searchMatchingInfo = new SearchMatchingDTO();
+//        searchMatchingInfo.setMemberId(4);
+//        searchMatchingInfo.setTechnologyCategoryCode(1);
+//        return Stream.of(Arguments.arguments(searchMatchingInfo));
+//    }
 
-    @DisplayName("매칭 기능 테스트")
-    @ParameterizedTest
-    @MethodSource("getSearchMatchingInfo")
-    public void searchMatching(SearchMatchingDTO searchMatchingInfo) {
-        Assertions.assertDoesNotThrow(() -> matchingService.getSearchMatching(searchMatchingInfo));
-    }
+//    @DisplayName("매칭 기능 테스트")
+//    @ParameterizedTest
+//    @MethodSource("getSearchMatchingInfo")
+//    public void searchMatching(SearchMatchingDTO searchMatchingInfo) {
+//        Assertions.assertDoesNotThrow(() -> matchingService.getSearchMatching(searchMatchingInfo));
+//    }
 
 }

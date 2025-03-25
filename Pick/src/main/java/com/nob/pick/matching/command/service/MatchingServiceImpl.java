@@ -134,6 +134,7 @@ public class MatchingServiceImpl implements MatchingService {
 
         matchingRepository.save(findMatching);
         matchingEntryRepository.save(findMatchingEntry);
+        resultMatchingEntryEntity2MatchingDTO(findMatchingEntry, matchingEntryDTO);
     }
 
     private void CompletedMatching(MatchingEntity findMatching) {
