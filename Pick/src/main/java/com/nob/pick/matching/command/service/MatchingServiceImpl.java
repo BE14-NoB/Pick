@@ -9,6 +9,10 @@ import com.nob.pick.matching.command.dto.CommandTechnologyCategoryDTO;
 import com.nob.pick.matching.command.repository.MatchingEntryRepository;
 import com.nob.pick.matching.command.repository.MatchingRepository;
 import com.nob.pick.matching.command.repository.TechnologyCategoryRepository;
+import com.nob.pick.matching.query.dto.MatchingEntryDTO;
+import com.nob.pick.project.command.application.dto.RequestParticipantDTO;
+import com.nob.pick.project.command.application.dto.RequestProjectRoomDTO;
+import com.nob.pick.project.command.application.service.ProjectRoomService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Service("CommandMatchingService")
@@ -24,15 +30,24 @@ import java.util.Objects;
 public class MatchingServiceImpl implements MatchingService {
 
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-    private MatchingRepository matchingRepository;
-    private MatchingEntryRepository matchingEntryRepository;
-    private TechnologyCategoryRepository technologyCategoryRepository;
+    private final MatchingRepository matchingRepository;
+    private final MatchingEntryRepository matchingEntryRepository;
+    private final TechnologyCategoryRepository technologyCategoryRepository;
+    private final ProjectRoomService projectRoomService;
+    private final com.nob.pick.matching.query.service.MatchingService queryService;
+
 
     @Autowired
-    public MatchingServiceImpl(MatchingRepository matchingRepository, MatchingEntryRepository matchingEntryRepository, TechnologyCategoryRepository technologyCategoryRepository) {
+    public MatchingServiceImpl(MatchingRepository matchingRepository,
+                               MatchingEntryRepository matchingEntryRepository,
+                               TechnologyCategoryRepository technologyCategoryRepository,
+                               ProjectRoomService projectRoomService,
+                               com.nob.pick.matching.query.service.MatchingService queryService) {
         this.matchingRepository = matchingRepository;
         this.matchingEntryRepository = matchingEntryRepository;
         this.technologyCategoryRepository = technologyCategoryRepository;
+        this.projectRoomService = projectRoomService;
+        this.queryService = queryService;
     }
 
     @Override
@@ -114,13 +129,33 @@ public class MatchingServiceImpl implements MatchingService {
         findMatching.setCurrentParticipant(findMatching.getCurrentParticipant() + 1);   // 현재 인원 1명 추가
         if(findMatching.getCurrentParticipant() >= findMatching.getMaximumParticipant()) {
             findMatching.setIsCompleted("Y");
+//            CompletedMatching(findMatching); // 프로젝트 룸 생성
         }
 
         matchingRepository.save(findMatching);
         matchingEntryRepository.save(findMatchingEntry);
-        /*
-        * 매칭 완료 -> 프로젝트 방 생성 로직
-        * */
+    }
+
+    private void CompletedMatching(MatchingEntity findMatching) {
+        int managerId = findMatching.getMemberId(); // 방장 아이디
+        RequestParticipantDTO participantDTO = new RequestParticipantDTO(managerId, true);
+        List<MatchingEntryDTO> findAcceptedMember = queryService.getMatchingEntryByMatchingId(findMatching.getId(), true);
+
+        List<RequestParticipantDTO> participantList = new ArrayList<>(); // 팀원 리스트
+        participantList.add(participantDTO);
+        for (MatchingEntryDTO member : findAcceptedMember) {
+            participantDTO = new RequestParticipantDTO(member.getId(), false);
+            participantList.add(participantDTO);
+        }
+
+        RequestProjectRoomDTO projectRoomDTO = new RequestProjectRoomDTO();
+        projectRoomDTO.setName("매칭 프로젝트 방");
+        projectRoomDTO.setContent("자동 매칭으로 생성된 프로젝트 방 입니다.");
+        projectRoomDTO.setMaximumParticipant(findMatching.getMaximumParticipant());
+        projectRoomDTO.setTechnologyCategory(findMatching.getTechnologyCategoryId());
+        projectRoomDTO.setDurationTime("3");
+        projectRoomDTO.setParticipantList(participantList);
+        projectRoomService.createMatchingProject(projectRoomDTO);
     }
 
     @Override
