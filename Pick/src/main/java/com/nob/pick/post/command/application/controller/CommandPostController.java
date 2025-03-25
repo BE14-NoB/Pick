@@ -27,9 +27,6 @@ public class CommandPostController {
 	private final CommandPostService commandPostService;
 	private final PostService postService;
 	
-	@GetMapping("/register")
-	public void registerPostPage() {}
-	
 	@PostMapping("/register")
 	public ResponseEntity<ResponseRegisterPostVO> registerPost(@RequestBody PostDTO newPost) {
 		log.info("{}", newPost);
@@ -40,27 +37,29 @@ public class CommandPostController {
 							 .body(successRegisterPost);
 	}
 	
-	@GetMapping("/delete")
-	public void deletePostPage() {}
-	
 	@PostMapping("/delete")
-	public String deletePost(@RequestParam int postId) {
-		log.info("{}", postService.getPostById(postId));
-		if (postService.getPostById(postId) == null) {
-			return "Post Not Found";
+	public ResponseEntity<String> deletePost(@RequestParam int postId) {
+		PostDTO targetPost = postService.getPostById(postId);
+		log.info("targetPost: {}", targetPost);
+		if (targetPost == null) {
+			return ResponseEntity.ok("Post Not Found");
 		}
-		if (postService.getPostById(postId).getStatus() == PostStatus.DELETED) {
-			return "Post Is Already Deleted";
-		} else if (postService.getPostById(postId).getStatus() == PostStatus.BLINDED) {
-			return "Blinded Post Cannot Be Deleted";
+		if (targetPost.getStatus() == PostStatus.DELETED) {
+			return ResponseEntity.ok("Post Is Already Deleted");
+		} else if (targetPost.getStatus() == PostStatus.BLINDED) {
+			return ResponseEntity.ok("Blinded Post Cannot Be Deleted");
 		}
 		
+		log.info("Deleting post {}", postId);
 		commandPostService.deletePost(postId);
 		
-		if (postService.getPostById(postId).getStatus() == PostStatus.DELETED) {
-			return "Post Delete Success";
+		targetPost = postService.getPostById(postId);
+		log.info("targetPost status: {}", targetPost.getStatus());
+		
+		if (targetPost.getStatus() == PostStatus.DELETED) {
+			return ResponseEntity.ok("Post Delete Success");
 		} else {
-			return "Post Delete Failed";
+			return ResponseEntity.ok("Post Delete Failed");
 		}
 	}
 	
