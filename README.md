@@ -37,7 +37,7 @@
 <details>
      <summary>프로젝트 기술 분류 키워드로 검색</summary>
      <p align="center">
-       <img src="!https://github.com/user-attachments/assets/f8574841-5a73-40b5-a9e0-8975b21a1603" />
+       <img src="https://github.com/user-attachments/assets/f8574841-5a73-40b5-a9e0-8975b21a1603" />
      </p>
 </details>
 
