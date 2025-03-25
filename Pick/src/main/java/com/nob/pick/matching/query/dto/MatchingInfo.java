@@ -11,4 +11,9 @@ public class MatchingInfo {
     private int matchingId; // 매칭방 id
     private int managerId;  // 방장 id
     private int managerLevel;   // 방장 level
+
+    public MatchingInfo(int matchingId, int managerId) {
+        this.matchingId = matchingId;
+        this.managerId = managerId;
+    }
 }

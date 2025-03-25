@@ -127,6 +127,27 @@ public class MatchingServiceImpl implements MatchingService{
         return matching2MatchingDTO(Result);
     }
 
+    @Override
+    public List<MatchingDTO> getSearchMatchingTest(SearchMatchingDTO searchMatchingDTO, int memberLevel) {
+        List<Matching> matchingList = matchingMapper.selectAllMatching();   // 전체 방 조회
+        List<MatchingInfo> matchingInfoList = matchingList.stream()
+                .map(matching -> {
+                    int randomLevel = (int) (Math.random() * 25) + 1;
+                    return new MatchingInfo(matching.getId(), matching.getMemberId(), randomLevel);
+                }).collect(Collectors.toList());    // 방의 id와 멤버의 id
+
+        MatchingInfoDTO matchingInfoDTO = new MatchingInfoDTO();
+        matchingInfoDTO.setMemberLevel(memberLevel);
+        matchingInfoDTO.setMatchingInfoList(matchingInfoList);
+        if(searchMatchingDTO.getTechnologyCategoryCode() != null ) {
+            matchingInfoDTO.setTechnologyCategoryId(searchMatchingDTO.getTechnologyCategoryCode());
+        }
+
+        List<Matching> Result = matchingMapper.searchMatching(matchingInfoDTO);
+
+        return matching2MatchingDTO(Result);
+    }
+
     private List<TechnologyCategoryDTO> technologyCategory2TechnologyCategoryDTO(List<TechnologyCategory> technologyCategoryList) {
 
         List<TechnologyCategoryDTO> technologyCategoryDTOList = new ArrayList<>();
