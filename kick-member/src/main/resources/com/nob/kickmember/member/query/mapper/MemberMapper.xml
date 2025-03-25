@@ -70,7 +70,7 @@
     </select>
 
     <!-- ID로 특정 회원 조회 -->
-    <select id="findMemberById" parameterType="int" resultType="com.nob.pick.member.query.dto.MemberDTO">
+    <select id="findMemberById" parameterType="int" resultType="com.nob.kickmember.member.query.dto.MemberDTO">
         SELECT M.ID,
                M.NAME,
                M.AGE,

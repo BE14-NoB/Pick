@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -35,6 +36,7 @@ public class WebSecurity {
 
 		http.authorizeHttpRequests(authz ->
 				authz
+					.requestMatchers(new AntPathRequestMatcher("/actuator/**")).permitAll()
 					// SecurityConfig에서 가져온 설정
 					.requestMatchers("/api/members/signup").permitAll()
 					.requestMatchers("/api/members/edit", "/members/edit").authenticated()
