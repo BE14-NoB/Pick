@@ -35,6 +35,18 @@ public class MatchingTest {
         }
     }
 
+    @Test
+    @DisplayName("기술 카테고리 id로 매칭방 조회 테스트")
+    public void findMatchingByTechnologyCategoryId() {
+        int technologyCategoryId = 4;
+        List<MatchingDTO> findMatching = matchingService.getMatchingByTechnologyCategoryId(4);
+        if(findMatching.size() > 0) {
+            findMatching.forEach(System.out::println);
+        } else {
+            System.out.println("Not found Matching");
+        }
+    }
+
 //    private static Stream<Arguments> getSearchMatchingInfo() {
 //        SearchMatchingDTO searchMatchingInfo = new SearchMatchingDTO();
 //        searchMatchingInfo.setMemberId(4);
