@@ -1,50 +1,39 @@
 package com.nob.pick.matching;
 
+
 import com.nob.pick.matching.query.dto.MatchingDTO;
-import com.nob.pick.matching.query.dto.SearchMatchingDTO;
 import com.nob.pick.matching.query.service.MatchingService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
-import java.util.stream.Stream;
 
 @SpringBootTest
-@Transactional
 public class MatchingTest {
     @Autowired
     private MatchingService matchingService;
+    private com.nob.pick.matching.command.service.MatchingService commandService;
 
     @Test
     @DisplayName("전체 매칭방 조회 테스트")
-    public void findAllMatching() {
-        List<MatchingDTO> findAllMatching = matchingService.getMatching();
-        if(findAllMatching.size() > 0) {
-            findAllMatching.forEach(System.out::println);
-        } else {
-            System.out.println("Not found Matching");
-        }
+    public void findAllMatchingTest() {
+        Assertions.assertDoesNotThrow(() -> matchingService.getMatching());
     }
 
     @Test
     @DisplayName("기술 카테고리 id로 매칭방 조회 테스트")
-    public void findMatchingByTechnologyCategoryId() {
+    public void findMatchingByTechnologyCategoryIdTest() {
         int technologyCategoryId = 4;
-        List<MatchingDTO> findMatching = matchingService.getMatchingByTechnologyCategoryId(4);
-        if(findMatching.size() > 0) {
-            findMatching.forEach(System.out::println);
-        } else {
-            System.out.println("Not found Matching");
-        }
+        Assertions.assertDoesNotThrow(() -> matchingService.getMatchingByTechnologyCategoryId(technologyCategoryId));
+    }
+
+    @Test
+    @DisplayName("매칭방 id로 신청자 조회")
+    public void findMatchingEntryByMatchingIdTest() {
+        int matchingId = 7;
+        Assertions.assertDoesNotThrow(() -> matchingService.getMatchingEntryByMatchingId(matchingId, false));
     }
 
 //    private static Stream<Arguments> getSearchMatchingInfo() {
