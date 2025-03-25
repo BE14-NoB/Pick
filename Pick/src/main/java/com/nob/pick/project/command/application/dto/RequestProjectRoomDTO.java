@@ -2,14 +2,12 @@ package com.nob.pick.project.command.application.dto;
 
 import java.util.List;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@Setter
 @ToString
 public class RequestProjectRoomDTO {
 	private String name;                        // 방 이름
