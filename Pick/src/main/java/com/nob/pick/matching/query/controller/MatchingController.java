@@ -190,6 +190,8 @@ public class MatchingController {
             ResponseMatchingVO responseMatching = new ResponseMatchingVO();
             responseMatching.setId(matchingDTO.getId());
             responseMatching.setMemberId(matchingDTO.getMemberId());
+            responseMatching.setMaximumParticipant(matchingDTO.getMaximumParticipant());
+            responseMatching.setCurrentParticipant(matchingDTO.getCurrentParticipant());
             responseMatching.setLevelRange(matchingDTO.getLevelRange());
             responseMatching.setTechnologyCategories(matchingDTO.getTechnologyCategories());
 
