@@ -7,6 +7,9 @@
         <id property="id" column="MATCHING_ID"/>
         <result property="createdDateAt" column="CREATED_DATE_AT"/>
         <result property="isCompleted" column="IS_COMPLETED"/>
+        <result property="isDeleted" column="IS_DELETED"/>
+        <result property="maximumParticipant" column="MAXIMUM_PARTICIPANT"/>
+        <result property="currentParticipant" column="CURRENT_PARTICIPANT"/>
         <result property="levelRange" column="LEVEL_RANGE"/>
         <result property="memberId" column="MEMBER_ID"/>
         <collection property="technologyCategories" ofType="com.nob.pick.matching.query.aggregate.TechnologyCategory">
@@ -21,6 +24,7 @@
         <id property="id" column="MATCHING_ENTRY_ID"/>
         <result property="appliedDateAt" column="APPLIED_DATE_AT"/>
         <result property="isCanceled" column="IS_CANCELED"/>
+        <result property="isAccepted" column="IS_ACCEPTED"/>
         <result property="memberId" column="MEMBER_ID"/>
         <result property="matchingId" column="MATCHING_ID"/>
     </resultMap>
@@ -38,6 +42,9 @@
                A.ID AS MATCHING_ID
              , A.CREATED_DATE_AT
              , A.IS_COMPLETED
+             , A.IS_DELETED
+             , A.MAXIMUM_PARTICIPANT
+             , A.CURRENT_PARTICIPANT
              , A.LEVEL_RANGE
              , A.MEMBER_ID
              , B.ID AS TECHNOLOGY_ID
@@ -47,6 +54,7 @@
           FROM MATCHING A
           JOIN TECHNOLOGY_CATEGORY B ON A.TECHNOLOGY_CATEGORY_ID = B.ID
          WHERE A.IS_COMPLETED = 'N'
+           AND A.IS_DELETED = 'N'
          ORDER BY 1 DESC
     </select>
 
@@ -56,6 +64,9 @@
                A.ID AS MATCHING_ID
              , A.CREATED_DATE_AT
              , A.IS_COMPLETED
+             , A.IS_DELETED
+             , A.MAXIMUM_PARTICIPANT
+             , A.CURRENT_PARTICIPANT
              , A.LEVEL_RANGE
              , A.MEMBER_ID
              , B.ID AS TECHNOLOGY_ID
@@ -65,6 +76,7 @@
           FROM MATCHING A
           JOIN TECHNOLOGY_CATEGORY B ON A.TECHNOLOGY_CATEGORY_ID = B.ID
          WHERE A.IS_COMPLETED = 'N'
+           AND A.IS_DELETED = 'N'
            AND A.ID = #{matchingId}
          ORDER BY 1 DESC
     </select>
@@ -75,6 +87,9 @@
                A.ID AS MATCHING_ID
              , A.CREATED_DATE_AT
              , A.IS_COMPLETED
+             , A.IS_DELETED
+             , A.MAXIMUM_PARTICIPANT
+             , A.CURRENT_PARTICIPANT
              , A.LEVEL_RANGE
              , A.MEMBER_ID
              , B.ID AS TECHNOLOGY_ID
@@ -86,6 +101,7 @@
          WHERE (B.ID = #{technologyCategoryId}
             OR B.REF_TECHNOLOGY_CATEGORY_ID = #{technologyCategoryId})
            AND A.IS_COMPLETED = 'N'
+           AND A.IS_DELETED = 'N'
            AND B.IS_DELETED = 'N'
          ORDER BY 1 DESC
     </select>
@@ -96,11 +112,28 @@
                A.ID AS MATCHING_ENTRY_ID
              , A.APPLIED_DATE_AT
              , A.IS_CANCELED
+             , A.IS_ACCEPTED
              , A.MEMBER_ID
              , A.MATCHING_ID
           FROM MATCHING_ENTRY A
          WHERE A.IS_CANCELED = 'N'
            AND A.MATCHING_ID = #{matchingId}
+         ORDER BY 1
+    </select>
+
+    <!-- 수락한 신청자 id만 조회 -->
+    <select id="selectMatchingEntryByAccepted" resultMap="matchingEntryResultMap" parameterType="_int">
+        SELECT
+               A.ID AS MATCHING_ENTRY_ID
+             , A.APPLIED_DATE_AT
+             , A.IS_CANCELED
+             , A.IS_ACCEPTED
+             , A.MEMBER_ID
+             , A.MATCHING_ID
+          FROM MATCHING_ENTRY A
+         WHERE A.IS_CANCELED = 'N'
+           AND A.MATCHING_ID = #{matchingId}
+           AND A.IS_ACCEPTED = 'Y'
          ORDER BY 1
     </select>
 
@@ -154,4 +187,37 @@
            AND A.REF_TECHNOLOGY_CATEGORY_ID IS NULL
          ORDER BY 1
     </select>
+
+    <select id="searchMatching" resultMap="matchingResultMap" parameterType="com.nob.pick.matching.query.dto.MatchingInfoDTO">
+        SELECT
+               A.ID AS MATCHING_ID
+             , A.CREATED_DATE_AT
+             , A.IS_COMPLETED
+             , A.IS_DELETED
+             , A.MAXIMUM_PARTICIPANT
+             , A.CURRENT_PARTICIPANT
+             , A.LEVEL_RANGE
+             , A.MEMBER_ID
+             , B.ID AS TECHNOLOGY_ID
+             , B.NAME
+             , B.IS_DELETED
+             , B.REF_TECHNOLOGY_CATEGORY_ID
+          FROM MATCHING A
+          JOIN TECHNOLOGY_CATEGORY B ON A.TECHNOLOGY_CATEGORY_ID = B.ID
+         WHERE (
+               <foreach collection="matchingInfoList" item="item" index="matchingId" separator=" OR ">
+                   (A.ID = #{item.matchingId}
+                   AND #{memberLevel} BETWEEN #{item.managerLevel} - A.LEVEL_RANGE
+                   AND #{item.managerLevel} + A.LEVEL_RANGE)
+                   <if test="technologyCategoryId != null and technologyCategoryId != ''">
+                       AND (B.ID = #{technologyCategoryId}
+                       OR B.REF_TECHNOLOGY_CATEGORY_ID = #{technologyCategoryId})
+                   </if>
+               </foreach>
+           AND A.IS_COMPLETED = 'N'
+           AND A.IS_DELETED = 'N'
+        )
+        ORDER BY A.ID DESC
+    </select>
+
 </mapper>
