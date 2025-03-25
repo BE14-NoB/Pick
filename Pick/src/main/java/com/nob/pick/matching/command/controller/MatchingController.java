@@ -11,10 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController("CommandMatchingController")
 @Slf4j
@@ -54,7 +51,7 @@ public class MatchingController {
     }
 
     // 매칭방 삭제
-    @PostMapping("/matching/delete/{matchingId}")
+    @DeleteMapping("/matching/delete/{matchingId}")
     public ResponseEntity<ResponseMatchingVO> deleteMatching(@PathVariable int matchingId) {
         CommandMatchingDTO matchingDTO = new CommandMatchingDTO();
         matchingDTO.setId(matchingId);
@@ -80,7 +77,7 @@ public class MatchingController {
     }
 
     // 매칭 신청 취소
-    @PostMapping("/matchingEntry/delete/{matchingEntryId}")
+    @DeleteMapping("/matchingEntry/delete/{matchingEntryId}")
     public ResponseEntity<ResponseMatchingEntryVO> deleteMatchingEntry(@PathVariable int matchingEntryId) {
         CommandMatchingEntryDTO matchingEntryDTO = new CommandMatchingEntryDTO();
         matchingEntryDTO.setId(matchingEntryId);
@@ -128,7 +125,7 @@ public class MatchingController {
     }
 
     // 기술 카테고리 삭제
-    @PostMapping("/technologyCategory/delete/{technologyCategoryId}")
+    @DeleteMapping("/technologyCategory/delete/{technologyCategoryId}")
     public ResponseEntity<ResponseTechnologyCategoryVO> deleteTechnologyCategory(@PathVariable int technologyCategoryId) {
         CommandTechnologyCategoryDTO technologyCategoryDTO = new CommandTechnologyCategoryDTO();
         technologyCategoryDTO.setId(technologyCategoryId);
