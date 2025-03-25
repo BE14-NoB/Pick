@@ -19,7 +19,7 @@ public class MemberBadgeQueryController {
 		this.memberBadgeQueryService = memberBadgeQueryService;
 	}
 
-	@GetMapping("/badge/{memberId}")
+	@GetMapping("/badge/accepted/{memberId}")
 	public List<MemberBadgeQueryDTO> getBadgesByMember(@PathVariable int memberId) {
 		return memberBadgeQueryService.getBadgesByMember(memberId);
 	}

@@ -4,6 +4,7 @@ import com.nob.pick.report.query.dto.ReportDTO;
 import com.nob.pick.report.query.service.ReportService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,9 +12,9 @@ import java.util.List;
 
 // 조회 관련 API 요청 처리 (DTO 반환)
 
-@RestController
+@RestController("QueryReportController")
 @Slf4j
-@RequestMapping("/report")
+@RequestMapping("/query/report")
 public class ReportController {
 
     private ReportService reportService;

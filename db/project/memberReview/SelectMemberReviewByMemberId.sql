@@ -16,6 +16,6 @@ FROM MEMBER_REVIEW mr
               ON reviewer.member_id = reviewer_member.id
          JOIN PROJECT_ROOM pr
               ON reviewer.project_room_id = pr.id
-WHERE reviewee.member_id = #{memberId}
+WHERE reviewee.member_id = ?
 ORDER BY mr.id DESC;
 

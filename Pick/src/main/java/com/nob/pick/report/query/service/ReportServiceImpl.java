@@ -9,7 +9,7 @@ import java.util.List;
 
 // Controller와 DAO 사이의 비즈니스 로직 담당
 
-@Service
+@Service("QueryReportService")
 public class ReportServiceImpl implements ReportService {
 
     private final ReportMapper reportMapper;

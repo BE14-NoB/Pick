@@ -44,7 +44,7 @@ FROM
     technology_category tc
     ON pr.technology_category_id = tc.id
 WHERE
-    pr.id = 1;   -- #{projectRoomId}
+    pr.id = ?;   -- #{projectRoomId}
 
 -- ========================
 -- 특정 프로젝트 팀원 목록 조회 (예: 1번 프로젝트)
@@ -61,7 +61,7 @@ FROM
     member m
     ON p.member_id = m.id
 WHERE
-    p.project_room_id = 1;   -- #{projectRoomId}
+    p.project_room_id = ?;   -- #{projectRoomId}
 
 -- ========================
 -- 전체 팀원 후기 목록 조회
@@ -92,7 +92,7 @@ FROM
     member r_member
     ON rp.member_id = r_member.id
 WHERE
-    p.member_id = 2;   -- #{memberId}
+    p.member_id = ?;   -- #{memberId}
 
 -- ========================
 -- 특정 프로젝트 후기 목록 조회 (예: 1번 프로젝트)
@@ -111,7 +111,7 @@ FROM
     member m
     ON p.member_id = m.id
 WHERE
-    pr.project_room_id = 1;   -- #{projectRoomId}
+    pr.project_room_id = ?;   -- #{projectRoomId}
 
 -- ========================
 -- 특정 프로젝트 회의록 목록 조회 (예: 2번 프로젝트)
@@ -126,7 +126,7 @@ SELECT
 FROM
     project_meeting pm
 WHERE
-    pm.project_room_id = 2;   -- #{projectRoomId}
+    pm.project_room_id = ?;   -- #{projectRoomId}
 
 -- ========================
 -- 특정 회의록의 사진 목록 조회 (예: 회의록 1번)
@@ -139,7 +139,7 @@ SELECT
 FROM
     project_meeting_image pmi
 WHERE
-    pmi.meeting_id = 1;   -- #{meetingId}
+    pmi.meeting_id = ?;   -- #{meetingId}
 
 -- ========================
 -- 프로젝트 방 검색 (이름, 기술 카테고리 기준)
@@ -158,7 +158,7 @@ FROM
     technology_category tc
     ON pr.technology_category_id = tc.id
 WHERE
-    tc.id = 1                -- #{categoryId}
-  AND pr.name LIKE CONCAT('%', '검색어', '%');   -- #{searchKeyword}
+    tc.id = ?                -- #{categoryId}
+  AND pr.name LIKE CONCAT('%', ?, '%');   -- #{searchKeyword}
 
 

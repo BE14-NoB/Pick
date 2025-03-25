@@ -12,4 +12,4 @@ FROM
     member m
     ON p.member_id = m.id
 WHERE
-    p.project_room_id = 1;   -- #{projectRoomId}
+    p.project_room_id = ?;   -- #{projectRoomId}

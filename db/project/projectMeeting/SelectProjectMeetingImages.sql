@@ -6,5 +6,5 @@ SELECT
      , image_name          AS image_name
      , is_thumbnail        AS is_thumbnail
     FROM PROJECT_MEETING_IMAGE
-        WHERE meeting_id = #{meetingId}
+        WHERE meeting_id = ?
 ORDER BY id ASC;

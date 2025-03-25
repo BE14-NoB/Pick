@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper  namespace="com.nob.pick.project.query.mapper.ReviewMapper">
+    <resultMap id="projectReviewResultMap" type="com.nob.pick.project.query.aggregate.ProjectReview">
+        <id property="id" column="ID"/>
+        <result property="content" column="CONTENT"/>
+        <result property="reviewerId" column="REVIEWER_ID"/>
+        <result property="projectRoomId" column="PROJECT_ROOM_ID"/>
+    </resultMap>
+
+    <resultMap id="memberReviewResultMap" type="com.nob.pick.project.query.aggregate.MemberReview">
+        <id property="id" column="MEMBER_REVIEW_ID" />
+        <result property="rate" column="RATE" />
+        <result property="content" column="CONTENT" />
+        <result property="reviewerId" column="REVIEWER_ID" />
+        <result property="revieweeId" column="REVIEWEE_ID" />
+        <result property="projectRoomId" column="PROJECT_ROOM_ID" />
+    </resultMap>
+    <select id="selectProjectReviewList" parameterType="_int" resultMap="projectReviewResultMap">
+        SELECT
+            REVIEW.ID,
+            REVIEW.CONTENT,
+            REVIEW.REVIEWER_ID,
+            PR.ID AS PROJECT_ROOM_ID
+        FROM PROJECT_REVIEW AS REVIEW
+            JOIN PROJECT_ROOM AS PR
+                ON REVIEW.PROJECT_ROOM_ID = PR.ID
+        WHERE PR.ID = #{projectRoomId}
+    </select>
+
+    <select id="selectMemberReviewList" parameterType="_int" resultMap="memberReviewResultMap">
+        SELECT
+        REVIEW.ID AS MEMBER_REVIEW_ID,
+        REVIEW.RATE,
+        REVIEW.CONTENT,
+        REVIEW.REVIEWER_ID,
+        REVIEW.REVIEWEE_ID,
+        REVIEW.PROJECT_ROOM_ID
+        FROM MEMBER_REVIEW AS REVIEW
+        WHERE REVIEW.PROJECT_ROOM_ID = #{projectRoomId}
+    </select>
+
+
+</mapper>
