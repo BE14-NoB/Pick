@@ -68,7 +68,34 @@
        <img src="https://github.com/user-attachments/assets/44f02a46-47af-4f16-8465-e69d8aba50b7" />
      </p>
 </details>
-
-
   
+</details>
+
+
+
+<details>
+     <summary> 📑 회의록 </summary>
+     
+<details>
+          <summary>프로젝트별 회의록 목록 조회</summary>
+          <p align="center">
+            <img src="https://github.com/user-attachments/assets/a6bbbd54-5e7e-4727-8996-eac6687279e1" />
+          </p>
+</details>
+
+<details>
+          <summary>팀원이 아닐 경우</summary>
+          <p align="center">
+            <img src="https://github.com/user-attachments/assets/35df6adf-07d6-4b1c-8f85-4729561b3362" />
+          </p>
+</details>
+
+
+<details>
+          <summary>회의록 작성</summary>
+          <p align="center">
+            <img src="https://github.com/user-attachments/assets/3194f8aa-27ed-42f0-b3ab-48c621a27498" />
+          </p>
+</details>
+
 </details>
