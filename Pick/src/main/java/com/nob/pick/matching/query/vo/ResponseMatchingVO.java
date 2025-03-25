@@ -13,6 +13,8 @@ public class ResponseMatchingVO {
     private int id;
     private int memberId;
     private int levelRange;
+    private int maximumParticipant;
+    private int currentParticipant;
 
     private List<TechnologyCategoryDTO> technologyCategories;
 }
