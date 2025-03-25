@@ -1,0 +1,7 @@
+# 설정용 서버 인식
+# name은 설정 파일의 이름
+spring:
+  cloud:
+    config:
+      uri: http://localhost:8888
+      name: msaconfig
