@@ -35,6 +35,8 @@ public class WebSecurity {
 
 		http.authorizeHttpRequests(authz ->
 				authz
+					.requestMatchers("/**").permitAll()
+
 					// SecurityConfig에서 가져온 설정
 					.requestMatchers("/api/members/signup").permitAll()
 
