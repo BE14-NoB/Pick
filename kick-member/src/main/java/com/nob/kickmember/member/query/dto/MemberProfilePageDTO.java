@@ -14,6 +14,7 @@ import lombok.ToString;
 public class MemberProfilePageDTO {
 	private int id;
 	private int level;
+	private int exp;
 	private String introduce;
 	private String preferredArea;
 	private Integer score;
