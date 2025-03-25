@@ -15,9 +15,9 @@ public class PostDTO {
 	private int id;
 	private String title;
 	private String content;
-	private int category;
+	private PostCategory category;
 	private String uploadAt;
 	private String updateAt;
-	private int status;
-	private int memberId;
+	private PostStatus status;
+	private MemberNicknameDTO member;
 }

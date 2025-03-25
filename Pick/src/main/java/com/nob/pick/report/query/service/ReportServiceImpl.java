@@ -2,6 +2,7 @@ package com.nob.pick.report.query.service;
 
 import com.nob.pick.report.query.dao.ReportMapper;
 import com.nob.pick.report.query.dto.ReportDTO;
+import com.nob.pick.report.query.dto.enums.ReportStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,5 +28,15 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public List<ReportDTO> findReportsByMemberId(int memberId) {
         return reportMapper.selectReportsByMemberId(memberId);
+    }
+
+    @Override
+    public List<ReportDTO> findReportsByStatus(int status) {
+        return reportMapper.selectReportsByStatus(status);
+    }
+
+    @Override
+    public List<ReportDTO> findReportsByDeletion(boolean isDeleted) {
+        return reportMapper.selectReportsByDeletion(isDeleted);
     }
 }

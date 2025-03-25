@@ -11,4 +11,8 @@ import java.util.List;
 public interface ReportMapper {
     List<ReportDTO> selectAllReports();
     List<ReportDTO> selectReportsByMemberId(int memberId);
+
+    List<ReportDTO> selectReportsByStatus(int status);
+
+    List<ReportDTO> selectReportsByDeletion(boolean isDeleted);
 }

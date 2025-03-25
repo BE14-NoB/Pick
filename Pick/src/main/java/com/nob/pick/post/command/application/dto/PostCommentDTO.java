@@ -17,10 +17,10 @@ public class PostCommentDTO {
 	private int id;
 	private String title;
 	private String content;
-	private int category;
+	private PostCategory category;
 	private String uploadAt;
 	private String updateAt;
-	private int status;
+	private PostStatus status;
 	private MemberNicknameDTO member;
 	private List<PostImageDTO> postImageList;
 	private List<CommentDTO> commentList;
