@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nob.pick.post.query.mapper.PostMapper">
+
+    <!-- 설명. 게시글 목록 조회 ResultMap -->
+    <resultMap id="PostListResultMap" type="com.nob.pick.post.command.application.dto.PostListDTO">
+        <id property="id" column="ID"/>
+        <result property="title" column="TITLE"/>
+        <result property="category" column="CATEGORY"/>
+        <result property="uploadAt" column="UPLOAD_AT"/>
+        <result property="updateAt" column="UPDATE_AT"/>
+        <result property="status" column="STATUS"/>
+        <association property="member" javaType="com.nob.pick.post.command.application.dto.MemberNicknameDTO">
+            <id property="memberId" column="MEMBER_ID"/>
+            <result property="memberNickname" column="MEMBER_NICKNAME"/>
+        </association>
+    </resultMap>
+
+    <!-- 설명. 단일 게시글 조회 ResultMap(게시글, 사진, 댓글) -->
+    <resultMap id="PostCommentResultMap" type="com.nob.pick.post.command.application.dto.PostCommentDTO">
+        <id property="id" column="ID"/>
+        <result property="title" column="TITLE"/>
+        <result property="content" column="CONTENT"/>
+        <result property="category" column="CATEGORY"/>
+        <result property="uploadAt" column="UPLOAD_AT"/>
+        <result property="updateAt" column="UPDATE_AT"/>
+        <result property="status" column="STATUS"/>
+        <association property="member" javaType="com.nob.pick.post.command.application.dto.MemberNicknameDTO">
+            <id property="memberId" column="MEMBER_ID"/>
+            <result property="memberNickname" column="MEMBER_NICKNAME"/>
+        </association>
+        <collection property="postImageList" ofType="com.nob.pick.post.command.application.dto.PostImageDTO">
+            <id property="postImageId" column="POST_IMAGE_ID"/>
+            <result property="postImagePath" column="POST_IMAGE_PATH"/>
+            <result property="postImageRenamedName" column="POST_IMAGE_RENAMED_NAME"/>
+            <result property="postImageIsThumbnail" column="POST_IMAGE_IS_THUMBNAIL"/>
+        </collection>
+        <collection property="commentList" ofType="com.nob.pick.post.command.application.dto.CommentDTO">
+            <id property="commentId" column="COMMENT_ID"/>
+            <result property="commentIsAdopted" column="COMMENT_IS_ADOPTED"/>
+            <result property="commentUploadAt" column="COMMENT_UPLOAD_AT"/>
+            <result property="commentUpdateAt" column="COMMENT_UPDATE_AT"/>
+            <result property="commentContent" column="COMMENT_CONTENT"/>
+            <result property="commentStatus" column="COMMENT_STATUS"/>
+            <result property="commentPostId" column="COMMENT_POST_ID"/>
+            <result property="commentRootCommentId" column="COMMENT_ROOT_COMMENT_ID"/>
+            <association property="commentMember" javaType="com.nob.pick.post.command.application.dto.MemberNicknameDTO">
+                <id property="memberId" column="COMMENT_MEMBER_ID"/>
+                <result property="memberNickname" column="COMMENT_MEMBER_NICKNAME"/>
+            </association>
+        </collection>
+    </resultMap>
+
+    <!-- 설명. 전체 게시글 목록 조회 -->
+    <select id="selectPostListByStatus" resultMap="PostListResultMap" parameterType="_int">
+        SELECT
+               P.ID
+             , P.TITLE
+             , P.CATEGORY
+             , P.UPLOAD_AT
+             , P.UPDATE_AT
+             , P.STATUS
+             , P.MEMBER_ID
+             , M.NICKNAME AS MEMBER_NICKNAME
+          FROM POST P
+          JOIN MEMBER M ON (P.MEMBER_ID = M.ID)
+         WHERE P.STATUS = #{status}
+         ORDER BY P.ID ASC
+    </select>
+
+    <!-- 설명. 단일 게시글 조회 -->
+    <select id="selectPostCommentById" resultMap="PostCommentResultMap" parameterType="_int">
+            SELECT
+                   P.ID
+                 , P.TITLE
+                 , P.CATEGORY
+                 , P.UPLOAD_AT
+                 , P.UPDATE_AT
+                 , P.STATUS
+                 , P.MEMBER_ID
+                 , M.NICKNAME AS MEMBER_NICKNAME
+                 , PI.ID AS POST_IMAGE_ID
+                 , PI.IMAGE_PATH AS POST_IMAGE_PATH
+                 , PI.RENAMED_NAME AS POST_IMAGE_RENAMED_NAME
+                 , PI.IS_THUMBNAIL AS POST_IMAGE_IS_THUMBNAIL
+                 , C.ID AS COMMENT_ID
+                 , C.IS_ADOPTED AS COMMENT_IS_ADOPTED
+                 , C.UPLOAD_AT AS COMMENT_UPLOAD_AT
+                 , C.UPDATE_AT AS COMMENT_UPDATE_AT
+                 , C.CONTENT AS COMMENT_CONTENT
+                 , C.STATUS AS COMMENT_STATUS
+                 , C.POST_ID AS COMMENT_POST_ID
+                 , C.ROOT_COMMENT_ID AS COMMENT_ROOT_COMMENT_ID
+                 , C.MEMBER_ID AS COMMENT_MEMBER_ID
+                 , CM.NICKNAME AS COMMENT_MEMBER_NICKNAME
+              FROM POST P
+              JOIN MEMBER M ON (P.MEMBER_ID = M.ID)
+              JOIN POST_IMAGE PI ON (P.ID = PI.POST_ID)
+              JOIN COMMENT C ON (P.ID = C.POST_ID)
+              JOIN MEMBER CM ON (C.MEMBER_ID = CM.ID)
+             WHERE P.ID = #{id}
+    </select>
+
+    <!-- 설명. 게시글 목록에서 제목으로 검색 -->
+    <select id="selectPostListByTitle" resultMap="PostListResultMap" parameterType="string">
+        SELECT
+               P.ID
+             , P.TITLE
+             , P.CATEGORY
+             , P.UPLOAD_AT
+             , P.UPDATE_AT
+             , P.STATUS
+             , P.MEMBER_ID
+             , M.NICKNAME AS MEMBER_NICKNAME
+          FROM POST P
+          JOIN MEMBER M ON (P.MEMBER_ID = M.ID)
+         WHERE P.TITLE LIKE CONCAT('%', #{keyword},'%')
+         ORDER BY P.ID ASC
+    </select>
+
+    <!-- 설명. 게시글 목록에서 카테고리 별로 조회 -->
+    <select id="selectPostListByCategory" resultMap="PostListResultMap" parameterType="int">
+        SELECT
+               P.ID
+             , P.TITLE
+             , P.CATEGORY
+             , P.UPLOAD_AT
+             , P.UPDATE_AT
+             , P.STATUS
+             , P.MEMBER_ID
+             , M.NICKNAME AS MEMBER_NICKNAME
+          FROM POST P
+          JOIN MEMBER M ON (P.MEMBER_ID = M.ID)
+         WHERE P.CATEGORY = #{category}
+         ORDER BY P.ID ASC
+    </select>
+</mapper>

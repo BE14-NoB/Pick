@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nob.pick.project.query.mapper.ParticipantMapper">
+    <resultMap id="participantResultMap" type="com.nob.pick.project.query.dto.ParticipantDTO">
+        <id property="id" column="ID"/>
+        <result property="isManager" column="IS_MANAGER" typeHandler="com.nob.pick.common.config.typehandler.StringYnTypeHandler"/>
+        <result property="projectRoomId" column="PROJECT_ROOM_ID"/>
+        <result property="memberId" column="MEMBER_ID"/>
+        <result property="memberName" column="MEMBER_NAME"/>
+        <result property="memberNickname" column="MEMBER_NICKNAME"/>
+    </resultMap>
+
+
+
+    <!-- 팀원 여부 조회   -->
+    <select id="isProjectParticipant" parameterType="map"  resultType="int">
+        SELECT EXISTS (
+        SELECT 1
+        FROM PARTICIPANT P
+        WHERE P.PROJECT_ROOM_ID = #{projectRoomId}
+        AND P.MEMBER_ID = #{memberId}
+        )
+    </select>
+
+    <!--  특정 프로젝트 팀원 전체 조회  -->
+    <select id="selectParticipantsByProjectRoomId" resultMap="participantResultMap">
+        SELECT
+               P.ID AS PARTICIPANT_ID,
+               P.IS_MANAGER,
+               P.PROJECT_ROOM_ID,
+               M.ID AS MEMBER_ID,
+               M.NAME AS MEMBER_NAME,
+               M.NICKNAME AS MEMBER_NICKNAME
+          FROM PARTICIPANT P
+          JOIN MEMBER M ON P.MEMBER_ID = M.ID
+         WHERE P.PROJECT_ROOM_ID = #{projectRoomId}
+    </select>
+</mapper>

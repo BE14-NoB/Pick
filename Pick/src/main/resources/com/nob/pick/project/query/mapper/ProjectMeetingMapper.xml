@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nob.pick.project.query.mapper.ProjectMeetingMapper">
+    <resultMap id="meetingResultMap" type="com.nob.pick.project.query.aggregate.ProjectMeeting">
+        <id property="id" column="ID"/>
+        <result property="title" column="TITLE"/>
+        <result property="content" column="CONTENT"/>
+        <result property="uploadTime" column="UPLOAD_TIME"/>
+        <result property="updateTime" column="UPDATE_TIME"/>
+        <result property="authorId" column="AUTHOR_ID"/>
+        <result property="projectRoomId" column="PROJECT_ROOM_ID"/>
+    </resultMap>
+
+    <resultMap id="meetingImageResultMap" type="com.nob.pick.project.query.aggregate.ProjectMeetingImage">
+        <id property="id" column="ID"/>
+        <result property="path" column="PATH"/>
+        <result property="isThumbnail" column="IS_THUMBNAIL"/>
+        <result property="meetingId" column="MEETING_ID"/>
+    </resultMap>
+
+    <select id="selectMeetingByMeetingId" parameterType="_int" resultMap="meetingResultMap">
+        SELECT
+               PM.ID
+             , PM.TITLE
+             , PM.CONTENT
+             , PM.UPLOAD_TIME
+             , PM.UPDATE_TIME
+             , PM.AUTHOR_ID
+             , PM.PROJECT_ROOM_ID
+          FROM PROJECT_MEETING PM
+         WHERE PM.ID = #{meetingId}
+         ORDER BY PM.UPLOAD_TIME DESC
+    </select>
+
+    <select id="selectMeetingsByProjectId" parameterType="_int" resultMap="meetingResultMap">
+        SELECT
+               PM.ID
+             , PM.TITLE
+             , PM.CONTENT
+             , PM.UPLOAD_TIME
+             , PM.UPDATE_TIME
+             , PM.AUTHOR_ID
+             , PM.PROJECT_ROOM_ID
+        FROM PROJECT_MEETING PM
+        WHERE PM.PROJECT_ROOM_ID = #{projectId}
+        ORDER BY PM.UPLOAD_TIME DESC
+    </select>
+
+
+    <select id="selectImagesByMeetingId" parameterType="_int" resultMap="meetingImageResultMap">
+        SELECT *
+          FROM PROJECT_MEETING_IMAGE
+         WHERE MEETING_ID = #{meetingId}
+    </select>
+</mapper>
+
+
+
+
+
+
