@@ -14,7 +14,7 @@ import lombok.ToString;
 @Setter
 @ToString
 public class MemberDTO {
-	private int id;
+	private Long id;
 	private String name;
 	private int age;
 	private String ihidnum;

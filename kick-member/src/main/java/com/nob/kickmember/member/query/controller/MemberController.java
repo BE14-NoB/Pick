@@ -6,6 +6,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.nob.kickmember.common.util.CustomUserDetails;
 import com.nob.kickmember.member.query.dto.EmailCheckRequestDTO;
 import com.nob.kickmember.member.query.dto.EmailCheckResponseDTO;
 import com.nob.kickmember.member.query.dto.PhoneCheckRequestDTO;
@@ -143,7 +146,8 @@ public class MemberController {
 	}
 
 	@GetMapping("/profile-pages/{profilePageId}/programming-languages")
-	public ResponseEntity<List<ProgrammingLanguageInfoDTO>> getProgrammingLanguagesByProfilePageId(@PathVariable("profilePageId") int profilePageId) {
+	public ResponseEntity<List<ProgrammingLanguageInfoDTO>> getProgrammingLanguagesByProfilePageId(
+		@PathVariable("profilePageId") int profilePageId) {
 		List<ProgrammingLanguageInfoDTO> languages;
 		if (profilePageId <= 0) {
 			languages = Collections.emptyList();
@@ -166,7 +170,42 @@ public class MemberController {
 	}
 
 	@GetMapping("/id")
-	public ResponseEntity<?> getMemberId(@RequestHeader("Authorization") String bearerToken) {
+	public ResponseEntity<?> getMemberId(@PathVariable("id") Long id) {
+		// SecurityContextHolder 에서 현재 사용자 정보를 가져온다.
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
+		if (authentication == null || !authentication.isAuthenticated()
+			|| !(authentication.getPrincipal() instanceof CustomUserDetails userDetails)) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+				.body(Collections.singletonMap("error", "인증되지 않은 사용자입니다."));
+		}
+
+		Long currentMemberId = userDetails.getId();
+
+		// 권한 검증: 현재 사용자가 요청한 id와 동일한지 확인
+		if (!currentMemberId.equals(id)) {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN)
+				.body(Collections.singletonMap("error", "본인의 정보만 조회할 수 있습니다."));
+		}
+
+		// id 값이 int 범위를 벗어나는지 검증
+		if (id < Integer.MIN_VALUE || id > Integer.MAX_VALUE) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+				.body(Collections.singletonMap("error", "ID 값이 int 범위를 벗어났습니다."));
+		}
+
+		// 다운캐스팅
+		int intId = id.intValue();
+		if (intId <= 0) {
+			return ResponseEntity.badRequest()
+				.body(Collections.singletonMap("error", "유효하지 않은 ID입니다."));
+		}
+
+		MemberDTO member = memberService.findMemberInfoById(intId);
+		if (member == null) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND)
+				.body(Collections.singletonMap("error", "회원을 찾을 수 없습니다."));
+		}
+		return ResponseEntity.ok(member);
 	}
 }
