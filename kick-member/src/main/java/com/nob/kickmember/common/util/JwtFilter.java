@@ -27,12 +27,15 @@ public class JwtFilter extends OncePerRequestFilter {
 	private final TokenBlacklist tokenBlacklist;
 
 	@Override
+	// 해당 경로의 api 요청에 대해서는 jwt 토큰 AuthenticationProvider 인증 확인 안함.
 	protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
 		String path = request.getRequestURI();
 		String method = request.getMethod();
 
+		// 요청에 대한 경로 끝이 '/'으로 끝나면 제거햐여 경로 정규화
 		path = path.endsWith("/") ? path.substring(0, path.length() - 1) : path;
 
+		// 특정 api 요청은 필터를 거치지 않도록 설정.
 		boolean shouldNotFilter =
 			(method.equals("POST") && path.equals("/api/members/email")) ||
 				(method.equals("POST") && path.equals("/api/members/password")) ||
@@ -46,6 +49,7 @@ public class JwtFilter extends OncePerRequestFilter {
 	}
 
 	@Override
+	// 전처리 역할
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 		throws ServletException, IOException {
 		String token = resolveToken(request);
@@ -56,6 +60,7 @@ public class JwtFilter extends OncePerRequestFilter {
 				if (jwtUtil.validateToken(token) && !jwtUtil.isTokenExpired(token) && !tokenBlacklist.isBlacklisted(token)) {
 					String email = jwtUtil.getEmail(token);
 					List<String> roles = jwtUtil.getRoles(token);
+					Long id = jwtUtil.getId(token);
 					System.out.println("Roles from token: " + roles);
 
 					// ROLE_ 접두사 중복 추가 방지
@@ -69,11 +74,8 @@ public class JwtFilter extends OncePerRequestFilter {
 						.map(SimpleGrantedAuthority::new)
 						.collect(Collectors.toList());
 
-					UserDetails userDetails = new User(
-						email,
-						"",
-						grantedAuthorities
-					);
+					// userDetails 가져오기.
+					CustomUserDetails userDetails = new CustomUserDetails(id, email, grantedAuthorities);
 
 					System.out.println("UserDetails authorities: " + userDetails.getAuthorities());
 
@@ -95,6 +97,7 @@ public class JwtFilter extends OncePerRequestFilter {
 		chain.doFilter(request, response);
 	}
 
+	// Request Header에서 토큰 정보를 꺼내옴
 	private String resolveToken(HttpServletRequest request) {
 		String bearerToken = request.getHeader("Authorization");
 		if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
