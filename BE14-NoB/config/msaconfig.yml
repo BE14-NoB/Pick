@@ -1,3 +1,0 @@
-jwt:
-  secret: bXlTdXBlclNlY3JldEtleUZvckp3dFRva2VuMTIzNDU2Nzg5MA==
-  expiration: 86400000
