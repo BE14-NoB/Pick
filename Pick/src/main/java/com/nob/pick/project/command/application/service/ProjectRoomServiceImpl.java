@@ -25,14 +25,12 @@ import lombok.extern.slf4j.Slf4j;
 public class ProjectRoomServiceImpl implements ProjectRoomService {
 	private final ProjectRoomRepository projectRoomRepository;
 	private final ParticipantRepository participantRepository;
-	private final MemberRepository memberRepository;
 
 	@Autowired
 	public ProjectRoomServiceImpl(ProjectRoomRepository projectRoomRepository,
-		ParticipantRepository participantRepository, MemberRepository memberRepository) {
+								  ParticipantRepository participantRepository) {
 		this.projectRoomRepository = projectRoomRepository;
 		this.participantRepository = participantRepository;
-		this.memberRepository = memberRepository;
 	}
 
 	// 자율 매칭 방 생성
@@ -69,7 +67,7 @@ public class ProjectRoomServiceImpl implements ProjectRoomService {
 		ProjectRoom savedProjectRoom = projectRoomRepository.save(projectRoom);
 		// 확인
 		log.info("Project Room 생성 완료! ID: {}", savedProjectRoom.getId());
-		//
+
 		// 팀원 INSERT
 		insertParticipants(newProjectRoom.getParticipantList(), savedProjectRoom);
 
@@ -115,17 +113,16 @@ public class ProjectRoomServiceImpl implements ProjectRoomService {
 	private void insertParticipants(List<RequestParticipantDTO> participantList, ProjectRoom projectRoom) {
 		for(RequestParticipantDTO participant : participantList) {
 
-			// Member 엔티티 가져오기
-			Member newMember = memberRepository.findById((long)participant.getMemberId())
-				.orElseThrow(() -> new IllegalArgumentException("해당 멤버가 존재하지 않습니다. id=" + participant.getMemberId()));
+			// 유효한 Member인지 확인
 
+			// 팀원 정보 등록
 			Participant newParticipant = Participant.builder()
-				.member(newMember)
+				.memberId(participant.getMemberId())
 				.projectRoom(projectRoom)
 				.isManager(participant.isManager())
 				.build();
 
-			log.info("newParticipant : {}",  newParticipant.getMember());
+			log.info("새로운 팀원 : {}",  newParticipant);
 
 			Participant savedParticipant = participantRepository.save(newParticipant);
 
@@ -133,13 +130,12 @@ public class ProjectRoomServiceImpl implements ProjectRoomService {
 		}
 	}
 
-	// 매일 새벽 3시
-	// 유예기간(일주일) 내 팀원 모집 실패한 자율 매칭 프로젝트 방 삭제
+	// ## TODO
+	// 매일 새벽 3시, 유예기간(일주일) 내 팀원 모집 실패한 자율 매칭 프로젝트 방 삭제
 	@Scheduled(cron = "0 0 3 * * *")
 	public void deleteUnmatchedProjectRooms(){
 		// List<>
 	}
-
 
 	// 개발 기간 기반 프로젝트 마감 기간 계산
 	private int parseDurationMonth(String durationTime) {
