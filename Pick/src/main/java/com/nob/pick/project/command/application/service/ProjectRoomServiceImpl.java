@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -131,6 +132,14 @@ public class ProjectRoomServiceImpl implements ProjectRoomService {
 			log.info("팀원 객체 생성 완료! : {}", savedParticipant);
 		}
 	}
+
+	// 매일 새벽 3시
+	// 유예기간(일주일) 내 팀원 모집 실패한 자율 매칭 프로젝트 방 삭제
+	@Scheduled(cron = "0 0 3 * * *")
+	public void deleteUnmatchedProjectRooms(){
+		// List<>
+	}
+
 
 	// 개발 기간 기반 프로젝트 마감 기간 계산
 	private int parseDurationMonth(String durationTime) {

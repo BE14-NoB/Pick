@@ -2,6 +2,7 @@ package com.nob.pick.project.command.application.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,7 +29,6 @@ public class ProjectRoomController {
 	 * 	세션 코드 없음.
 	 * 	팀원 맵핑 필요. (공통)
 	 * */
-
 	@PostMapping("/matching")
 	public ResponseEntity<?> registMathingProjectRoom(@RequestBody RequestProjectRoomDTO newProjectRoom) {
 		// 세션 코드 없음
@@ -47,6 +47,13 @@ public class ProjectRoomController {
 		projectRoomService.createNonMatchingProject(newProjectRoom);
 		return ResponseEntity.ok().build();
 	}
+
+
+
+
+
+
+
 
 }
 
