@@ -6,6 +6,7 @@ import com.nob.pick.matching.query.aggregate.MatchingEntry;
 import com.nob.pick.matching.query.aggregate.TechnologyCategory;
 import com.nob.pick.matching.query.dto.*;
 import com.nob.pick.matching.query.mapper.MatchingMapper;
+import com.nob.pick.matching.query.vo.ResponseMemberVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -98,15 +99,15 @@ public class MatchingServiceImpl implements MatchingService{
 
     @Override
     @Transactional
-    public List<MatchingDTO> getSearchMatching(SearchMatchingDTO searchMatchingDTO) {
+    public List<MatchingDTO> getSearchMatching(int technologyCategoryId) {
+        // 신청한 회원 정보
+        ResponseMemberVO member = memberServiceClient.getMemberByToken();
+        log.info("member: {}", member);
         // 신청자 레벨
+        int memberLevel = memberServiceClient.getMemberProfileByMemberId(member.getId()).getLevel();
 
-        int memberLevel = memberServiceClient.getMemberProfileByMemberId(searchMatchingDTO.getMemberId()).getId();
-
-        log.info("searchMatchingDTO: {}", searchMatchingDTO);
         // 전체 방 조회
         List<Matching> matchingList = matchingMapper.selectAllMatching();
-        List<MatchingDTO> matchingDTOList = matching2MatchingDTO(matchingList);
 
         List<MatchingInfo> matchingInfoList = matchingList.stream()
                 .map(matching -> {
@@ -119,8 +120,8 @@ public class MatchingServiceImpl implements MatchingService{
         MatchingInfoDTO matchingInfoDTO = new MatchingInfoDTO();
         matchingInfoDTO.setMemberLevel(memberLevel);
         matchingInfoDTO.setMatchingInfoList(matchingInfoList);
-        if(searchMatchingDTO.getTechnologyCategoryCode() != null ) {
-            matchingInfoDTO.setTechnologyCategoryId(searchMatchingDTO.getTechnologyCategoryCode());
+        if(technologyCategoryId != 0) {
+            matchingInfoDTO.setTechnologyCategoryId(technologyCategoryId);
         }
 
         log.info("matchingInfo: {}", matchingInfoDTO);
