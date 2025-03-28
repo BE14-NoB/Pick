@@ -1,7 +1,10 @@
 package com.nob.pick.post;
 
+import java.util.NoSuchElementException;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -15,6 +18,8 @@ import com.nob.pick.post.command.domain.aggregate.entity.Post;
 import com.nob.pick.post.command.domain.repository.PostRepository;
 import com.nob.pick.post.query.service.PostService;
 
+import io.jsonwebtoken.lang.Assert;
+
 @SpringBootTest
 public class DeletePostTest {
 	
@@ -27,21 +32,38 @@ public class DeletePostTest {
 	@Autowired
 	private PostService postService;
 	
+	@BeforeEach
+	void setUp() {
+		initPosts();
+	}
+	
 	@AfterEach
 	public void clean() {
 		initPosts();
 	}
 	
 	private void initPosts() {
-		Post defaultPost = postRepository.findById(1).get();
+		Post defaultPost;
+		Post deletedPost;
+		Post blindedPost;
+		try {
+			defaultPost = postRepository.findById(1).orElseThrow();
+			deletedPost = postRepository.findById(2).orElseThrow();
+			blindedPost = postRepository.findById(3).orElseThrow();
+		} catch (NoSuchElementException e) {
+			return;
+		}
+		
+		Assert.notNull(defaultPost);
+		Assert.notNull(deletedPost);
+		Assert.notNull(blindedPost);
+		
 		defaultPost.setStatus(PostStatus.DEFAULT.getValue());
 		postRepository.save(defaultPost);
 		
-		Post deletedPost = postRepository.findById(2).get();
 		deletedPost.setStatus(PostStatus.DELETED.getValue());
 		postRepository.save(deletedPost);
 		
-		Post blindedPost = postRepository.findById(3).get();
 		blindedPost.setStatus(PostStatus.BLINDED.getValue());
 		postRepository.save(blindedPost);
 	}
@@ -55,10 +77,14 @@ public class DeletePostTest {
 			targetPost != null ?
 			targetPost.getStatus().toString() : "NULL"
 		);
+		int memberId = (
+			targetPost != null ?
+			targetPost.getMember().getMemberId() : 0
+		);
 		Assertions.assertDoesNotThrow(
 			() -> {
 				System.out.println("Post " + postId + " Origin Status: " + postStatus);
-				commandPostService.deletePost(postId);
+				commandPostService.deletePost(postId, memberId);
 			}
 		);
 	}

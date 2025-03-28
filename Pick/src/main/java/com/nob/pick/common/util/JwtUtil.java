@@ -6,7 +6,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import lombok.RequiredArgsConstructor;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -20,43 +20,47 @@ import java.util.List;
 // @RequiredArgsConstructor
 public class JwtUtil {
 
-	private final MemberRepository memberRepository;
+	// private final MemberRepository memberRepository;
 
 	private final Key secretKey;
-	private final long expiration;
+	// private final long expiration;
 
 	public JwtUtil(
-		@Value("${jwt.secret}") String secret,
-		@Value("${jwt.expiration}") long expiration,
-		MemberRepository memberRepository
+		@Value("${jwt.secret}") String secret
+		// ,
+		// @Value("${jwt.expiration}") long expiration,
+		// MemberRepository memberRepository
 	) {
 		byte[] keyBytes = Base64.getDecoder().decode(secret);
 		this.secretKey = Keys.hmacShaKeyFor(keyBytes);
-		this.expiration = expiration;
-		this.memberRepository = memberRepository;
+		// this.expiration = expiration;
+		// this.memberRepository = memberRepository;
 	}
 
-	public String createToken(String email) {
-		Member member = memberRepository.findByEmail(email)
-			.orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다: " + email));
-		String role = member.getUserGrant() == 0 ? "ADMIN" : "MEMBER";
-
-		// ROLE_ 접두사 추가
-		String roleWithPrefix = "ROLE_" + role;
-		// System.out.println("Role with prefix: " + roleWithPrefix); // 디버깅 로그 추가
-
-		Claims claims = Jwts.claims().setSubject(email);
-		claims.put("roles", Collections.singletonList(roleWithPrefix));
-		Date now = new Date();
-		Date validity = new Date(now.getTime() + expiration);
-
-		return Jwts.builder()
-			.setClaims(claims)
-			.setIssuedAt(now)
-			.setExpiration(validity)
-			.signWith(secretKey, SignatureAlgorithm.HS256)
-			.compact();
-	}
+	// public String createToken(String email) {
+	// 	Member member = memberRepository.findByEmail(email)
+	// 		.orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다: " + email));
+	// 	String role = member.getUserGrant() == 0 ? "ADMIN" : "MEMBER";
+	//
+	// 	// ROLE_ 접두사 추가
+	// 	Integer memberId = member.getId();
+	//
+	// 	String roleWithPrefix = "ROLE_" + role;
+	// 	// System.out.println("Role with prefix: " + roleWithPrefix); // 디버깅 로그 추가
+	//
+	// 	Claims claims = Jwts.claims().setSubject(email);
+	// 	claims.put("id", memberId);
+	// 	claims.put("roles", Collections.singletonList(roleWithPrefix));
+	// 	Date now = new Date();
+	// 	Date validity = new Date(now.getTime() + expiration);
+	//
+	// 	return Jwts.builder()
+	// 		.setClaims(claims)
+	// 		.setIssuedAt(now)
+	// 		.setExpiration(validity)
+	// 		.signWith(secretKey, SignatureAlgorithm.HS256)
+	// 		.compact();
+	// }
 
 	public String getEmail(String token) {
 		validateTokenFormat(token);
@@ -76,6 +80,16 @@ public class JwtUtil {
 			.parseClaimsJws(token)
 			.getBody()
 			.get("roles", List.class);
+	}
+	
+	public int getId(String token) {
+		validateTokenFormat(token);
+		return Jwts.parserBuilder()
+			.setSigningKey(secretKey)
+			.build()
+			.parseClaimsJws(token)
+			.getBody()
+			.get("id", Integer.class);
 	}
 
 	public boolean validateToken(String token) {

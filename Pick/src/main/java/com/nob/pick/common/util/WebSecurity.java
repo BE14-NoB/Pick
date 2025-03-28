@@ -1,7 +1,5 @@
-package com.nob.pick.common.config;
+package com.nob.pick.common.util;
 
-import com.nob.pick.common.util.JwtFilter;
-import com.nob.pick.common.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
