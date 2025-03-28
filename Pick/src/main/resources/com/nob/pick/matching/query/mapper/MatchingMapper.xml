@@ -5,9 +5,9 @@
 <mapper namespace="com.nob.pick.matching.query.mapper.MatchingMapper">
     <resultMap id="matchingResultMap" type="com.nob.pick.matching.query.aggregate.Matching">
         <id property="id" column="MATCHING_ID"/>
-        <result property="createdDateAt" column="CREATED_DATE_AT" typeHandler="com.nob.pick.common.config.typehandler.LocalDateTimeTypeHandler"/>
-        <result property="isCompleted" column="IS_COMPLETED" typeHandler="com.nob.pick.common.config.typehandler.StringYnTypeHandler"/>
-        <result property="isDeleted" column="IS_DELETED" typeHandler="com.nob.pick.common.config.typehandler.StringYnTypeHandler"/>
+        <result property="createdDateAt" column="CREATED_DATE_AT"/>
+        <result property="isCompleted" column="IS_COMPLETED"/>
+        <result property="isDeleted" column="IS_DELETED"/>
         <result property="maximumParticipant" column="MAXIMUM_PARTICIPANT"/>
         <result property="currentParticipant" column="CURRENT_PARTICIPANT"/>
         <result property="levelRange" column="LEVEL_RANGE"/>
@@ -15,16 +15,16 @@
         <collection property="technologyCategories" ofType="com.nob.pick.matching.query.aggregate.TechnologyCategory">
             <id property="id" column="TECHNOLOGY_ID"/>
             <result property="name" column="NAME"/>
-            <result property="isDeleted" column="IS_DELETED" typeHandler="com.nob.pick.common.config.typehandler.StringYnTypeHandler"/>
+            <result property="isDeleted" column="IS_DELETED"/>
             <result property="refTechnologyCategoryId" column="REF_TECHNOLOGY_CATEGORY_ID"/>
         </collection>
     </resultMap>
 
     <resultMap id="matchingEntryResultMap" type="com.nob.pick.matching.query.aggregate.MatchingEntry">
         <id property="id" column="MATCHING_ENTRY_ID"/>
-        <result property="appliedDateAt" column="APPLIED_DATE_AT" typeHandler="com.nob.pick.common.config.typehandler.LocalDateTimeTypeHandler"/>
-        <result property="isCanceled" column="IS_CANCELED" typeHandler="com.nob.pick.common.config.typehandler.StringYnTypeHandler"/>
-        <result property="isAccepted" column="IS_ACCEPTED" typeHandler="com.nob.pick.common.config.typehandler.StringYnTypeHandler"/>
+        <result property="appliedDateAt" column="APPLIED_DATE_AT"/>
+        <result property="isCanceled" column="IS_CANCELED"/>
+        <result property="isAccepted" column="IS_ACCEPTED"/>
         <result property="memberId" column="MEMBER_ID"/>
         <result property="matchingId" column="MATCHING_ID"/>
     </resultMap>
@@ -32,7 +32,7 @@
     <resultMap id="technologyCategoryResultMap" type="com.nob.pick.matching.query.aggregate.TechnologyCategory">
         <id property="id" column="TECHNOLOGY_CATEGORY_ID"/>
         <result property="name" column="NAME"/>
-        <result property="isDeleted" column="IS_DELETED" typeHandler="com.nob.pick.common.config.typehandler.StringYnTypeHandler"/>
+        <result property="isDeleted" column="IS_DELETED"/>
         <result property="refTechnologyCategoryId" column="REF_TECHNOLOGY_CATEGORY_ID"/>
     </resultMap>
 
