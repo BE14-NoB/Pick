@@ -304,6 +304,17 @@ CREATE TABLE if NOT EXISTS PROJECT_MEETING
     , CONSTRAINT fk_proejct_meeting_project_room_id FOREIGN KEY (project_room_id) REFERENCES PROJECT_ROOM (id)
 );
 
+-- 회의록별 참여자 테이블
+CREATE TABLE PROJECT_MEETING_PARTICIPANT
+(
+    id INT NOT NULL AUTO_INCREMENT
+    , meeting_id INT NOT NULL
+    , participant_id INT NOT NULL
+    , role TINYINT(1) NOT NULL DEFAULT 1
+    , CONSTRAINT pk_project_meeting_participant PRIMARY KEY (id)
+    , FOREIGN KEY (meeting_id) REFERENCES PROJECT_MEETING(id)
+    , FOREIGN KEY (participant_id) REFERENCES PARTICIPANT(id)
+);
 
 -- 프로젝트 회의록 사진
 CREATE TABLE if NOT EXISTS project_meeting_image
