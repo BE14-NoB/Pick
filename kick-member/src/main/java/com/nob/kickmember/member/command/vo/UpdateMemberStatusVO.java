@@ -1,6 +1,6 @@
 package com.nob.kickmember.member.command.vo;
 
-import com.nob.kickmember.member.query.dto.Status;
+import com.nob.kickmember.common.enums.Status;
 
 public class UpdateMemberStatusVO {
 	private final Status status;

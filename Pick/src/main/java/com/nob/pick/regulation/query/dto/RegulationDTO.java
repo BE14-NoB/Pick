@@ -11,8 +11,8 @@ import lombok.Setter;
 @Setter
 public class RegulationDTO {
     private int id;
-    private java.util.Date startDate;
-    private java.util.Date endDate;
+    private java.time.LocalDate startDate;
+    private java.time.LocalDate endDate;
     private boolean isDeleted;
     private int memberId;
 }

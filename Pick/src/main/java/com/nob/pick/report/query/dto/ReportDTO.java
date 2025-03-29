@@ -15,7 +15,7 @@ import lombok.Setter;
 @Setter
 public class ReportDTO {
     private int id;
-    private java.util.Date reportedAt;
+    private java.time.LocalDate reportedAt;
     private ReportStatus status;
     private ReportCategory category;
     private int reportedId;

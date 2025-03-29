@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import com.nob.kickmember.member.query.dto.MemberDTO;
 import com.nob.kickmember.member.query.dto.MemberProfilePageDTO;
 import com.nob.kickmember.member.query.dto.ProgrammingLanguageInfoDTO;
-import com.nob.kickmember.member.query.dto.Status;
+import com.nob.kickmember.common.enums.Status;
 import com.nob.kickmember.member.query.dto.UserGrant;
 import com.nob.kickmember.member.query.mapper.MemberMapper;
 

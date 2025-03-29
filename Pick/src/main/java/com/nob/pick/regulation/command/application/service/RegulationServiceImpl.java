@@ -8,10 +8,10 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 
 @Service("CommandRegulationService")
-public class RegulationImpl implements RegulationService {
+public class RegulationServiceImpl implements RegulationService {
     private final RegulationRepository regulationRepository;
 
-    public RegulationImpl(RegulationRepository regulationRepository) {
+    public RegulationServiceImpl(RegulationRepository regulationRepository) {
         this.regulationRepository = regulationRepository;
     }
 

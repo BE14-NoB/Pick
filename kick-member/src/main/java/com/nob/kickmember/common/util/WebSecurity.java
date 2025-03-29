@@ -63,6 +63,7 @@ public class WebSecurity {
 					.requestMatchers(HttpMethod.POST, "/api/members/logout").authenticated()
 					.requestMatchers(HttpMethod.PATCH, "/api/members/profile/status/**").authenticated()
 					.requestMatchers(HttpMethod.POST, "/api/members/profile/**").authenticated()
+					.requestMatchers(HttpMethod.GET, "/api/members/{id}").authenticated()
 					.anyRequest().authenticated()
 			)
 			.sessionManagement(session ->

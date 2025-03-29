@@ -88,7 +88,7 @@
     </select>
 
     <!-- ID로 회원 상태 조회 -->
-    <select id="findMemberStatusById" parameterType="int" resultType="com.nob.kickmember.member.query.dto.Status">
+    <select id="findMemberStatusById" parameterType="int" resultType="com.nob.kickmember.common.enums.Status">
         SELECT M.STATUS
         FROM MEMBER M
         WHERE M.ID = #{id}

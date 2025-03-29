@@ -1,7 +1,12 @@
 package com.nob.kickmember.member.command.service;
 
+import java.util.Arrays;
+
+import com.nob.kickmember.common.enums.Status;
+import com.nob.kickmember.common.util.JwtUtil;
 import com.nob.kickmember.member.command.dto.AddMemberLanguageDTO;
 import com.nob.kickmember.member.command.dto.AddProgrammingLanguageDTO;
+import com.nob.kickmember.member.command.dto.LoginDTO;
 import com.nob.kickmember.member.command.dto.UpdateMemberCommandDTO;
 import com.nob.kickmember.member.command.dto.UpdateMemberLanguageDTO;
 import com.nob.kickmember.member.command.dto.UpdateProfileStatusDTO;
@@ -16,6 +21,8 @@ import com.nob.kickmember.member.command.repository.MemberProgrammingLanguageRep
 import com.nob.kickmember.member.command.repository.MemberRepository;
 import com.nob.kickmember.member.command.repository.ProgrammingLanguageRepository;
 
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,18 +34,38 @@ public class MemberCommandService {
 	private final ProgrammingLanguageRepository programmingLanguageRepository;
 	private final MemberProgrammingLanguageRepository memberProgrammingLanguageRepository;
 	private final BCryptPasswordEncoder passwordEncoder;
+	private final JwtUtil jwtUtil;
 
 	public MemberCommandService(
 		MemberRepository memberRepository,
 		MemberProfilePageRepository memberProfilePageRepository,
 		ProgrammingLanguageRepository programmingLanguageRepository,
 		MemberProgrammingLanguageRepository memberProgrammingLanguageRepository,
-		BCryptPasswordEncoder passwordEncoder) {
+		BCryptPasswordEncoder passwordEncoder, JwtUtil jwtUtil) {
 		this.memberRepository = memberRepository;
 		this.memberProfilePageRepository = memberProfilePageRepository;
 		this.programmingLanguageRepository = programmingLanguageRepository;
 		this.memberProgrammingLanguageRepository = memberProgrammingLanguageRepository;
 		this.passwordEncoder = passwordEncoder;
+		this.jwtUtil = jwtUtil;
+	}
+
+	// 회원 로그인
+	public String login(LoginDTO loginDTO) {
+		Member member = memberRepository.findByEmail(loginDTO.getEmail())
+			.orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다: " + loginDTO.getEmail()));
+
+		if (!passwordEncoder.matches(loginDTO.getPassword(), member.getPassword())) {
+			throw new BadCredentialsException("비밀번호가 일치하지 않습니다.");
+		}
+
+		// 계정 상태 확인
+		Status status = Status.fromValue(member.getStatus());
+		if (!status.isCanLogin()) {
+			throw new IllegalStateException(status.getErrorMessage());
+		}
+
+		return jwtUtil.createToken(loginDTO.getEmail());
 	}
 
 	// 회원 정보 수정
