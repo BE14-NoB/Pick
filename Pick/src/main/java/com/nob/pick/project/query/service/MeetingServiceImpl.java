@@ -22,26 +22,53 @@ public class MeetingServiceImpl implements MeetingService {
         this.meetingMapper = meetingMapper;
     }
 
+    // 프로젝트별 회의록 목록 조회
     @Override
-    public List<MeetingDTO> getMeetingsByProjectId(int projectId) {
-        List<ProjectMeeting> meetingList = meetingMapper.selectMeetingsByProjectId(projectId);
+    public List<MeetingDTO> getMeetingListByProjectId(int projectId) {
+        List<ProjectMeeting> meetingList = meetingMapper.selectMeetingListByProjectId(projectId);
         return meetingToDTO(meetingList);
     }
 
+    // 회의록 상세 조회
     @Override
-    public MeetingDTO getMeetingsByMeetingId(int meetingId) {
+    public MeetingDTO getMeetingByMeetingId(int meetingId) {
         ProjectMeeting meeting = meetingMapper.selectMeetingByMeetingId(meetingId);
         return meetingDetailToDTO(meeting);
     }
 
+    // 회의록 템플릿 목록 조회
     @Override
     public List<MeetingTemplateDTO> getMeetingTemplateList() {
         List<ProjectMeetingTemplate> templateList = meetingMapper.selectMeetingTemplateList();
-        return templateToDTO(templateList);
+        return templateListToDTO(templateList);
+    }
+
+    // 회의록 템플릿 상세 조회
+    @Override
+    public MeetingTemplateDTO getMeetingTemplateByTemplateId(int templateId) {
+        ProjectMeetingTemplate template = meetingMapper.selectMeetingTemplateByTemplateId(templateId);
+        return templateToDTO(template);
+    }
+
+    // 회의록 템플릿 타입 검색
+    @Override
+    public List<MeetingTemplateDTO> getMeetingTemplateListByTypeNum(int typeNum) {
+        return List.of();
     }
 
     // ProjectMeetingTemplate -> MeetingTemplateDTO
-    private List<MeetingTemplateDTO> templateToDTO(List<ProjectMeetingTemplate> templateList) {
+    private MeetingTemplateDTO templateToDTO(ProjectMeetingTemplate template) {
+        MeetingTemplateDTO dto = new MeetingTemplateDTO();
+        dto.setId(template.getId());
+        dto.setName(template.getName());
+        dto.setDescription(template.getDescription());
+        dto.setContent(template.getContent());
+        dto.setType(TemplateType.forNum(template.getType()));
+        dto.setDefault(template.isDefault());
+        return dto;
+    }
+
+    private List<MeetingTemplateDTO> templateListToDTO(List<ProjectMeetingTemplate> templateList) {
         List<MeetingTemplateDTO> meetingTemplateDTOList = new ArrayList<>();
         for (ProjectMeetingTemplate template : templateList) {
             MeetingTemplateDTO meetingTemplateDTO = new MeetingTemplateDTO();
@@ -67,7 +94,7 @@ public class MeetingServiceImpl implements MeetingService {
         meetingDTO.setTitle(meeting.getTitle());
         meetingDTO.setUploadTime(meeting.getUploadTime().toString());
         meetingDTO.setUpdateTime(meeting.getUpdateTime().toString());
-        meetingDTO.setProjectId(meeting.getProjectRoomId());
+        meetingDTO.setProjectRoomId(meeting.getProjectRoomId());
         meetingDTO.setImages(meetingImages);
 
         return meetingDTO;

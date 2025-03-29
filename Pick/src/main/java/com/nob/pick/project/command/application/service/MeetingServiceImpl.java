@@ -38,7 +38,7 @@ public class MeetingServiceImpl implements MeetingService {
         log.info("[미팅 생성 요청] meetingDTO = {}", meetingDTO);
 
         int authorId = meetingDTO.getAuthorId();
-        int projectRoomId = meetingDTO.getProjectId();
+        int projectRoomId = meetingDTO.getProjectRoomId();
 
         ProjectRoom projectRoom = projectRoomRepository.findById(projectRoomId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 프로젝트입니다. projectRoomId=" + projectRoomId));
