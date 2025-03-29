@@ -1,6 +1,8 @@
 package com.nob.pick.project.query.dto;
 
 import com.nob.pick.project.query.aggregate.ProjectMeetingImage;
+import com.nob.pick.project.query.dto.enums.TemplateType;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,5 +27,5 @@ public class MeetingDTO {
     private int projectId;
 
     private List<ProjectMeetingImage> images;  // 이미지 리스트
-
+    private Integer meetingTemplateId;
 }

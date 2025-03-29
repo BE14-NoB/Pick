@@ -2,6 +2,9 @@ package com.nob.pick.project.query.service;
 
 import com.nob.pick.project.query.aggregate.ProjectMeeting;
 import com.nob.pick.project.query.aggregate.ProjectMeetingImage;
+import com.nob.pick.project.query.aggregate.ProjectMeetingTemplate;
+import com.nob.pick.project.query.dto.MeetingTemplateDTO;
+import com.nob.pick.project.query.dto.enums.TemplateType;
 import com.nob.pick.project.query.mapper.ProjectMeetingMapper;
 import com.nob.pick.project.query.dto.MeetingDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +32,29 @@ public class MeetingServiceImpl implements MeetingService {
     public MeetingDTO getMeetingsByMeetingId(int meetingId) {
         ProjectMeeting meeting = meetingMapper.selectMeetingByMeetingId(meetingId);
         return meetingDetailToDTO(meeting);
+    }
+
+    @Override
+    public List<MeetingTemplateDTO> getMeetingTemplateList() {
+        List<ProjectMeetingTemplate> templateList = meetingMapper.selectMeetingTemplateList();
+        return templateToDTO(templateList);
+    }
+
+    // ProjectMeetingTemplate -> MeetingTemplateDTO
+    private List<MeetingTemplateDTO> templateToDTO(List<ProjectMeetingTemplate> templateList) {
+        List<MeetingTemplateDTO> meetingTemplateDTOList = new ArrayList<>();
+        for (ProjectMeetingTemplate template : templateList) {
+            MeetingTemplateDTO meetingTemplateDTO = new MeetingTemplateDTO();
+            meetingTemplateDTO.setId(template.getId());
+            meetingTemplateDTO.setName(template.getName());
+            meetingTemplateDTO.setDescription(template.getDescription());
+            meetingTemplateDTO.setContent(template.getContent());
+            meetingTemplateDTO.setType(TemplateType.forNum(template.getType()));
+            meetingTemplateDTO.setDefault(template.isDefault());
+
+            meetingTemplateDTOList.add(meetingTemplateDTO);
+        }
+        return meetingTemplateDTOList;
     }
 
     // ProjectMeeting -> MeetingDTO

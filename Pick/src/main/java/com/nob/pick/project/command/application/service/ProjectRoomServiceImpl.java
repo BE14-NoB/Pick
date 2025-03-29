@@ -9,8 +9,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.nob.pick.member.command.entity.Member;
-import com.nob.pick.member.command.repository.MemberRepository;
 import com.nob.pick.project.command.application.dto.RequestParticipantDTO;
 import com.nob.pick.project.command.application.dto.RequestProjectRoomDTO;
 import com.nob.pick.project.command.domain.aggregate.entity.Participant;

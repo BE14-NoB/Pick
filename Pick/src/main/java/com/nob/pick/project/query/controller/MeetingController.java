@@ -1,6 +1,8 @@
 package com.nob.pick.project.query.controller;
 
+import com.nob.pick.project.query.aggregate.ProjectMeetingTemplate;
 import com.nob.pick.project.query.dto.MeetingDTO;
+import com.nob.pick.project.query.dto.MeetingTemplateDTO;
 import com.nob.pick.project.query.service.MeetingService;
 import com.nob.pick.project.query.service.ParticipantService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +51,8 @@ public class MeetingController {
 		List<MeetingDTO> meetingList = meetingService.getMeetingsByProjectId(projectRoomId);
 		return ResponseEntity.ok(meetingList);
 	}
-
+	
+	// 프로젝트 회의록 상세 조회
 	@GetMapping("{projectRoomId}/meetings/{meetingId}")
 	public ResponseEntity<?> getMeetingList(@PathVariable int projectRoomId, @PathVariable int meetingId, @RequestParam int memberId) {
 		log.info("projectRoomId : " + projectRoomId);
@@ -66,5 +69,25 @@ public class MeetingController {
 		}
 		return ResponseEntity.ok(meetingService.getMeetingsByMeetingId(meetingId));
 	}
+
+	// #TODO 회의록 템플릿 목록 조회
+	@GetMapping("meeting/template")
+	public ResponseEntity<?> getMeetingTemplateList() {
+		log.info("meeting template list");
+		List<MeetingTemplateDTO> templateList = meetingService.getMeetingTemplateList();
+		return ResponseEntity.ok(templateList);
+	}
+
+
+	// #TODO 회의록 텝플릿 상세 조회
+
+
+	// #TODO 타입 별 회의록 템플릿 목록 조회
+
+
+	// #TODO 회의록 전체 이미지 목록 조회
+
+
+
 
 }

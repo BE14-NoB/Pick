@@ -20,6 +20,15 @@
         <result property="meetingId" column="MEETING_ID"/>
     </resultMap>
 
+    <resultMap id="meetingTemplateResultMap" type="com.nob.pick.project.query.aggregate.ProjectMeetingTemplate">
+        <id property="id" column="ID"/>
+        <result property="name" column="NAME"/>
+        <result property="description" column="DESCRIPTION"/>
+        <result property="content" column="CONTENT"/>
+        <result property="type" column="TYPE"/>
+        <result property="isDefault" column="IS_DEFAULT"/>
+    </resultMap>
+
     <select id="selectMeetingByMeetingId" parameterType="_int" resultMap="meetingResultMap">
         SELECT
                PM.ID
@@ -50,9 +59,25 @@
 
 
     <select id="selectImagesByMeetingId" parameterType="_int" resultMap="meetingImageResultMap">
-        SELECT *
+        SELECT
+                ID
+              , PATH
+              , IS_THUMBNAIL
+              , ORDER_INDEX
+              , MEETING_ID
           FROM PROJECT_MEETING_IMAGE
          WHERE MEETING_ID = #{meetingId}
+    </select>
+
+    <select id="selectMeetingTemplateList" resultMap="meetingTemplateResultMap">
+        SELECT
+                ID
+              , NAME
+              , DESCRIPTION
+              , CONTENT
+              , TYPE
+              , IS_DEFAULT
+          FROM PROJECT_MEETING_TEMPLATE
     </select>
 </mapper>
 
