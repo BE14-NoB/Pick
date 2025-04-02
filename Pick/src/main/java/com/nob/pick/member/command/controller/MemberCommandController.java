@@ -128,20 +128,20 @@ public class MemberCommandController {
 		return ResponseEntity.ok(Collections.singletonMap("message", "회원 정보 수정 성공"));
 	}
 
-	@PostMapping("/login")
-	public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO) {
-		System.out.println("Login request received: " + loginDTO.getEmail());
-		Member member = memberRepository.findByEmail(loginDTO.getEmail())
-			.orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다: " + loginDTO.getEmail()));
-
-		if (!passwordEncoder.matches(loginDTO.getPassword(), member.getPassword())) {
-			throw new BadCredentialsException("비밀번호가 일치하지 않습니다.");
-		}
-
-		String token = jwtUtil.createToken(loginDTO.getEmail());
-		System.out.println("Generated token: " + token);
-		return ResponseEntity.ok(Collections.singletonMap("token", token));
-	}
+//	@PostMapping("/login")
+//	public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO) {
+//		System.out.println("Login request received: " + loginDTO.getEmail());
+//		Member member = memberRepository.findByEmail(loginDTO.getEmail())
+//			.orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다: " + loginDTO.getEmail()));
+//
+//		if (!passwordEncoder.matches(loginDTO.getPassword(), member.getPassword())) {
+//			throw new BadCredentialsException("비밀번호가 일치하지 않습니다.");
+//		}
+//
+////		String token = jwtUtil.createToken(loginDTO.getEmail());
+//		System.out.println("Generated token: " + token);
+//		return ResponseEntity.ok(Collections.singletonMap("token", token));
+//	}
 
 	@PostMapping("/logout")
 	public ResponseEntity<?> logout(HttpServletRequest request) {
