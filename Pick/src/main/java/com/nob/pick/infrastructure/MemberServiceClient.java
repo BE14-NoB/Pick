@@ -3,7 +3,10 @@ package com.nob.pick.infrastructure;
 import java.util.Map;
 
 import com.nob.pick.matching.query.vo.ResponseMemberProfileVO;
+import com.nob.pick.member.query.dto.MemberDTO;
+
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -16,4 +19,7 @@ public interface MemberServiceClient {
     // 추가: 사용자 정보 조회
     @GetMapping("/api/members/user-info")
     Map<String, Object> getUserInfo(@RequestHeader("Authorization") String authorizationHeader);
+
+    @GetMapping("/pick-member-service/api/members/{id}")
+    ResponseEntity<MemberDTO> getMemberById(@PathVariable("id") int memberId);
 }
