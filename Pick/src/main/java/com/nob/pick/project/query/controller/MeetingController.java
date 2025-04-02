@@ -70,7 +70,7 @@ public class MeetingController {
 		return ResponseEntity.ok(meetingService.getMeetingByMeetingId(meetingId));
 	}
 
-	// #TODO 회의록 템플릿 목록 조회
+	// 회의록 템플릿 목록 조회
 	@GetMapping("meeting/template")
 	public ResponseEntity<?> getMeetingTemplateList() {
 		log.info("meeting template list");
@@ -79,7 +79,7 @@ public class MeetingController {
 	}
 
 
-	// #TODO 회의록 텝플릿 상세 조회
+	// 회의록 텝플릿 상세 조회
 	@GetMapping("meeting/template/{templateId}")
 	public ResponseEntity<?> getMeetingTemplateDetail(@PathVariable int templateId) {
 		log.info("{}번 회의록 템플릿 상세 조회", templateId);
@@ -89,7 +89,7 @@ public class MeetingController {
 	}
 
 
-	// #TODO 타입 별 회의록 템플릿 목록 조회
+	// 타입별 회의록 템플릿 목록 조회
 	@GetMapping("meeting/template/{typeNum}")
 	public ResponseEntity<?> getMeetingTemplateListByTypeNum(@PathVariable int typeNum) {
 		log.info("{} 타입에 해당하는 템플릿 목록 조회 ", typeNum);
@@ -98,7 +98,6 @@ public class MeetingController {
 		return ResponseEntity.ok(templateList);
 	}
 
-	// #TODO 회의록 전체 이미지 목록 조회
 
 
 

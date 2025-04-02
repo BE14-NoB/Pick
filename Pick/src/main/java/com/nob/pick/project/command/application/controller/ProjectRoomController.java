@@ -48,6 +48,14 @@ public class ProjectRoomController {
 		return ResponseEntity.ok().build();
 	}
 
+	// TODO. 프로젝트 방 삭제
+	
+
+
+	
+	/* TODO. 프로젝트 방 정보 수정
+		- 프로젝트 정보(프로젝트명, 한줄 소개, 설명, 썸네일)
+	*/
 
 
 
