@@ -7,6 +7,6 @@ SELECT id
 ,      password
 ,      nickname
 ,      status
-,      reported_count
+,      regulated_count
 ,      user_grant
 FROM member
