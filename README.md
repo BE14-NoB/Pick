@@ -198,7 +198,7 @@ CREATE TABLE IF NOT EXISTS MEMBER
     ,   password       VARCHAR(255) NOT NULL
     ,   nickname       VARCHAR(255) NOT NULL UNIQUE
     ,   status         TINYINT      NOT NULL COMMENT '활성화, 비활성화(정지), 탈퇴 한번에 관리 (Enum)'
-    ,   reported_count INTEGER      NOT NULL COMMENT '조회 덜하기 위해 회원 테이블 속성 추가'
+    ,   regulated_count INTEGER      NOT NULL COMMENT '조회 덜하기 위해 회원 테이블 속성 추가'
     ,   user_grant     TINYINT      NOT NULL COMMENT 'ADMIN, MEMBER'
     ,   CONSTRAINT pk_member_id PRIMARY KEY (id)
 );
@@ -561,7 +561,7 @@ CREATE TABLE IF NOT EXISTS REGULATION
 <summary><b>DML</b></summary>
 
 ```sql
-INSERT INTO MEMBER (name, age, ihidnum, phone_number, email, password, nickname, status, reported_count, user_grant)
+INSERT INTO MEMBER (name, age, ihidnum, phone_number, email, password, nickname, status, regulated_count, user_grant)
 VALUES ('김민수', 25, '950101-1234567', '010-1234-5678', 'minsu1@naver.com', 'Pass1234', '민수킹', 0, 1, 0),
        ('이영희', 30, '930215-2345678', '010-2345-6789', 'younghee2@gmail.com', 'Young567', '영희짱', 1, 0, 0),
        ('박지훈', 28, '970430-3456789', '010-3456-7890', 'jihoon3@daum.net', 'Jihoon89', '훈이', 0, 2, 0),

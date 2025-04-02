@@ -14,7 +14,7 @@
         <result property="password" column="password"/>
         <result property="nickname" column="nickname"/>
         <result property="status" column="status" typeHandler="com.nob.kickmember.common.config.typehandler.StatusEnumTypeHandler"/>
-        <result property="reportedCount" column="reported_count"/>
+        <result property="regulatedCount" column="regulated_count"/>
         <result property="userGrant" column="user_grant"
                 typeHandler="com.nob.kickmember.common.config.typehandler.UserGrantEnumTypeHandler"/>
     </resultMap>
@@ -65,7 +65,7 @@
                M.PASSWORD,
                M.NICKNAME,
                M.STATUS,
-               M.REPORTED_COUNT,
+               M.REGULATED_COUNT,
                M.USER_GRANT
         FROM MEMBER M
     </select>
@@ -81,7 +81,7 @@
                M.PASSWORD,
                M.NICKNAME,
                M.STATUS,
-               M.REPORTED_COUNT,
+               M.REGULATED_COUNT,
                M.USER_GRANT
         FROM MEMBER M
         WHERE M.ID = #{id}
