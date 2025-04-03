@@ -23,6 +23,6 @@ public class MemberDTO {
 	private String password;
 	private String nickname;
 	private Status status;
-	private int reportedCount;
+	private int regulatedCount;
 	private UserGrant userGrant;
 }

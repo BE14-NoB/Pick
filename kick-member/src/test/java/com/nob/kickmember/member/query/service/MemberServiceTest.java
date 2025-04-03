@@ -47,11 +47,11 @@ class MemberServiceTest {
 
 		// 테스트 데이터 삽입
 		jdbcTemplate.update(
-			"INSERT INTO member (id, name, age, ihidnum, phone_number, email, password, nickname, status, reported_count, user_grant) VALUES " +
+			"INSERT INTO member (id, name, age, ihidnum, phone_number, email, password, nickname, status, regulated_count, user_grant) VALUES " +
 				"(1, '김민수', 25, '950101-1234567', '010-1234-5678', 'minsu1@naver.com', 'Pass1234', '민수킹', 0, 1, 0)"
 		);
 		jdbcTemplate.update(
-			"INSERT INTO member (id, name, age, ihidnum, phone_number, email, password, nickname, status, reported_count, user_grant) VALUES " +
+			"INSERT INTO member (id, name, age, ihidnum, phone_number, email, password, nickname, status, regulated_count, user_grant) VALUES " +
 				"(2, '이영희', 30, '930215-2345678', '010-2345-6789', 'younghee2@gmail.com', 'Young567', '영희짱', 1, 0, 0)"
 		);
 

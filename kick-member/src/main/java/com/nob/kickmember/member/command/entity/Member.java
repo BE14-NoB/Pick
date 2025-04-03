@@ -48,8 +48,8 @@ public class Member {
 	@Column(name = "STATUS", nullable = false)
 	private Integer status;
 
-	@Column(name = "REPORTED_COUNT", nullable = false)
-	private Integer reportedCount;
+	@Column(name = "REGULATED_COUNT", nullable = false)
+	private Integer regulatedCount;
 
 	@Column(name = "USER_GRANT", nullable = false)
 	private Integer userGrant; // ADMIN(0), MEMBER(1)
@@ -63,7 +63,7 @@ public class Member {
 		this.password = password;
 		this.nickname = nickname;
 		this.status = 0; // 가입시 기본 활성화 상태
-		this.reportedCount = 0; // 가입시 신고 횟수 0
+		this.regulatedCount = 0; // 가입시 신고 횟수 0
 		this.userGrant = 1; // 가입시 Member 권한 상태
 	}
 
