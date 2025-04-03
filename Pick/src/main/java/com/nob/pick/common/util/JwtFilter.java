@@ -36,6 +36,7 @@ public class JwtFilter extends OncePerRequestFilter {
 		boolean shouldNotFilter =
 				path.startsWith("/oauth2/") ||
 				path.startsWith("/login/oauth2/") ||
+				path.equals("/api/github/callback") ||
 				(method.equals("POST") && path.equals("/api/members/email")) ||
 				(method.equals("POST") && path.equals("/api/members/password")) ||
 				(method.equals("POST") && path.equals("/api/members/check-email")) ||

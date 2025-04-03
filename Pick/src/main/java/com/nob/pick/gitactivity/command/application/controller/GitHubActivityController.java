@@ -57,13 +57,15 @@ public class GitHubActivityController {
 
         String accessToken = client.getAccessToken().getTokenValue();
 
-        // 👉 JWT 추출 및 사용자 매핑4
-        String jwt = extractJwt(request); // 쿠키나 param 등에서 직접 꺼내는 함수
+        // 🔐 여기에 JWT 파싱해서 userId 매핑 후 token 저장
+        String jwt = extractJwt(request); // Authorization 헤더에서 JWT 추출
         int userId = jwtUtil.getId(jwt);
 
         githubTokenRepository.save(userId, accessToken);
-        return ResponseEntity.ok("GitHub 연동 완료");
+        return ResponseEntity.ok("GitHub 연동 완료!");
     }
+
+
 
     // ✅ 사용자가 버튼 클릭 → 이슈 생성 API
     @PostMapping("/issue")
