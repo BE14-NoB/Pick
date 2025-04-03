@@ -73,7 +73,7 @@ public class WebSecurity {
 					.anyRequest().authenticated()
 			)
 			.sessionManagement(session ->
-				session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+				session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))			// 깃 토큰 때문에 임시로 STATELESS -> IF_REQUIRED 수정
 			.exceptionHandling(exceptionHandling ->
 				exceptionHandling
 					.authenticationEntryPoint((request, response, authException) -> {

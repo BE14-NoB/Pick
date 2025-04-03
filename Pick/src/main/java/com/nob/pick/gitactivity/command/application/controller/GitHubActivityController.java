@@ -42,15 +42,26 @@ public class GitHubActivityController {
     // ✅ 자동 연동 콜백 처리 (클라이언트가 GitHub 로그인 후 호출)
     @GetMapping("/callback")
     public ResponseEntity<?> handleOAuthCallback(HttpServletRequest request) {
-        String jwt = extractJwt(request);
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
         if (!(auth instanceof OAuth2AuthenticationToken oauthToken)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("OAuth 인증 정보 없음");
         }
+
         OAuth2AuthorizedClient client = authorizedClientService
                 .loadAuthorizedClient(oauthToken.getAuthorizedClientRegistrationId(), oauthToken.getName());
+
+        if (client == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("GitHub AuthorizedClient 없음");
+        }
+
         String accessToken = client.getAccessToken().getTokenValue();
-        oAuthService.handleOAuthCallback(jwt, accessToken);
+
+        // 👉 JWT 추출 및 사용자 매핑4
+        String jwt = extractJwt(request); // 쿠키나 param 등에서 직접 꺼내는 함수
+        int userId = jwtUtil.getId(jwt);
+
+        githubTokenRepository.save(userId, accessToken);
         return ResponseEntity.ok("GitHub 연동 완료");
     }
 
