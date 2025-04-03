@@ -1,32 +1,37 @@
 package com.nob.pick.pickgateway.filter;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
-import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
-import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
-import java.util.Set;
+import java.util.Base64;
+import java.util.List;
 
 @Component
-@Slf4j
-public class AuthorizationHeaderFilter
-        extends AbstractGatewayFilterFactory<AuthorizationHeaderFilter.Config> {
+public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<AuthorizationHeaderFilter.Config> {
+    private static final Logger logger = LoggerFactory.getLogger(AuthorizationHeaderFilter.class);
+    private final Environment env;
+    private final JwtParser jwtParser;
 
-    private Environment env;
-
-    @Autowired
     public AuthorizationHeaderFilter(Environment env) {
         super(Config.class);
         this.env = env;
+        String secret = env.getProperty("jwt.secret");
+        byte[] keyBytes = Base64.getDecoder().decode(secret); // Base64 디코딩 추가
+        this.jwtParser = Jwts.parserBuilder()
+            .setSigningKey(keyBytes) // 디코딩된 바이트 배열 사용
+            .build();
     }
 
     public static class Config {
@@ -36,59 +41,42 @@ public class AuthorizationHeaderFilter
     public GatewayFilter apply(Config config) {
         return (exchange, chain) -> {
             ServerHttpRequest request = exchange.getRequest();
-
-            if(!request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
-                return onError(exchange, "No autorization header", HttpStatus.UNAUTHORIZED);
-            }
+            logger.info("Request received - Path: {}", request.getPath());
 
             HttpHeaders headers = request.getHeaders();
-
-            Set<String> keys = headers.keySet();
-            log.info(">>>");
-            keys.stream().forEach(v -> {
-                log.info(v + "=" + request.getHeaders().get(v));
-            });
-            log.info("<<<");
-
-            String bearerToken = request.getHeaders().get(HttpHeaders.AUTHORIZATION).get(0);
-            String jwt = bearerToken.replace("Bearer ", "");
-
-            if(!isJwtValid(jwt)) {
-                return onError(exchange, "JWT token is not valid", HttpStatus.UNAUTHORIZED);
+            if (!headers.containsKey(HttpHeaders.AUTHORIZATION)) {
+                return Mono.error(new RuntimeException("No Authorization header"));
             }
 
-            return chain.filter(exchange);
+            String authHeader = headers.getFirst(HttpHeaders.AUTHORIZATION);
+            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                return Mono.error(new RuntimeException("Invalid Authorization header"));
+            }
+
+            String jwt = authHeader.substring(7);
+            logger.info("JWT Token: {}", jwt);
+
+            try {
+                Claims claims = jwtParser.parseClaimsJws(jwt).getBody();
+                logger.debug("JWT claims: {}", claims);
+
+                Integer id = claims.get("id", Integer.class);
+                String subject = claims.getSubject();
+                List<String> roles = claims.get("roles", List.class);
+
+                logger.debug("Extracted id: {}, subject: {}, roles: {}", id, subject, roles);
+
+                // 요청 헤더에 정보 추가
+                ServerHttpRequest modifiedRequest = request.mutate()
+                    .header("X-User-Id", String.valueOf(id)) // String으로 변환하여 헤더에 추가
+                    .header("X-User-Roles", String.join(",", roles))
+                    .build();
+
+                return chain.filter(exchange.mutate().request(modifiedRequest).build());
+            } catch (JwtException | IllegalArgumentException e) {
+                logger.error("JWT parsing error: {}", e.getMessage());
+                return Mono.error(new RuntimeException("Invalid JWT token"));
+            }
         };
-    }
-
-    private boolean isJwtValid(String jwt) {
-        boolean returnValue = true;
-
-        String subject = null;
-
-        try {
-            subject = Jwts.parser()
-                    .setSigningKey(env.getProperty("token.secret"))
-                    .parseClaimsJws(jwt)
-                    .getBody()
-                    .getSubject();
-        } catch (Exception e) {
-            returnValue = false;
-        }
-
-        if (subject == null || subject.isEmpty()) {
-            returnValue = false;
-        }
-
-        return returnValue;
-    }
-
-    private Mono<Void> onError(ServerWebExchange exchange, String errorMessage, HttpStatus httpStatus) {
-
-        ServerHttpResponse response = exchange.getResponse();
-        response.setStatusCode(httpStatus);
-        log.info("에러 메세지: " + errorMessage);
-
-        return response.setComplete();
     }
 }
