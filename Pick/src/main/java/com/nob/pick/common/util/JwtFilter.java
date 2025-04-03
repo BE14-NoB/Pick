@@ -34,7 +34,9 @@ public class JwtFilter extends OncePerRequestFilter {
 		path = path.endsWith("/") ? path.substring(0, path.length() - 1) : path;
 
 		boolean shouldNotFilter =
-			(method.equals("POST") && path.equals("/api/members/email")) ||
+				path.startsWith("/oauth2/") ||
+				path.startsWith("/login/oauth2/") ||
+				(method.equals("POST") && path.equals("/api/members/email")) ||
 				(method.equals("POST") && path.equals("/api/members/password")) ||
 				(method.equals("POST") && path.equals("/api/members/check-email")) ||
 				(method.equals("POST") && path.equals("/api/members/check-phone")) ||

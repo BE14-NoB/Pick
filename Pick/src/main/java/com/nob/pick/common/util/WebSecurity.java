@@ -1,5 +1,6 @@
 package com.nob.pick.common.util;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -85,7 +86,10 @@ public class WebSecurity {
 						response.setContentType("application/json");
 						response.getWriter().write("{\"error\": \"Forbidden\", \"message\": \"" + accessDeniedException.getMessage() + "\"}");
 					})
-			);
+			)
+				.oauth2Login(oauth2 -> oauth2
+						.defaultSuccessUrl("/api/github/callback", true)
+				);
 
 		http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
