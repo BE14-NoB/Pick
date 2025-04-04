@@ -1,6 +1,6 @@
 package com.nob.pick.badge.command.domain.aggregate;
 
-import com.nob.pick.member.command.entity.Member;
+// import com.nob.pick.member.command.entity.Member;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -31,7 +31,6 @@ public class MemberBadge {
 	@JoinColumn(name = "badge_id")
 	private Badge badge;
 
-	@ManyToOne
-	@JoinColumn(name = "member_id")
-	private Member member;
+	@Column(name = "member_id", nullable = false)
+	private Long memberId;
 }
