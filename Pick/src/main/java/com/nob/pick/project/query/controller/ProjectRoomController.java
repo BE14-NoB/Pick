@@ -136,7 +136,7 @@ public class ProjectRoomController {
         List<ResponseParticipantVO> participantVOList = participantDTOToVO(participantDTOList);
 
         // 회의록 정보 가져오기
-        List<MeetingDTO> meetingList = meetingService.getMeetingsByProjectId(projectId);
+        List<MeetingDTO> meetingList = meetingService.getMeetingListByProjectId(projectId);
         ResponseActiveProjectRoomVO enteredProject = getResponseActiveProjectRoomVO(projectRoom, participantVOList, meetingList);
 
         log.info("프로젝트 방 입장 성공 memberId={}, projectId={}", request.getMemberId(), projectId);

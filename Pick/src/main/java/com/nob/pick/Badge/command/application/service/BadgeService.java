@@ -18,8 +18,6 @@ import com.nob.pick.achievement.command.domain.aggregate.MemberAchievement;
 import com.nob.pick.achievement.command.domain.repository.MemberAchievementRepository;
 import com.nob.pick.challenge.command.domain.aggregate.Challenge;
 import com.nob.pick.challenge.command.domain.repository.ChallengeRepository;
-import com.nob.pick.member.command.entity.Member;
-import com.nob.pick.member.command.repository.MemberRepository;
 
 @Service
 public class BadgeService {
@@ -33,8 +31,6 @@ public class BadgeService {
 	@Autowired
 	private MemberBadgeRepository memberBadgeRepository;
 
-	@Autowired
-	private MemberRepository memberRepository;
 
 	@Autowired
 	private MemberAchievementRepository memberAchievementRepository;
@@ -81,8 +77,8 @@ public class BadgeService {
 	// 회원에게 뱃지 부여 및 레벨업
 	public void awardBadgeToMember(Long memberId, int badgeId) {
 		// Member와 Badge 객체를 각각 조회
-		Member member = memberRepository.findById(memberId)
-			.orElseThrow(() -> new IllegalArgumentException("회원 정보를 찾을 수 없습니다."));
+		// Member member = memberRepository.findById(memberId)
+		// 	.orElseThrow(() -> new IllegalArgumentException("회원 정보를 찾을 수 없습니다."));
 
 		Badge badge = badgeRepository.findById(badgeId)
 			.orElseThrow(() -> new IllegalArgumentException("뱃지를 찾을 수 없습니다."));
@@ -97,7 +93,7 @@ public class BadgeService {
 		} else {
 			// 새로운 뱃지 부여
 			MemberBadge newBadge = new MemberBadge();
-			newBadge.setMember(member);  // Member 객체 설정
+			newBadge.setMember(memberId);  // Member 객체 설정
 			newBadge.setBadge(badge);    // Badge 객체 설정
 			newBadge.setLevel(1);        // 레벨 1로 설정
 			newBadge.setAcquiredDate("2025-03-25");  // 획득 날짜 설정 (예시)

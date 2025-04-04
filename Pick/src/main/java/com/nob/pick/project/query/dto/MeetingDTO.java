@@ -1,6 +1,9 @@
 package com.nob.pick.project.query.dto;
 
 import com.nob.pick.project.query.aggregate.ProjectMeetingImage;
+import com.nob.pick.project.query.dto.enums.MeetingParticipantRole;
+import com.nob.pick.project.query.dto.enums.TemplateType;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,8 +25,8 @@ public class MeetingDTO {
     private String updateTime;
     private int authorId;
     private String authorName;
-    private int projectId;
-
+    private int projectRoomId;
     private List<ProjectMeetingImage> images;  // 이미지 리스트
-
+    private Integer meetingTemplateId;
+    private List<MeetingParticipantDTO> participants;
 }

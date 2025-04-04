@@ -1,7 +1,7 @@
 package com.nob.pick.project.command.domain.aggregate.entity;
 
 import com.nob.pick.common.config.convertor.BooleanToYNConverter;
-import com.nob.pick.member.command.entity.Member;
+// import com.nob.pick.member.command.entity.Member;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
@@ -34,9 +34,12 @@ public class Participant {
 	@Convert(converter = BooleanToYNConverter.class)
 	private boolean isManager = false;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="member_id", nullable = false)
-	private Member member;
+	// @ManyToOne(fetch = FetchType.LAZY)
+	// @JoinColumn(name="member_id", nullable = false)
+	// private Member member;
+
+	@Column(name="member_id", nullable = false)
+	private int memberId;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "project_room_id", nullable = false)

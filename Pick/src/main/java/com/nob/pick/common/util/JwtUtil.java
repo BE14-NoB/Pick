@@ -1,7 +1,5 @@
 package com.nob.pick.common.util;
 
-import com.nob.pick.member.command.entity.Member;
-import com.nob.pick.member.command.repository.MemberRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

@@ -8,8 +8,8 @@
         <id property="id" column="ID"/>
         <result property="name" column="NAME"/>
         <result property="content" column="CONTENT"/>
-        <result property="isFinished" column="IS_FINISHED" typeHandler="com.nob.pick.common.config.typehandler.StringYnTypeHandler"/>
-        <result property="isDeleted" column="IS_DELETED" typeHandler="com.nob.pick.common.config.typehandler.StringYnTypeHandler"/>
+        <result property="isFinished" column="IS_FINISHED" />
+        <result property="isDeleted" column="IS_DELETED" />
         <result property="durationTime" column="DURATION_TIME"/>
         <result property="maximumParticipant" column="MAXIMUM_PARTICIPANT"/>
         <result property="sessionCode" column="SESSION_CODE"/>

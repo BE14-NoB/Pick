@@ -25,7 +25,7 @@ import lombok.ToString;
 @Getter
 @Entity
 @Table(name="project_meeting_image")
-public class ProjectMeetingImage {
+public class ProjectMeetingImage {  // 프로젝트 회의록 이미지
 
 	@Id
 	@Column(name="id", nullable=false)
