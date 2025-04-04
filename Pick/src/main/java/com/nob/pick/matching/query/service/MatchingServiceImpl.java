@@ -1,11 +1,11 @@
 package com.nob.pick.matching.query.service;
 
+import com.nob.pick.infrastructure.MemberServiceClient;
 import com.nob.pick.matching.query.aggregate.Matching;
 import com.nob.pick.matching.query.aggregate.MatchingEntry;
 import com.nob.pick.matching.query.aggregate.TechnologyCategory;
 import com.nob.pick.matching.query.dto.*;
 import com.nob.pick.matching.query.mapper.MatchingMapper;
-import com.nob.pick.member.query.service.MemberService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,11 +20,13 @@ import java.util.stream.Collectors;
 public class MatchingServiceImpl implements MatchingService{
 
     private final MatchingMapper matchingMapper;
-    private final MemberService memberService;
+//    private final MemberService memberService;
+    private final MemberServiceClient memberServiceClient;
+
     @Autowired
-    public MatchingServiceImpl(MatchingMapper matchingMapper, MemberService memberService) {
+    public MatchingServiceImpl(MatchingMapper matchingMapper, MemberServiceClient memberServiceClient) {
         this.matchingMapper = matchingMapper;
-        this.memberService = memberService;
+        this.memberServiceClient = memberServiceClient;
     }
 
     @Override
@@ -99,15 +101,16 @@ public class MatchingServiceImpl implements MatchingService{
     public List<MatchingDTO> getSearchMatching(SearchMatchingDTO searchMatchingDTO) {
         // 신청자 레벨
 
-        int memberLevel = memberService.findMemberInfoById(searchMatchingDTO.getMemberId()).getId();
+        int memberLevel = memberServiceClient.getMemberProfileByMemberId(searchMatchingDTO.getMemberId()).getId();
 
         log.info("searchMatchingDTO: {}", searchMatchingDTO);
         // 전체 방 조회
         List<Matching> matchingList = matchingMapper.selectAllMatching();
+        List<MatchingDTO> matchingDTOList = matching2MatchingDTO(matchingList);
 
         List<MatchingInfo> matchingInfoList = matchingList.stream()
                 .map(matching -> {
-                    int level = memberService.findMemberInfoById(searchMatchingDTO.getMemberId()).getId();
+                    int level = memberServiceClient.getMemberProfileByMemberId(matching.getMemberId()).getLevel();
                     return new MatchingInfo(matching.getId(), matching.getMemberId(), level);
                 })
                 .collect(Collectors.toList());

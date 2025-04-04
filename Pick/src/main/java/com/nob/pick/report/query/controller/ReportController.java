@@ -35,7 +35,7 @@ public class ReportController {
 
     // 특정 회원이 받은 신고 내역 조회
     @GetMapping("/{memberId}")
-    public ResponseEntity<List<ReportDTO>> getReportByUser(@PathVariable int memberId) {
+    public ResponseEntity<List<ReportDTO>> getReportsByMemberId(@PathVariable int memberId) {
         log.info("memberId: " + memberId);
 
         List<ReportDTO> reports = reportService.findReportsByMemberId(memberId);

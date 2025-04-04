@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
 
-import com.nob.kickmember.member.query.dto.Status;
+import com.nob.kickmember.common.enums.Status;
 
 public class StatusEnumTypeHandler extends BaseTypeHandler<Status> {
 

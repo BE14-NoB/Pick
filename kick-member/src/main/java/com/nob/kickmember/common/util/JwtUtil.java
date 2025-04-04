@@ -6,7 +6,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -17,15 +17,23 @@ import java.util.Date;
 import java.util.List;
 
 @Component
-// @RequiredArgsConstructor
 public class JwtUtil {
 
-	private final MemberRepository memberRepository;
+	@Autowired
+	private MemberRepository memberRepository;
 
-	private final Key secretKey;
-	private final long expiration;
+	private Key secretKey;
 
-	public JwtUtil(
+	private long expiration;
+
+	// 기본 생성자
+	public JwtUtil() {
+		// Spring이 필드 주입을 처리함
+	}
+
+	// @Value와 @Autowired로 주입 후 초기화
+	@Autowired
+	public void init(
 		@Value("${jwt.secret}") String secret,
 		@Value("${jwt.expiration}") long expiration,
 		MemberRepository memberRepository
@@ -40,12 +48,11 @@ public class JwtUtil {
 		Member member = memberRepository.findByEmail(email)
 			.orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다: " + email));
 		String role = member.getUserGrant() == 0 ? "ADMIN" : "MEMBER";
-
-		// ROLE_ 접두사 추가
+		Long memberId = member.getId();
 		String roleWithPrefix = "ROLE_" + role;
-		// System.out.println("Role with prefix: " + roleWithPrefix); // 디버깅 로그 추가
 
 		Claims claims = Jwts.claims().setSubject(email);
+		claims.put("id", memberId);
 		claims.put("roles", Collections.singletonList(roleWithPrefix));
 		Date now = new Date();
 		Date validity = new Date(now.getTime() + expiration);
@@ -76,6 +83,16 @@ public class JwtUtil {
 			.parseClaimsJws(token)
 			.getBody()
 			.get("roles", List.class);
+	}
+
+	public Long getId(String token) {
+		validateTokenFormat(token);
+		return Jwts.parserBuilder()
+			.setSigningKey(secretKey)
+			.build()
+			.parseClaimsJws(token)
+			.getBody()
+			.get("id", Long.class);
 	}
 
 	public boolean validateToken(String token) {

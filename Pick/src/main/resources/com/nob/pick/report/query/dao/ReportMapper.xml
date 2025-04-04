@@ -15,10 +15,10 @@
     <resultMap type="com.nob.pick.report.query.dto.ReportDTO" id="reportResultMap">
         <id property="id" column="ID"/>
         <result property="reportedAt" column="REPORTED_AT"/>
-        <result property="status" column="STATUS" typeHandler="com.nob.pick.common.config.typehandler.ReportStatusEnumTypeHandler"/>
-        <result property="category" column="CATEGORY" typeHandler="com.nob.pick.common.config.typehandler.ReportCategoryEnumTypeHandler"/>
+        <result property="status" column="STATUS"/>
+        <result property="category" column="CATEGORY"/>
         <result property="reportedId" column="REPORTED_ID"/>
-        <result property="isDeleted" column="IS_DELETED" typeHandler="com.nob.pick.common.config.typehandler.StringYnTypeHandler"/>
+        <result property="isDeleted" column="IS_DELETED"/>
         <result property="reportReasonId" column="REPORT_REASON_ID"/>
         <result property="memberId" column="MEMBER_ID"/>
 

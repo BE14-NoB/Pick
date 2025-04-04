@@ -1,5 +1,7 @@
 package com.nob.kickmember.member.query.dto;
 
+import com.nob.kickmember.common.enums.Status;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,7 +14,7 @@ import lombok.ToString;
 @Setter
 @ToString
 public class MemberDTO {
-	private int id;
+	private Long id;
 	private String name;
 	private int age;
 	private String ihidnum;
@@ -21,6 +23,6 @@ public class MemberDTO {
 	private String password;
 	private String nickname;
 	private Status status;
-	private int reportedCount;
+	private int regulatedCount;
 	private UserGrant userGrant;
 }

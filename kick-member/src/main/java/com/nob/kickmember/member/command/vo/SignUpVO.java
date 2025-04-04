@@ -1,6 +1,9 @@
 package com.nob.kickmember.member.command.vo;
 
+import java.util.Objects;
+
 import lombok.Getter;
+
 
 @Getter
 public class SignUpVO {
@@ -22,4 +25,19 @@ public class SignUpVO {
 		this.nickname = nickname;
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (o == null || getClass() != o.getClass())
+			return false;
+		SignUpVO signUpVO = (SignUpVO)o;
+		return Objects.equals(name, signUpVO.name) && Objects.equals(age, signUpVO.age)
+			&& Objects.equals(ihidnum, signUpVO.ihidnum) && Objects.equals(phoneNumber,
+			signUpVO.phoneNumber) && Objects.equals(email, signUpVO.email) && Objects.equals(password,
+			signUpVO.password) && Objects.equals(nickname, signUpVO.nickname);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(name, age, ihidnum, phoneNumber, email, password, nickname);
+	}
 }

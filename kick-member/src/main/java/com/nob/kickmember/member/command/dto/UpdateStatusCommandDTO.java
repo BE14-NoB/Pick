@@ -1,6 +1,6 @@
 package com.nob.kickmember.member.command.dto;
 
-import com.nob.kickmember.member.query.dto.Status; // Query의 Status enum 재사용
+import com.nob.kickmember.common.enums.Status; // Query의 Status enum 재사용
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;

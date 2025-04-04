@@ -9,7 +9,7 @@ import org.apache.ibatis.annotations.Param;
 import com.nob.kickmember.member.query.dto.MemberDTO;
 import com.nob.kickmember.member.query.dto.MemberProfilePageDTO;
 import com.nob.kickmember.member.query.dto.ProgrammingLanguageInfoDTO;
-import com.nob.kickmember.member.query.dto.Status;
+import com.nob.kickmember.common.enums.Status;
 
 @Mapper
 public interface MemberMapper {
