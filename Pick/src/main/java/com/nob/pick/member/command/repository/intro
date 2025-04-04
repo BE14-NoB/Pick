@@ -1,0 +1,13 @@
+infrastructure == repo에요
+MemberRepository.java (api)
+ExternalApiService.java
+
+MemberMapper.java
+
+이 infrastructure 단이긴한데
+resources 에 .xml파일도 있어야해요
+
+
+*Repository.java (Command), *Mapper.java (Query), *Mapper.xml (선택), *ExternalApiService.java (선택)
+	외부 시스템(데이터베이스, API)와 통신
+

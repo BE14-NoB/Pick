@@ -1,0 +1,2 @@
+*Repository.java (Command), *Mapper.java (Query), *Mapper.xml (선택), *ExternalApiService.java
+(선택)	외부 시스템(데이터베이스, API)와 통신
