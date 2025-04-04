@@ -4,6 +4,8 @@ import com.nob.pick.dailymission.command.domain.aggregate.DailyMission;
 import com.nob.pick.dailymission.command.domain.aggregate.MemberDailyMission;
 import com.nob.pick.dailymission.command.domain.repository.DailyMissionRepository;
 import com.nob.pick.dailymission.command.domain.repository.MemberDailyMissionRepository;
+import com.nob.pick.member.command.entity.Member;
+import com.nob.pick.member.command.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -17,26 +19,27 @@ import java.util.List;
 public class DailyMissionAssignmentService {
 
 	private final DailyMissionRepository dailyMissionRepository;
+	private final MemberRepository memberRepository;
 	private final MemberDailyMissionRepository memberDailyMissionRepository;
 
 	// 매일 자정에 모든 회원에게 일일 미션을 부여
-	// @Scheduled(cron = "0 0 0 * * ?")
-	// public void assignDailyMissionsToAllMembers() {
-	// 	List<DailyMission> dailyMissions = dailyMissionRepository.findByIsDeletedFalse();
-	//
-	// 	List<Member> members = memberRepository.findAll();
-	//
-	// 	for (Member member : members) {
-	// 		for (DailyMission dailyMission : dailyMissions) {
-	// 			MemberDailyMission memberDailyMission = new MemberDailyMission();
-	// 			memberDailyMission.setMember(member);
-	// 			memberDailyMission.setDailyMission(dailyMission);
-	// 			memberDailyMission.setIsCompleted(false);
-	// 			memberDailyMission.setAcceptedDate(null);
-	// 			memberDailyMissionRepository.save(memberDailyMission);
-	// 		}
-	// 	}
-	// }
+	@Scheduled(cron = "0 0 0 * * ?")
+	public void assignDailyMissionsToAllMembers() {
+		List<DailyMission> dailyMissions = dailyMissionRepository.findByIsDeletedFalse();
+
+		List<Member> members = memberRepository.findAll();
+
+		for (Member member : members) {
+			for (DailyMission dailyMission : dailyMissions) {
+				MemberDailyMission memberDailyMission = new MemberDailyMission();
+				memberDailyMission.setMember(member);
+				memberDailyMission.setDailyMission(dailyMission);
+				memberDailyMission.setIsCompleted(false);
+				memberDailyMission.setAcceptedDate(null);
+				memberDailyMissionRepository.save(memberDailyMission);
+			}
+		}
+	}
 
 	// // 일주일마다 회원별 일일 미션 삭제
 	// @Scheduled(cron = "0 0 0 * * 0")
