@@ -4,35 +4,39 @@ import com.nob.pick.dailymission.command.domain.aggregate.DailyMission;
 import com.nob.pick.dailymission.command.domain.aggregate.MemberDailyMission;
 import com.nob.pick.dailymission.command.domain.repository.DailyMissionRepository;
 import com.nob.pick.dailymission.command.domain.repository.MemberDailyMissionRepository;
-import com.nob.pick.member.command.entity.Member;
-import com.nob.pick.member.command.repository.MemberRepository;
+import com.nob.pick.dailymission.command.infrastructure.MemberClient;
+// import com.nob.pick.member.command.entity.Member;
+// import com.nob.pick.member.command.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class DailyMissionAssignmentService {
+@Slf4j
+public class MemberDailyMissionService {
 
 	private final DailyMissionRepository dailyMissionRepository;
-	private final MemberRepository memberRepository;
 	private final MemberDailyMissionRepository memberDailyMissionRepository;
+	private final MemberClient memberClient;
 
 	// 매일 자정에 모든 회원에게 일일 미션을 부여
 	@Scheduled(cron = "0 0 0 * * ?")
 	public void assignDailyMissionsToAllMembers() {
+		log.info("일일 미션 부여 시작!");
+
 		List<DailyMission> dailyMissions = dailyMissionRepository.findByIsDeletedFalse();
 
-		List<Member> members = memberRepository.findAll();
+		List<Long> memberIds = memberClient.getAllMemberIds();
 
-		for (Member member : members) {
+		for (Long memberId : memberIds) {
 			for (DailyMission dailyMission : dailyMissions) {
 				MemberDailyMission memberDailyMission = new MemberDailyMission();
-				memberDailyMission.setMember(member);
+				memberDailyMission.setMemberId(memberId);
 				memberDailyMission.setDailyMission(dailyMission);
 				memberDailyMission.setIsCompleted(false);
 				memberDailyMission.setAcceptedDate(null);

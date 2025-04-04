@@ -1,7 +1,6 @@
 package com.nob.pick.dailymission.command.domain.aggregate;
 
 import com.nob.pick.common.config.BooleanToYNConverter;
-import com.nob.pick.member.command.entity.Member;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
@@ -40,7 +39,6 @@ public class MemberDailyMission {
 	@JoinColumn(name = "daily_mission_id", referencedColumnName = "id", nullable = false)
 	private DailyMission dailyMission;
 
-	@ManyToOne
-	@JoinColumn(name = "member_id", referencedColumnName = "id", nullable = false)
-	private Member member;
+	@Column(name = "member_id", nullable = false)
+	private Long memberId;
 }

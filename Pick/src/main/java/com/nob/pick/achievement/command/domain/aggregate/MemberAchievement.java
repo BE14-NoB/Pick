@@ -1,7 +1,5 @@
 package com.nob.pick.achievement.command.domain.aggregate;
 
-import com.nob.pick.member.command.entity.Member;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -37,7 +35,6 @@ public class MemberAchievement {
 	@JoinColumn(name = "achievement_id", nullable = false)
 	private Achievement achievement;
 
-	@ManyToOne
-	@JoinColumn(name = "member_id", nullable = false)
-	private Member member;
+	@Column(name = "member_id", nullable = false)
+	private Long memberId;
 }

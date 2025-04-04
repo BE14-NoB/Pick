@@ -8,5 +8,5 @@ import lombok.Setter;
 public class BadgeAwardDTO {
 
 	private Long memberId;
-	private int badgeId;
+	private int achievementId;  // 도전과제ID 받아서 진행도 체크
 }

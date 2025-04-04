@@ -25,7 +25,7 @@ public class MemberAchievementController {
 	@ResponseStatus(HttpStatus.OK)
 	public void updateMemberAchievementProgress(
 		@PathVariable Long memberId,
-		@PathVariable Long achievementId,
+		@PathVariable int achievementId,
 		@RequestBody ProgressUpdateRequestDTO progressUpdateRequestDTO) {
 
 		achievementService.updateMemberAchievementProgress(

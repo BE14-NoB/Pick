@@ -52,7 +52,7 @@ public class AchievementService {
 
 	// 회원별 도전 과제 진행도 업데이트
 	@Transactional
-	public void updateMemberAchievementProgress(Long memberId, Long achievementId, Integer progressIncrement) {
+	public void updateMemberAchievementProgress(Long memberId, int achievementId, Integer progressIncrement) {
 		MemberAchievement memberAchievement = memberAchievementRepository.findByMemberIdAndAchievementId(memberId, achievementId)
 			.orElseThrow(() -> new EntityNotFoundException("회원별 도전 과제를 찾을 수 없습니다."));
 
