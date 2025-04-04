@@ -1,5 +1,6 @@
 package com.nob.pick.common.util;
 
+import com.nob.pick.gitactivity.command.domain.repository.GitHubTokenRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -10,6 +11,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -20,22 +24,28 @@ public class WebSecurity {
 	private final Environment env;
 	private final JwtUtil jwtUtil;
 	private final JwtFilter jwtFilter;
+	private final OAuth2AuthorizedClientService authorizedClientService;
 
 	@Autowired
-	public WebSecurity(Environment env, JwtUtil jwtUtil, JwtFilter jwtFilter) {
+	public WebSecurity(Environment env, JwtUtil jwtUtil, JwtFilter jwtFilter, OAuth2AuthorizedClientService authorizedClientService) {
 		this.env = env;
 		this.jwtUtil = jwtUtil;
 		this.jwtFilter = jwtFilter;
+		this.authorizedClientService = authorizedClientService;
 	}
 
 	@Bean
-	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+	public SecurityFilterChain securityFilterChain(HttpSecurity http, GitHubTokenRepository gitHubTokenRepository) throws Exception {
 		http.csrf(csrf -> csrf.disable());
 
 		http.authorizeHttpRequests(authz ->
 				authz
 					.requestMatchers("/**").permitAll()
 
+
+					// OAuth2
+					.requestMatchers("/oauth2/**", "/login/oauth2/**").permitAll()
+						.requestMatchers("/api/github/**").permitAll()
 					// SecurityConfig에서 가져온 설정
 					.requestMatchers("/api/members/signup").permitAll()
 
@@ -88,7 +98,21 @@ public class WebSecurity {
 					})
 			)
 				.oauth2Login(oauth2 -> oauth2
-						.defaultSuccessUrl("/api/github/callback", true)
+						.successHandler((request, response, authentication) -> {
+							OAuth2AuthenticationToken auth = (OAuth2AuthenticationToken) authentication;
+							OAuth2AuthorizedClient client = authorizedClientService
+									.loadAuthorizedClient(auth.getAuthorizedClientRegistrationId(), auth.getName());
+
+							String accessToken = client.getAccessToken().getTokenValue();
+							System.out.println("✅ GitHub AccessToken: " + accessToken);
+
+							// 현재 로그인한 사용자 ID 추출 지금은 JWT가 없지만 테스트용으로 userId 임의 설정
+							int userId = 1;
+							gitHubTokenRepository.save(userId, accessToken);
+
+							response.setContentType("application/json");
+							response.getWriter().write("{\"message\": \"GitHub 연동 성공!\"}");
+						})
 				);
 
 		http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

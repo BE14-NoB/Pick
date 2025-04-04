@@ -19,7 +19,7 @@ public class GitHubActivityService {
 
     public void createIssueForUser(String jwt, String owner, String repo, String title, String body) {
         int userId = jwtUtil.getId(jwt);
-        String githubToken = tokenStore.get(userId);
+        String githubToken = tokenStore.get(1);
 
         WebClient client = WebClient.builder()
                 .baseUrl("https://api.github.com")
