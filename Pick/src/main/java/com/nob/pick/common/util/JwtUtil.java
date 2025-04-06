@@ -14,6 +14,9 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import com.nob.pick.member.command.entity.Member;
+import com.nob.pick.member.command.repository.MemberRepository;
+
 @Component
 // @RequiredArgsConstructor
 public class JwtUtil {
@@ -24,8 +27,7 @@ public class JwtUtil {
 	private final long expiration;
 
 	public JwtUtil(
-		@Value("${jwt.secret}") String secret
-		,
+		@Value("${jwt.secret}") String secret,
 		@Value("${jwt.expiration}") long expiration,
 		MemberRepository memberRepository
 	) {
