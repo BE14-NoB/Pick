@@ -80,4 +80,5 @@ public class MeetingServiceImpl implements MeetingService {
                 .orElseThrow(() -> new IllegalArgumentException("참여자를 찾을 수 없습니다. participantId=" + participantId));
     }
 
+
 }

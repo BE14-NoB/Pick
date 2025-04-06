@@ -6,13 +6,19 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
+<<<<<<< HEAD
 import org.springframework.security.access.AccessDeniedException;
+=======
+>>>>>>> 989de0bb7c4280d9d1aac7b03eafb8ac77045207
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+<<<<<<< HEAD
 import com.nob.pick.common.util.FileUploader;
 import com.nob.pick.project.command.application.dto.ProjectRoomEditDTO;
+=======
+>>>>>>> 989de0bb7c4280d9d1aac7b03eafb8ac77045207
 import com.nob.pick.project.command.application.dto.RequestParticipantDTO;
 import com.nob.pick.project.command.application.dto.RequestProjectRoomDTO;
 import com.nob.pick.project.command.domain.aggregate.entity.Participant;
@@ -32,10 +38,15 @@ public class ProjectRoomServiceImpl implements ProjectRoomService {
 	private final ParticipantRepository participantRepository;
 
 	@Autowired
+<<<<<<< HEAD
 	public ProjectRoomServiceImpl(FileUploader fileUploader,
 		  						  ProjectRoomRepository projectRoomRepository,
 								  ParticipantRepository participantRepository) {
 		this.fileUploader = fileUploader;
+=======
+	public ProjectRoomServiceImpl(ProjectRoomRepository projectRoomRepository,
+								  ParticipantRepository participantRepository) {
+>>>>>>> 989de0bb7c4280d9d1aac7b03eafb8ac77045207
 		this.projectRoomRepository = projectRoomRepository;
 		this.participantRepository = participantRepository;
 	}
@@ -188,6 +199,7 @@ public class ProjectRoomServiceImpl implements ProjectRoomService {
 		}
 	}
 
+<<<<<<< HEAD
 	
 	// 매일 새벽 00시, 유예기간(일주일) 내 팀원 모집에 실패한 자율 매칭 프로젝트 방 삭제
 	@Scheduled(cron = "0 0 0 * * *")	// 매일 자정에 실행
@@ -212,6 +224,13 @@ public class ProjectRoomServiceImpl implements ProjectRoomService {
 
 		}
 		projectRoomRepository.saveAll(candidates);
+=======
+	// ## TODO
+	// 매일 새벽 3시, 유예기간(일주일) 내 팀원 모집 실패한 자율 매칭 프로젝트 방 삭제
+	@Scheduled(cron = "0 0 3 * * *")
+	public void deleteUnmatchedProjectRooms(){
+		// List<ProjectRoom> unmatchedProejctList = projectRoomRepository.findAllBy
+>>>>>>> 989de0bb7c4280d9d1aac7b03eafb8ac77045207
 	}
 
 	// 개발 기간 기반 프로젝트 마감 기간 계산
