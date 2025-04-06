@@ -46,6 +46,9 @@ public class PostController {
 	@GetMapping("/{id}")
 	public ResponseEntity<ResponsePostCommentVO> getPostComment(@PathVariable int id) {
 		PostDTO postDTO = postService.getPostById(id);
+		if (postDTO == null) {
+			return ResponseEntity.notFound().build();
+		}
 		List<PostImageDTO> postImageDTOList = postService.getPostImageListByPostId(id);
 		List<CommentDTO> commentDTOList = postService.getCommentListByPostId(id);
 		PostCommentDTO postCommentDTO = postCommentDTOBuilder(postDTO, postImageDTOList, commentDTOList);
