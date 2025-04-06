@@ -40,78 +40,40 @@ public class ProjectRoomServiceImpl implements ProjectRoomService {
 		this.participantRepository = participantRepository;
 	}
 
+	// 랜덤 매칭 방 생성
+	@Override
+	@Transactional
+	public void createMatchingProject(RequestProjectRoomDTO newProjectRoom) {
+		// 방 이름 중복 방지
+		String uniqueName = generateUniqueRoomName(newProjectRoom.getName());
+
+		ProjectRoom projectRoom = buildProjectRoom(newProjectRoom, uniqueName, null);
+		System.out.println("projectRoom = " + projectRoom);
+
+		ProjectRoom saved = projectRoomRepository.save(projectRoom);
+		log.info("랜덤 매칭 프로젝트 방 생성 완료! ID: {}", saved.getId());
+
+		insertParticipants(newProjectRoom.getParticipantList(), saved);
+	}
+
 	// 자율 매칭 방 생성
 	@Override
 	@Transactional
 	public void createNonMatchingProject(RequestProjectRoomDTO newProjectRoom) {
-		int durationMonth = parseDurationMonth(newProjectRoom.getDurationTime());
-		LocalDate now = LocalDate.now();
-
-		String durationTimeStr = durationMonth + "개월";
-		String startDateStr = now.toString();
-		String endDateStr = now.plusMonths(durationMonth).toString();
-
-		int sessionCode = generateRangeRandomNum();
+		// 방 이름 중복 방지
+		String uniqueName = generateUniqueRoomName(newProjectRoom.getName());
+		
+		// 세션 코드 생성
+		int sessionCode = generateUniqueSessionCode();
 		log.info("생성된 세션 코드: {}", sessionCode);
 
-		ProjectRoom projectRoom = ProjectRoom.builder()
-			.name(newProjectRoom.getName())
-			.content(newProjectRoom.getContent())
-			.maximumParticipant(newProjectRoom.getMaximumParticipant())
-			.durationTime(durationTimeStr)
-			.startDate(LocalDate.parse(startDateStr))
-			.endDate(LocalDate.parse(endDateStr))
-			.sessionCode(sessionCode)
-			.isFinished(false)
-			.isDeleted(false)
-			.thumbnailImage(null)
-			.introduction(null)
-			.technologyCategoryId(newProjectRoom.getTechnologyCategory())
-			.build();
+		ProjectRoom projectRoom = buildProjectRoom(newProjectRoom, uniqueName, sessionCode);
 		System.out.println("projectRoom = " + projectRoom);
 
-		ProjectRoom savedProjectRoom = projectRoomRepository.save(projectRoom);
-		// 확인
-		log.info("Project Room 생성 완료! ID: {}", savedProjectRoom.getId());
+		ProjectRoom saved = projectRoomRepository.save(projectRoom);
+		log.info("자율 매칭 방 생성 완료! ID: {}", saved.getId());
 
-		// 팀원 INSERT
-		insertParticipants(newProjectRoom.getParticipantList(), savedProjectRoom);
-
-	}
-
-	// 매칭 방 생성 
-	@Override
-	@Transactional
-	public void createMatchingProject(RequestProjectRoomDTO newProjectRoom) {
-		int durationMonth = parseDurationMonth(newProjectRoom.getDurationTime());
-		LocalDate now = LocalDate.now();
-
-		String durationTimeStr = durationMonth + "개월";
-		String startDateStr = now.toString();
-		String endDateStr = now.plusMonths(durationMonth).toString();
-		// 세션 코드 없음
-		ProjectRoom projectRoom = ProjectRoom.builder()
-			.name(newProjectRoom.getName())
-			.content(newProjectRoom.getContent())
-			.maximumParticipant(newProjectRoom.getMaximumParticipant())
-			.durationTime(durationTimeStr)
-			.startDate(LocalDate.parse(startDateStr))
-			.endDate(LocalDate.parse(endDateStr))
-			.isFinished(false)
-			.isDeleted(false)
-			.thumbnailImage(null)
-			.introduction(null)
-			.technologyCategoryId(newProjectRoom.getTechnologyCategory())
-			.build();
-		System.out.println("projectRoom = " + projectRoom);
-
-		ProjectRoom savedProjectRoom = projectRoomRepository.save(projectRoom);
-		// 확인
-		log.info("자율 매칭 프로젝트 방 생성 완료! ID: {}", savedProjectRoom.getId());
-
-		// 팀원 INSERT
-		insertParticipants(newProjectRoom.getParticipantList(), savedProjectRoom);
-
+		insertParticipants(newProjectRoom.getParticipantList(), saved);
 	}
 
 	// 프로젝트 방 정보 수정
@@ -140,6 +102,7 @@ public class ProjectRoomServiceImpl implements ProjectRoomService {
 		projectRoomRepository.save(project);
 	}
 
+
 	// 입장 코드 입력 후 자율 매칭 프로젝트 방 입장
 	@Override
 	public void joinProjectRoom(int sessionCode, int memberId) {
@@ -167,11 +130,36 @@ public class ProjectRoomServiceImpl implements ProjectRoomService {
 		participantRepository.save(newParticipant);
 	}
 
+
+
+
+
+
+	// 프로젝트 방 객체 생성
+	private ProjectRoom buildProjectRoom(RequestProjectRoomDTO dto, String name, Integer sessionCode) {
+		int durationMonth = parseDurationMonth(dto.getDurationTime());
+		LocalDate now = LocalDate.now();
+
+		return ProjectRoom.builder()
+			.name(name)
+			.content(dto.getContent())
+			.maximumParticipant(dto.getMaximumParticipant())
+			.durationTime(durationMonth + "개월")
+			.startDate(now)
+			.endDate(now.plusMonths(durationMonth))
+			.sessionCode(sessionCode) // null이면 세션 없음
+			.isFinished(false)
+			.isDeleted(false)
+			.thumbnailImage(null)
+			.introduction(null)
+			.technologyCategoryId(dto.getTechnologyCategory())
+			.build();
+	}
+
+
 	// 생성된 프로젝트 팀원 자동 등록
 	private void insertParticipants(List<RequestParticipantDTO> participantList, ProjectRoom projectRoom) {
 		for(RequestParticipantDTO participant : participantList) {
-
-			// 유효한 Member인지 확인
 
 			// 팀원 정보 등록
 			Participant newParticipant = Participant.builder()
@@ -188,8 +176,7 @@ public class ProjectRoomServiceImpl implements ProjectRoomService {
 		}
 	}
 
-	
-	// 매일 새벽 00시, 유예기간(일주일) 내 팀원 모집에 실패한 자율 매칭 프로젝트 방 삭제
+	// 매일 새벽 00시, 유예기간(일주일) 내 팀원 모집에 실패한 모든 프로젝트 방 삭제
 	@Scheduled(cron = "0 0 0 * * *")	// 매일 자정에 실행
 	@Transactional
 	public void deleteUnmatchedProjectRooms(){
@@ -200,7 +187,7 @@ public class ProjectRoomServiceImpl implements ProjectRoomService {
 		// 참여자 수가 목표치보다 적음
 
 		LocalDate cutoffDate = LocalDate.now().minusDays(7);
-		List<ProjectRoom> candidates = projectRoomRepository.findUnmatchedRoomsBefore(cutoffDate);
+		List<ProjectRoom> candidates = projectRoomRepository.findProjectRoomsBefore(cutoffDate);
 
 		for(ProjectRoom room : candidates) {
 			int participantCount = participantRepository.countByProjectRoomId(room.getId());
@@ -212,8 +199,8 @@ public class ProjectRoomServiceImpl implements ProjectRoomService {
 
 		}
 		projectRoomRepository.saveAll(candidates);
-
 	}
+
 
 	// 개발 기간 기반 프로젝트 마감 기간 계산
 	private int parseDurationMonth(String durationTime) {
@@ -222,15 +209,47 @@ public class ProjectRoomServiceImpl implements ProjectRoomService {
 		if (numberStr.isEmpty()) {
 			throw new IllegalArgumentException("유효한 개월 수가 없습니다: " + durationTime);
 		}
-
 		return Integer.parseInt(numberStr);
 	}
 
 	// 세션 코드용 6자리 랜덤 숫자 생성 메서드 		##
-	public static int generateRangeRandomNum() {
+	private int generateRangeRandomNum() {
 		SecureRandom secureRandom = new SecureRandom();
 		int start = 100000;
 		int end = 999999;
 		return start + secureRandom.nextInt(end - start + 1);
+	}
+
+	// 세션 코드 중복 제거
+	private int generateUniqueSessionCode() {
+		int sessionCode;
+		do {
+			sessionCode = generateRangeRandomNum();
+		} while (projectRoomRepository.existsBySessionCode(sessionCode));
+		return sessionCode;
+	}
+
+	// 방 이름 중복 시 리네임 메서드
+	private String generateUniqueRoomName(String baseName) {
+		List<String> existingNames = projectRoomRepository.findProjectRoomNamesStartingWith(baseName);
+
+		// 기본 이름 그대로 사용 가능한 경우
+		if(!existingNames.contains(baseName)){
+			return baseName;
+		}
+
+		// 이름에 랜덤 코드 덧붙이기
+		String randomCode = generateRandomAlphaNumeric(6); // 6자리 랜덤 코드
+		return baseName + "_" + randomCode;
+	}
+
+	private String generateRandomAlphaNumeric(int length) {
+		String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+		SecureRandom random = new SecureRandom();
+		StringBuilder sb = new StringBuilder(length);
+		for (int i = 0; i < length; i++) {
+			sb.append(chars.charAt(random.nextInt(chars.length())));
+		}
+		return sb.toString();
 	}
 }

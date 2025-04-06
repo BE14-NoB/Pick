@@ -4,10 +4,10 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import com.nob.pick.common.dto.MemberResponse;
+// import com.nob.pick.common.dto.MemberResponse;
 
-@FeignClient(name = "pick-member-service")
+@FeignClient(name = "pick-member-service-achievement")
 public interface MemberClient {
-	@GetMapping("/api/members/id/{id}")
-	MemberResponse getMember(@PathVariable("id") Long id);
+	// @GetMapping("/api/members/id/{id}")
+	// MemberResponse getMember(@PathVariable("id") Long id);
 }

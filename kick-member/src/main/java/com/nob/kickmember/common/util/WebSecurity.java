@@ -41,6 +41,11 @@ public class WebSecurity {
 					.requestMatchers(HttpMethod.POST, "/api/members/password").permitAll()
 					.requestMatchers(HttpMethod.POST, "/api/members/check-email").permitAll()
 					.requestMatchers(HttpMethod.POST, "/api/members/check-phone").permitAll()
+					// TODO: 개발 완료 후 삭제 필요  (프로젝트 개발 중 테스트용)
+					.requestMatchers(HttpMethod.POST, "/project/**").permitAll()
+					.requestMatchers(HttpMethod.GET, "/project/**").permitAll()
+					.requestMatchers(HttpMethod.DELETE, "/project/**").permitAll()
+					.requestMatchers(HttpMethod.PATCH, "/project/**").permitAll()
 
 					// 인증 필요 엔드포인트
 					.requestMatchers("/api/members/logout").authenticated()
