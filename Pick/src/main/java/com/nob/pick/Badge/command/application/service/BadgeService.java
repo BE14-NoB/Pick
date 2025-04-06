@@ -34,6 +34,7 @@ public class BadgeService {
 	@Autowired
 	private MemberBadgeRepository memberBadgeRepository;
 
+	@Autowired
 	private MemberAchievementRepository memberAchievementRepository;
 
 	@Autowired
