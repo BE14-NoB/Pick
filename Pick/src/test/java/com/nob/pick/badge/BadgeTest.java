@@ -21,6 +21,7 @@ import com.nob.pick.badge.query.service.MemberBadgeQueryService;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@EnableFeignClients(basePackages = "com.nob.pick.common.client")
 public class BadgeTest {
 
 	@Autowired
