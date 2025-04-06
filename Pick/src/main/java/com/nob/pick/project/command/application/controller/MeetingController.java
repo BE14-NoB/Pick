@@ -32,4 +32,17 @@ public class MeetingController {
 
         return ResponseEntity.ok().build();
     }
+
+
+    // todo. 회의록 수정
+
+
+
+    // todo. 회의록 삭제-> soft delete 후 휴지통 행? 복구 가능 ?
+
+
+    // todo. 회의록 복구
+
+
+
 }

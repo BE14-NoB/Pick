@@ -5,7 +5,7 @@
 <mapper namespace="com.nob.pick.project.query.mapper.ParticipantMapper">
     <resultMap id="participantResultMap" type="com.nob.pick.project.query.dto.ParticipantDTO">
         <id property="id" column="ID"/>
-        <result property="isManager" column="IS_MANAGER" typeHandler="com.nob.pick.common.config.typehandler.StringYnTypeHandler"/>
+        <result property="isManager" column="IS_MANAGER"/>
         <result property="projectRoomId" column="PROJECT_ROOM_ID"/>
         <result property="memberId" column="MEMBER_ID"/>
         <result property="memberName" column="MEMBER_NAME"/>

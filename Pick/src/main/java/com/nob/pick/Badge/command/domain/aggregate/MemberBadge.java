@@ -1,7 +1,5 @@
 package com.nob.pick.badge.command.domain.aggregate;
 
-// import com.nob.pick.member.command.entity.Member;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
