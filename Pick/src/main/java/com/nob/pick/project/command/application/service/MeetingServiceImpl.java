@@ -11,7 +11,9 @@ import com.nob.pick.project.query.dto.MeetingDTO;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PatchMapping;
 
 import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
@@ -30,6 +32,42 @@ public class MeetingServiceImpl implements MeetingService {
         this.participantRepository = participantRepository;
         this.projectRoomRepository = projectRoomRepository;
     }
+    
+    // 빈 회의록 생성
+    @Override
+    @Transactional
+    public MeetingDTO createEmptyMeeting(int projectId, int authorId) throws AccessDeniedException {
+        ProjectRoom projectRoom = projectRoomRepository.findById(projectId)
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 프로젝트입니다."));
+
+        Participant author = validateParticipant(projectId, authorId, "작성자는 프로젝트 팀원이 아닙니다.");
+
+        ProjectMeeting emptyMeeting = ProjectMeeting.builder()
+            .title(null)
+            .content(" ")
+            .participant(author)
+            .projectRoom(projectRoom)
+            .uploadTime(LocalDateTime.now())
+            .updateTime(LocalDateTime.now())
+            .build();
+
+        ProjectMeeting saved = meetingRepository.save(emptyMeeting);
+        // Meeting -> MeetingDTO
+        return MeetingToDTO(saved);
+    }
+
+    private MeetingDTO MeetingToDTO(ProjectMeeting saved) {
+        MeetingDTO meetingDTO = new MeetingDTO();
+        meetingDTO.setTitle(saved.getTitle());
+        meetingDTO.setContent(saved.getContent());
+        meetingDTO.setUploadTime(saved.getUploadTime().toString());
+        meetingDTO.setUpdateTime(saved.getUpdateTime().toString());
+
+        return meetingDTO;
+
+    }
+
+
 
     // 회의록 생성
     @Override
@@ -79,6 +117,8 @@ public class MeetingServiceImpl implements MeetingService {
         return participantRepository.findById(participantId)
                 .orElseThrow(() -> new IllegalArgumentException("참여자를 찾을 수 없습니다. participantId=" + participantId));
     }
+
+    
 
 
 }

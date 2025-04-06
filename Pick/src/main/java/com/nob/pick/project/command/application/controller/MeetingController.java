@@ -22,6 +22,35 @@ public class MeetingController {
         this.meetingService = meetingService;
     }
 
+    // 회의록 생성
+    @PostMapping("/{projectId}/meeting/new")
+    public ResponseEntity<MeetingDTO> createEmptyMeeting(
+        @PathVariable("projectId") int projectId,
+        @RequestParam int authorId
+        ) throws AccessDeniedException {
+        MeetingDTO meetingDTO = meetingService.createEmptyMeeting(projectId, authorId);
+        return ResponseEntity.ok(meetingDTO);
+    }
+
+    // 회의록 자동 저장
+    @PatchMapping("/meeting/{meetingId}/autosave")
+    public ResponseEntity<?> autoSaveMeeting(@PathVariable int meetingId, @RequestBody String content) {
+        meetingService.autoSaveContent(meetingId, content);
+        return ResponseEntity.ok().body("자동 저장됨");
+    }
+
+    //
+    @PostMapping("/meeting/{meetingId}/apply-template")
+    public ResponseEntity<?> applyTemplate(
+        @PathVariable int meetingId,
+        @RequestParam String templateId
+    ) {
+        String templateContent = meetingService.getTemplateContent(templateId);
+        meetingService.updateMeetingContent(meetingId, templateContent);
+        return ResponseEntity.ok().body("템플릿 적용 완료");
+    }
+
+
     // 회의록 저장 (자동 or 수동 모두 처리)
     @PostMapping("/{projectId}/meeting/save")
     public ResponseEntity<?> saveMeeting(
