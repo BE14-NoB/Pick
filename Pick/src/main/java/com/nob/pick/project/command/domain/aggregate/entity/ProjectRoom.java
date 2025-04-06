@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import com.nob.pick.common.config.convertor.BooleanToYNConverter;
 import com.nob.pick.matching.query.aggregate.TechnologyCategory;
 import com.nob.pick.matching.query.dto.TechnologyCategoryDTO;
+import com.nob.pick.project.command.application.dto.ProjectRoomEditDTO;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
@@ -17,14 +18,16 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
+@Entity
 @Builder
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-@Entity
+@Setter
 @Table(name = "project_room")
 public class ProjectRoom {
 
@@ -75,5 +78,16 @@ public class ProjectRoom {
 
 	@Column(name="project_url", unique = true)
 	private String projectUrl;
+
+	public void updateInfo(ProjectRoomEditDTO dto){
+		this.name = dto.getName();
+		this.content = dto.getContent();
+		this.introduction = dto.getIntroduction();
+		this.projectUrl = dto.getProjectUrl();
+	}
+
+	public void setThumbnailUrl(String thumbnailPath) {
+		this.thumbnailImage = thumbnailPath;
+	}
 
 }

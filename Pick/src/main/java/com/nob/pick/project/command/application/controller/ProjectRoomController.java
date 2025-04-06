@@ -3,14 +3,24 @@ package com.nob.pick.project.command.application.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.nob.pick.common.util.JwtUtil;
+import com.nob.pick.infrastructure.MemberServiceClient;
+import com.nob.pick.project.command.application.dto.ProjectInviteRequestDTO;
+import com.nob.pick.project.command.application.dto.ProjectRoomEditDTO;
 import com.nob.pick.project.command.application.service.ProjectRoomServiceImpl;
 import com.nob.pick.project.command.application.dto.RequestProjectRoomDTO;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController("CommandProjectRoomController")
@@ -18,16 +28,21 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/project")
 public class ProjectRoomController {
 	private final ProjectRoomServiceImpl projectRoomService;
+	private final MemberServiceClient msc;
+	private final JwtUtil jwtUtil;
+
 
 	@Autowired
-	public ProjectRoomController(ProjectRoomServiceImpl projectRoomService) {
+	public ProjectRoomController(ProjectRoomServiceImpl projectRoomService, MemberServiceClient msc, JwtUtil jwtUtil) {
 		this.projectRoomService = projectRoomService;
+		this.msc = msc;
+		this.jwtUtil = jwtUtil;
 	}
 
-	/*  (자동 매칭 방)
+	/*  (랜덤 매칭 방)
 	 * 	매칭 완료 시 방 생성
 	 * 	세션 코드 없음.
-	 * 	팀원 맵핑 필요. (공통)
+	 * 	팀원 전체 목록 추가
 	 * */
 	@PostMapping("/matching")
 	public ResponseEntity<?> registMathingProjectRoom(@RequestBody RequestProjectRoomDTO newProjectRoom) {
@@ -38,7 +53,11 @@ public class ProjectRoomController {
 		return ResponseEntity.ok().build();
 	}
 
-	//  자율 매칭 프로젝트 방 생성
+	/*
+		(자율 매칭 방)
+		방장이 프로젝트 방 생성
+		회원이 입장 코드로 입장 & 팀원으로 추가됨
+	 */
 	@PostMapping("/nonMatching")
 	public ResponseEntity<?> registNonMatchingProjgectRoom(@RequestBody RequestProjectRoomDTO newProjectRoom) {
 
@@ -48,14 +67,39 @@ public class ProjectRoomController {
 		return ResponseEntity.ok().build();
 	}
 
-	// TODO. 프로젝트 방 삭제
+	// TODO. 프로젝트 방 삭제 (팀원 자체 삭제는 불가하도록?)
 	
 
-
-	
-	/* TODO. 프로젝트 방 정보 수정
-		- 프로젝트 정보(프로젝트명, 한줄 소개, 설명, 썸네일)
+	/* 프로젝트 방 정보 수정
+		- 프로젝트 정보(프로젝트명, 한줄 소개, 설명, 프로젝트 링크, 썸네일)
 	*/
+	@PatchMapping("/{id}/edit")
+	public ResponseEntity<?> editProjectRoom(
+		@PathVariable int projectId,
+		@RequestPart("info") ProjectRoomEditDTO projectInfo,
+		@RequestPart(value = "thumbnailFile", required = false) MultipartFile thumbnailFile,
+			HttpServletRequest request
+	) {
+		log.info("{} 번 프로젝트 {} 정보 수정  : ", projectId , projectInfo.getName() );
+
+		int memberId = jwtUtil.getId(request.getHeader("Authorization").replace("Bearer ", ""));
+
+		projectRoomService.updateProject(projectId, projectInfo, thumbnailFile, memberId);
+		return ResponseEntity.ok().build();
+	}
+
+	// TODO. 자율 매칭 방 팀원 등록
+	// 입장 코드 입력 후 해당 프로젝트 방의 팀원으로 추가되어야 함.
+	@PostMapping("/nonMatching/invite")
+	public ResponseEntity<?> joinProjectBySessionCode(
+		@RequestBody ProjectInviteRequestDTO inviteRequest,
+		HttpServletRequest request
+		){
+		int memberId = jwtUtil.getId(request.getHeader("Authorization").replace("Bearer ", ""));
+
+		projectRoomService.joinProjectRoom(inviteRequest.getSessionCode(), memberId);
+		return ResponseEntity.ok().build();
+	}
 
 
 

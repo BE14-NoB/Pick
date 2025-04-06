@@ -34,10 +34,11 @@ public class MeetingServiceImpl implements MeetingService {
     // 회의록 생성
     @Override
     @Transactional
-    public void createMeeting(MeetingDTO meetingDTO) throws AccessDeniedException {
+    public void saveMeeting(MeetingDTO meetingDTO) throws AccessDeniedException {
         log.info("[미팅 생성 요청] meetingDTO = {}", meetingDTO);
 
-        int authorId = meetingDTO.getAuthorId();
+        // 팀원 여부 체크
+        int authorId = meetingDTO.getAuthor().getId();
         int projectRoomId = meetingDTO.getProjectRoomId();
 
         ProjectRoom projectRoom = projectRoomRepository.findById(projectRoomId)

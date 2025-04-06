@@ -5,5 +5,5 @@ import com.nob.pick.project.query.dto.MeetingDTO;
 import java.nio.file.AccessDeniedException;
 
 public interface MeetingService {
-    void createMeeting(MeetingDTO meetingDTO) throws AccessDeniedException;
+    void saveMeeting(MeetingDTO meetingDTO) throws AccessDeniedException;
 }

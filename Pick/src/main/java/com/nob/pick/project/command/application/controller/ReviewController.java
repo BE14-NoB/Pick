@@ -34,7 +34,7 @@ public class ReviewController {
             log.info(String.valueOf(projectReview.getProject_id()), projectRoomId);
             return ResponseEntity.badRequest().body("URL과 body의 프로젝트 아이디가 일치하지 않습니다.");
         }
-        // 리뷰 저장
+        // 리뷰 작성
         reviewService.createProjectReview(projectReview);
 
         return ResponseEntity.ok().build();

@@ -34,10 +34,6 @@ public class Participant {
 	@Convert(converter = BooleanToYNConverter.class)
 	private boolean isManager = false;
 
-	// @ManyToOne(fetch = FetchType.LAZY)
-	// @JoinColumn(name="member_id", nullable = false)
-	// private Member member;
-
 	@Column(name="member_id", nullable = false)
 	private int memberId;
 

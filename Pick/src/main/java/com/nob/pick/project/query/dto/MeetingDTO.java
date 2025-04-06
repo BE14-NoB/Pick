@@ -23,10 +23,11 @@ public class MeetingDTO {
     private String content;
     private String uploadTime;;
     private String updateTime;
-    private int authorId;
-    private String authorName;
+    private MeetingParticipantDTO author;       // 작성자
     private int projectRoomId;
     private List<ProjectMeetingImage> images;  // 이미지 리스트
     private Integer meetingTemplateId;
     private List<MeetingParticipantDTO> participants;
+
+    private boolean isAutoSave;     // true이면 자동 저장 , false이면 수동 저장(ctrl+s)
 }
