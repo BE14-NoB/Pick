@@ -69,6 +69,14 @@ public class WebSecurity {
 					.requestMatchers(HttpMethod.POST, "/api/members/logout").authenticated()
 					.requestMatchers(HttpMethod.PATCH, "/api/members/profile/status/**").authenticated()
 					.requestMatchers(HttpMethod.POST, "/api/members/profile/**").authenticated()
+
+					// 챌린지 관련 도메인 security 설정
+					.requestMatchers("/challenge/**").permitAll()
+					.requestMatchers("/daily-mission/**").permitAll()
+					.requestMatchers("/achievement/**").permitAll()
+					.requestMatchers("/member-achievement/**").permitAll()
+					.requestMatchers("/badge/**").permitAll()
+
 					.anyRequest().authenticated()
 			)
 			.sessionManagement(session ->
