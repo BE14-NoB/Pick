@@ -7,4 +7,6 @@ import com.nob.pick.badge.query.dto.MemberBadgeQueryDTO;
 public interface MemberBadgeQueryService {
 
 	List<MemberBadgeQueryDTO> getBadgesByMember(int memberId);
+
+	int getTotalAdvantageByMemberId(int memberId);
 }
