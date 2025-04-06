@@ -29,6 +29,6 @@ public class MemberBadge {
 	@JoinColumn(name = "badge_id")
 	private Badge badge;
 
-	@Column(name = "member_id")
-	private int memberId;
+	@Column(name = "member_id", nullable = false)
+	private Long memberId;
 }
