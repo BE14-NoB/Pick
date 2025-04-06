@@ -1,6 +1,7 @@
 package com.nob.pick.badge.command.application.service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,6 +10,8 @@ import org.springframework.stereotype.Service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.nob.pick.achievement.command.domain.aggregate.Achievement;
+import com.nob.pick.achievement.command.domain.repository.AchievementRepository;
 import com.nob.pick.badge.command.application.dto.BadgeDTO;
 import com.nob.pick.badge.command.domain.aggregate.Badge;
 import com.nob.pick.badge.command.domain.aggregate.MemberBadge;
@@ -18,8 +21,6 @@ import com.nob.pick.achievement.command.domain.aggregate.MemberAchievement;
 import com.nob.pick.achievement.command.domain.repository.MemberAchievementRepository;
 import com.nob.pick.challenge.command.domain.aggregate.Challenge;
 import com.nob.pick.challenge.command.domain.repository.ChallengeRepository;
-import com.nob.pick.member.command.entity.Member;
-import com.nob.pick.member.command.repository.MemberRepository;
 
 @Service
 public class BadgeService {
@@ -34,10 +35,10 @@ public class BadgeService {
 	private MemberBadgeRepository memberBadgeRepository;
 
 	@Autowired
-	private MemberRepository memberRepository;
+	private MemberAchievementRepository memberAchievementRepository;
 
 	@Autowired
-	private MemberAchievementRepository memberAchievementRepository;
+	private AchievementRepository achievementRepository;
 
 	public Badge addBadge(BadgeDTO badgeDto) {
 		Challenge challenge = challengeRepository.findById(badgeDto.getChallengeId())
@@ -79,50 +80,55 @@ public class BadgeService {
 	}
 
 	// 회원에게 뱃지 부여 및 레벨업
-	public void awardBadgeToMember(Long memberId, int badgeId) {
-		// Member와 Badge 객체를 각각 조회
-		Member member = memberRepository.findById(memberId)
-			.orElseThrow(() -> new IllegalArgumentException("회원 정보를 찾을 수 없습니다."));
+	public void awardBadgeToMember(Long memberId, int achievementId) {
+		// 도전 과제 조회
+		Achievement achievement = achievementRepository.findById(achievementId)
+			.orElseThrow(() -> new IllegalArgumentException("해당 도전 과제를 찾을 수 없습니다."));
 
-		Badge badge = badgeRepository.findById(badgeId)
-			.orElseThrow(() -> new IllegalArgumentException("뱃지를 찾을 수 없습니다."));
+		// 도전 과제가 속한 챌린지 가져옴
+		Challenge challenge = achievement.getChallenge();
 
-		// 회원별 뱃지 조회
-		Optional<MemberBadge> existingBadge = memberBadgeRepository.findByMemberIdAndBadgeId(memberId, badgeId);
-		if (existingBadge.isPresent()) {
-			// 이미 보유하고 있으면 레벨업 처리
-			MemberBadge badgeToUpdate = existingBadge.get();
-			badgeToUpdate.setLevel(badgeToUpdate.getLevel() + 1);
-			memberBadgeRepository.save(badgeToUpdate);
-		} else {
-			// 새로운 뱃지 부여
-			MemberBadge newBadge = new MemberBadge();
-			newBadge.setMember(member);  // Member 객체 설정
-			newBadge.setBadge(badge);    // Badge 객체 설정
-			newBadge.setLevel(1);        // 레벨 1로 설정
-			newBadge.setAcquiredDate("2025-03-25");  // 획득 날짜 설정 (예시)
-			memberBadgeRepository.save(newBadge);
+		// 해당 챌린지와 연결된 뱃지 조회
+		List<Badge> badges = badgeRepository.findByChallenge(challenge);
+		if (badges.isEmpty()) {
+			throw new IllegalArgumentException("해당 챌린지에 연결된 뱃지가 없습니다.");
 		}
-	}
 
-	// 도전 과제 완료 여부 확인
-	private boolean isAchievementCompleted(List<MemberAchievement> memberAchievements) {
-		return memberAchievements.size() >= 10; // 예시: 10번 이상 완료하면 완료
-	}
+		// 회원별 도전 과제 진행도 가져옴
+		MemberAchievement memberAchievement = memberAchievementRepository.findByMemberIdAndAchievementId(memberId,
+				achievementId)
+			.orElseThrow(() -> new IllegalArgumentException("회원별 도전 과제 정보를 찾을 수 없습니다."));
 
-	// 도전과제 ID로 뱃지 찾기
-	private Badge getBadgeByAchievementId(int achievementId) {
-		// 도전 과제(Challenge) 조회
-		Challenge challenge = challengeRepository.findById(achievementId)
-			.orElseThrow(() -> new IllegalArgumentException("해당 도전과제를 찾을 수 없습니다."));
+		int progress = memberAchievement.getProgress(); // 진행도
 
-		// Challenge에 연결된 Badge 조회
-		return badgeRepository.findByChallengeId(challenge.getId())
-			.orElseThrow(() -> new IllegalArgumentException("해당 도전과제에 대한 뱃지를 찾을 수 없습니다."));
-	}
+		// 진행도가 뱃지 레벨업 조건을 만족하면 지급
+		for (Badge badge : badges) {
+			int requiredProgress = badge.getRequirement();
 
-	// 레벨 업 조건 확인
-	private boolean isLevelUpConditionMet(MemberBadge memberBadge) {
-		return memberBadge.getLevel() == 1; // 레벨 1에서 2로 업그레이드
+			// 현재 진행도가 필요 요구 조건의 몇 배인지 확인
+			int expectedLevel = progress / requiredProgress;
+
+			// 회원이 해당 뱃지를 보유하고 있는지 확인
+			Optional<MemberBadge> existingBadge = memberBadgeRepository.findByMemberIdAndBadgeId(memberId, badge.getId());
+
+			if (existingBadge.isPresent()) {
+				// 이미 보유한 경우, 레벨이 expectedLevel보다 낮으면 올려줌
+				MemberBadge memberBadge = existingBadge.get();
+				if (memberBadge.getLevel() < expectedLevel) {
+					memberBadge.setLevel(expectedLevel);
+					memberBadgeRepository.save(memberBadge);
+				}
+			} else {
+				// 새로 지급
+				if (progress >= requiredProgress) {
+					MemberBadge newBadge = new MemberBadge();
+					newBadge.setMemberId(memberId);
+					newBadge.setBadge(badge);
+					newBadge.setAcquiredDate(LocalDateTime.now().toString());
+					newBadge.setLevel(expectedLevel);
+					memberBadgeRepository.save(newBadge);
+				}
+			}
+		}
 	}
 }

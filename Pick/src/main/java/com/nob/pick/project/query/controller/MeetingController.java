@@ -1,6 +1,8 @@
 package com.nob.pick.project.query.controller;
 
+import com.nob.pick.project.query.aggregate.ProjectMeetingTemplate;
 import com.nob.pick.project.query.dto.MeetingDTO;
+import com.nob.pick.project.query.dto.MeetingTemplateDTO;
 import com.nob.pick.project.query.service.MeetingService;
 import com.nob.pick.project.query.service.ParticipantService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +34,7 @@ public class MeetingController {
 	}
 	
 	// 프로젝트별 회의록 목록 조회
-	@GetMapping("{projectRoomId}/meetings")
+	@GetMapping("{projectRoomId}/meeting")
 	public ResponseEntity<?> getMeetingList(@PathVariable int projectRoomId, @RequestParam int memberId) {
 		log.info("projectRoomId : " + projectRoomId);
 		log.info("memberId : " + memberId);
@@ -46,12 +48,13 @@ public class MeetingController {
 					.body("프로젝트에 참여한 팀원만 조회할 수 있습니다.");
 		}
 
-		List<MeetingDTO> meetingList = meetingService.getMeetingsByProjectId(projectRoomId);
+		List<MeetingDTO> meetingList = meetingService.getMeetingListByProjectId(projectRoomId);
 		return ResponseEntity.ok(meetingList);
 	}
-
-	@GetMapping("{projectRoomId}/meetings/{meetingId}")
-	public ResponseEntity<?> getMeetingList(@PathVariable int projectRoomId, @PathVariable int meetingId, @RequestParam int memberId) {
+	
+	// 프로젝트 회의록 상세 조회
+	@GetMapping("{projectRoomId}/meeting/{meetingId}")
+	public ResponseEntity<?> getMeetingDetail(@PathVariable int projectRoomId, @PathVariable int meetingId, @RequestParam int memberId) {
 		log.info("projectRoomId : " + projectRoomId);
 		log.info("memberId : " + memberId);
 		log.info("meetingId : " + meetingId);
@@ -64,7 +67,39 @@ public class MeetingController {
 					.status(HttpStatus.FORBIDDEN)
 					.body("프로젝트에 참여한 팀원만 조회할 수 있습니다.");
 		}
-		return ResponseEntity.ok(meetingService.getMeetingsByMeetingId(meetingId));
+		return ResponseEntity.ok(meetingService.getMeetingByMeetingId(meetingId));
 	}
+
+	// 회의록 템플릿 목록 조회
+	@GetMapping("meeting/template")
+	public ResponseEntity<?> getMeetingTemplateList() {
+		log.info("meeting template list");
+		List<MeetingTemplateDTO> templateList = meetingService.getMeetingTemplateList();
+		return ResponseEntity.ok(templateList);
+	}
+
+
+	// 회의록 텝플릿 상세 조회
+	@GetMapping("meeting/template/{templateId}")
+	public ResponseEntity<?> getMeetingTemplateDetail(@PathVariable int templateId) {
+		log.info("{}번 회의록 템플릿 상세 조회", templateId);
+
+		MeetingTemplateDTO template = meetingService.getMeetingTemplateByTemplateId(templateId);
+		return ResponseEntity.ok(template);
+	}
+
+
+	// 타입별 회의록 템플릿 목록 조회
+	@GetMapping("meeting/template/{typeNum}")
+	public ResponseEntity<?> getMeetingTemplateListByTypeNum(@PathVariable int typeNum) {
+		log.info("{} 타입에 해당하는 템플릿 목록 조회 ", typeNum);
+
+		List<MeetingTemplateDTO> templateList = meetingService.getMeetingTemplateListByTypeNum(typeNum);
+		return ResponseEntity.ok(templateList);
+	}
+
+
+
+
 
 }

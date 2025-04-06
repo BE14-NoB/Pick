@@ -20,7 +20,10 @@ public class ReviewController {
     public ReviewController(ReviewService reviewService) {
         this.reviewService = reviewService;
     }
-
+    
+    /*
+        todo. 후기는 한 번 작성하면 수정/삭제 불가능하다고 프론트에서 공지할 것
+     */
 
     // 프로젝트 후기 작성
     @PostMapping("/{projectRoomId}/projectReview")

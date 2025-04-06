@@ -47,7 +47,7 @@ public class BadgeController {
 	// 회원에게 뱃지 부여 및 레벨업
 	@PostMapping("/award")
 	public ResponseEntity<String> awardBadge(@RequestBody BadgeAwardDTO badgeAwardDTO) {
-		badgeService.awardBadgeToMember(badgeAwardDTO.getMemberId(), badgeAwardDTO.getBadgeId());
-		return ResponseEntity.ok("Badge awarded!");
+		badgeService.awardBadgeToMember(badgeAwardDTO.getMemberId(), badgeAwardDTO.getAchievementId());
+		return ResponseEntity.ok("뱃지가 부여되었습니다.");
 	}
 }
