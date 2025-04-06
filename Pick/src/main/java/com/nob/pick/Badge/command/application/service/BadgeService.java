@@ -93,7 +93,7 @@ public class BadgeService {
 		} else {
 			// 새로운 뱃지 부여
 			MemberBadge newBadge = new MemberBadge();
-			newBadge.setMember(memberId);  // Member 객체 설정
+			// newBadge.setMember(memberId);  // Member 객체 설정
 			newBadge.setBadge(badge);    // Badge 객체 설정
 			newBadge.setLevel(1);        // 레벨 1로 설정
 			newBadge.setAcquiredDate("2025-03-25");  // 획득 날짜 설정 (예시)

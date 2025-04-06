@@ -99,13 +99,5 @@ public class MeetingController {
 	}
 
 
-<<<<<<< HEAD
-	//
-
-
-=======
->>>>>>> 989de0bb7c4280d9d1aac7b03eafb8ac77045207
-
-
 
 }

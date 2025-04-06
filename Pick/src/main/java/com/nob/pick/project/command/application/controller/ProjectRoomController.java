@@ -2,16 +2,12 @@ package com.nob.pick.project.command.application.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Scheduled;
-<<<<<<< HEAD
+
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-=======
->>>>>>> 989de0bb7c4280d9d1aac7b03eafb8ac77045207
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -70,7 +66,6 @@ public class ProjectRoomController {
 		return ResponseEntity.ok().build();
 	}
 
-<<<<<<< HEAD
 	// TODO. 프로젝트 방 삭제 (팀원 자체 삭제는 불가하도록?)
 	
 
@@ -98,29 +93,12 @@ public class ProjectRoomController {
 	public ResponseEntity<?> joinProjectBySessionCode(
 		@RequestBody ProjectInviteRequestDTO inviteRequest,
 		HttpServletRequest request
-		){
+		) {
 		int memberId = jwtUtil.getId(request.getHeader("Authorization").replace("Bearer ", ""));
 
 		projectRoomService.joinProjectRoom(inviteRequest.getSessionCode(), memberId);
 		return ResponseEntity.ok().build();
 	}
-=======
-	// TODO. 프로젝트 방 삭제
-	
-
-
-	
-	/* TODO. 프로젝트 방 정보 수정
-		- 프로젝트 정보(프로젝트명, 한줄 소개, 설명, 썸네일)
-	*/
->>>>>>> 989de0bb7c4280d9d1aac7b03eafb8ac77045207
-
-
-
-
-
-
-
 }
 
 

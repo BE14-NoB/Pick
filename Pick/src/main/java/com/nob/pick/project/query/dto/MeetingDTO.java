@@ -23,7 +23,7 @@ public class MeetingDTO {
     private String content;
     private String uploadTime;;
     private String updateTime;
-    private MeetingParticipantDTO author;       // 작성자
+    private int authorId;       // 작성자
     private int projectRoomId;
     private List<ProjectMeetingImage> images;  // 이미지 리스트
     private Integer meetingTemplateId;

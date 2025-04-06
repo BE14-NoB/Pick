@@ -38,7 +38,7 @@ public class MeetingServiceImpl implements MeetingService {
         log.info("[미팅 생성 요청] meetingDTO = {}", meetingDTO);
 
         // 팀원 여부 체크
-        int authorId = meetingDTO.getAuthor().getId();
+        int authorId = meetingDTO.getAuthorId();
         int projectRoomId = meetingDTO.getProjectRoomId();
 
         ProjectRoom projectRoom = projectRoomRepository.findById(projectRoomId)

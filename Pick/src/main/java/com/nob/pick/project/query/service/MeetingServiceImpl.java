@@ -113,7 +113,6 @@ public class MeetingServiceImpl implements MeetingService {
             dto.setTitle(meeting.getTitle());
             dto.setContent(meeting.getContent());
             dto.setAuthorId(meeting.getAuthorId());
-//            dto.setAuthorName(authorName);
             dto.setImages(meetingImages);
             dto.setUploadTime(meeting.getUploadTime().toString());
             dto.setUpdateTime(meeting.getUpdateTime().toString());

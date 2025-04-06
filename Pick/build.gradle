@@ -58,6 +58,17 @@ dependencies {
 
     // spring boot의 모니터링 시스템 또는 동적 설정 변경 등 부가적인 기능 제공
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+    //  WebSocket + STOMP 지원
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
+    // STOMP client (웹 브라우저용 WebSocket 메시지 프로토콜)
+    implementation 'org.webjars:stomp-websocket:2.3.3'
+
+    // SockJS (프론트 fallback용)
+    implementation 'org.webjars:sockjs-client:1.5.1'
+    // JSON 직렬화용 Jackson
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
 }
 
 dependencyManagement {

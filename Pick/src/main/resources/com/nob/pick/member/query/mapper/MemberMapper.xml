@@ -13,10 +13,9 @@
         <result property="email" column="email"/>
         <result property="password" column="password"/>
         <result property="nickname" column="nickname"/>
-        <result property="status" column="status" typeHandler="com.nob.pick.common.config.typehandler.StatusEnumTypeHandler"/>
+        <result property="status" column="status" />
         <result property="reportedCount" column="reported_count"/>
-        <result property="userGrant" column="user_grant"
-                typeHandler="com.nob.pick.common.config.typehandler.UserGrantEnumTypeHandler"/>
+        <result property="userGrant" column="user_grant" />
     </resultMap>
 
     <!-- 프로필 페이지 관련 resultMap -->
