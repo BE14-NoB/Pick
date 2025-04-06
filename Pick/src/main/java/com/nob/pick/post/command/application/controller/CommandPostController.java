@@ -9,12 +9,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nob.pick.common.util.JwtUtil;
-import com.nob.pick.member.query.dto.MemberDTO;
+import com.nob.pick.post.command.application.dto.member.MemberDTO;
 import com.nob.pick.post.command.application.dto.MemberNicknameDTO;
 import com.nob.pick.post.command.application.dto.PostDTO;
 import com.nob.pick.post.command.application.service.CommandPostService;
 import com.nob.pick.post.command.domain.aggregate.vo.ResponseRegisterPostVO;
-import com.nob.pick.infrastructure.MemberServiceClient;
+import com.nob.pick.post.command.application.infrastructure.PostMemberServiceClient;
 
 import io.jsonwebtoken.lang.Assert;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,7 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 public class CommandPostController {
 	
 	private final CommandPostService commandPostService;
-	private final MemberServiceClient msc;
+	private final PostMemberServiceClient msc;
 	private final JwtUtil jwtUtil;
 	
 	@PostMapping("/register")
@@ -47,7 +47,7 @@ public class CommandPostController {
 	@PostMapping("/delete")
 	public ResponseEntity<String> deletePost(@RequestParam int postId, HttpServletRequest request) {
 		log.info("Deleting post {}", postId);
-		int memberId = jwtUtil.getId(request.getHeader("Authorization"));
+		Long memberId = jwtUtil.getId(request.getHeader("Authorization"));
 		return ResponseEntity.ok(commandPostService.deletePost(postId, memberId));
 	}
 	

@@ -13,6 +13,6 @@ public class ResponseCommentVO {
 	private String commentContent;
 	private int commentStatus;
 	private Integer commentRootCommentId;
-	private int commentMemberId;
+	private Long commentMemberId;
 	private String commentMemberNickname;
 }

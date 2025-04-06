@@ -30,7 +30,7 @@ public class CommandCommentController {
 	@PostMapping("/register/{postId}")
 	public ResponseEntity<String> registerComment(@PathVariable int postId, @RequestBody CommentDTO newComment, HttpServletRequest request) {
 		
-		int memberId = jwtUtil.getId(request.getHeader("Authorization"));
+		Long memberId = jwtUtil.getId(request.getHeader("Authorization"));
 		newComment.setCommentMember(new MemberNicknameDTO(memberId, null));
 		commandCommentService.registerComment(postId, newComment);
 		

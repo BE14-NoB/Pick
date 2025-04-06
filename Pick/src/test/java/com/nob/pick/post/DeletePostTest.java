@@ -77,7 +77,7 @@ public class DeletePostTest {
 			targetPost != null ?
 			targetPost.getStatus().toString() : "NULL"
 		);
-		int memberId = (
+		Long memberId = (
 			targetPost != null ?
 			targetPost.getMember().getMemberId() : 0
 		);

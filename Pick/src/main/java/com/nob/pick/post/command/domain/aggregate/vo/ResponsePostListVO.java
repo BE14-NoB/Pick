@@ -12,6 +12,6 @@ public class ResponsePostListVO {
 	private String uploadAt;
 	private String updateAt;
 	private int status;
-	private int memberId;
+	private Long memberId;
 	private String memberNickname;
 }

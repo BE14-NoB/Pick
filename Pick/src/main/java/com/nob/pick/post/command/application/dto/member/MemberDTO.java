@@ -1,4 +1,4 @@
-package com.nob.pick.member.query.dto;
+package com.nob.pick.post.command.application.dto.member;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -46,5 +46,5 @@ public class Post {
 	private int status = 0;
 	
 	@Column(name = "member_id", nullable = false)
-	private int memberId;
+	private Long memberId;
 }

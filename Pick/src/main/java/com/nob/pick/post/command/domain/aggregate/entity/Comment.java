@@ -52,5 +52,5 @@ public class Comment {
 	private Integer rootCommentId;	// nullable
 	
 	@Column(name = "member_id", nullable = false)
-	private int memberId;
+	private Long memberId;
 }

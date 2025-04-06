@@ -15,7 +15,7 @@ public class ResponsePostCommentVO {
 	private String uploadAt;
 	private String updateAt;
 	private int status;
-	private int memberId;
+	private Long memberId;
 	private String memberNickname;
 	private List<ResponsePostImageVO> postImageVOList;
 	private List<ResponseCommentVO> commentVOList;
