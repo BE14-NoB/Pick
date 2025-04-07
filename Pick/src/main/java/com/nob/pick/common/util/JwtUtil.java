@@ -22,70 +22,70 @@ public class JwtUtil {
 		this.secretKey = Keys.hmacShaKeyFor(keyBytes);
 	}
 
-	public String getEmail(String token) {
-		validateTokenFormat(token);
-		return Jwts.parserBuilder()
-			.setSigningKey(secretKey)
-			.build()
-			.parseClaimsJws(token)
-			.getBody()
-			.getSubject();
-	}
+    public String getEmail(String token) {
+        validateTokenFormat(token);
+        return Jwts.parserBuilder()
+                .setSigningKey(secretKey)
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
+    }
 
-	public List<String> getRoles(String token) {
-		validateTokenFormat(token);
-		return Jwts.parserBuilder()
-			.setSigningKey(secretKey)
-			.build()
-			.parseClaimsJws(token)
-			.getBody()
-			.get("roles", List.class);
-	}
-	
-	public Long getId(String token) {
-		validateTokenFormat(token);
-		return Jwts.parserBuilder()
-			.setSigningKey(secretKey)
-			.build()
-			.parseClaimsJws(token)
-			.getBody()
-			.get("id", Long.class);
-	}
+    public List<String> getRoles(String token) {
+        validateTokenFormat(token);
+        return Jwts.parserBuilder()
+                .setSigningKey(secretKey)
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .get("roles", List.class);
+    }
 
-	public boolean validateToken(String token) {
-		try {
-			validateTokenFormat(token);
-			Jwts.parserBuilder()
-				.setSigningKey(secretKey)
-				.build()
-				.parseClaimsJws(token);
-			return true;
-		} catch (Exception e) {
-			return false;
-		}
-	}
+    public int getId(String token) {
+        validateTokenFormat(token);
+        return Jwts.parserBuilder()
+                .setSigningKey(secretKey)
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .get("id", Integer.class);
+    }
 
-	public boolean isTokenExpired(String token) {
-		try {
-			validateTokenFormat(token);
-			Claims claims = Jwts.parserBuilder()
-				.setSigningKey(secretKey)
-				.build()
-				.parseClaimsJws(token)
-				.getBody();
-			return claims.getExpiration().before(new Date());
-		} catch (Exception e) {
-			return true;
-		}
-	}
+    public boolean validateToken(String token) {
+        try {
+            validateTokenFormat(token);
+            Jwts.parserBuilder()
+                    .setSigningKey(secretKey)
+                    .build()
+                    .parseClaimsJws(token);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 
-	private void validateTokenFormat(String token) {
-		if (token == null || token.isEmpty()) {
-			throw new IllegalArgumentException("토큰이 비어 있습니다.");
-		}
-		String[] parts = token.split("\\.");
-		if (parts.length != 3) {
-			throw new IllegalArgumentException("잘못된 토큰 형식입니다: " + token);
-		}
-	}
+    public boolean isTokenExpired(String token) {
+        try {
+            validateTokenFormat(token);
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(secretKey)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+            return claims.getExpiration().before(new Date());
+        } catch (Exception e) {
+            return true;
+        }
+    }
+
+    private void validateTokenFormat(String token) {
+        if (token == null || token.isEmpty()) {
+            throw new IllegalArgumentException("토큰이 비어 있습니다.");
+        }
+        String[] parts = token.split("\\.");
+        if (parts.length != 3) {
+            throw new IllegalArgumentException("잘못된 토큰 형식입니다: " + token);
+        }
+    }
 }

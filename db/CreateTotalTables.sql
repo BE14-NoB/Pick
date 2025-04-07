@@ -109,6 +109,7 @@ CREATE TABLE IF NOT EXISTS MATCHING
     , is_deleted               VARCHAR(4) NOT NULL DEFAULT 'N'
     , maximum_participant INTEGER NOT NULL DEFAULT 5
     , current_participant INTEGER NOT NULL DEFAULT 1
+    , duration_time          INTEGER      NOT NULL DEFAULT 3
     , level_range            INTEGER      NOT NULL DEFAULT 5
     , member_id              INTEGER      NOT NULL
     , technology_category_id INTEGER      NOT NULL

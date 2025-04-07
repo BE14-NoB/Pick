@@ -5,6 +5,7 @@
 <mapper namespace="com.nob.pick.badge.query.mapper.BadgeQueryMapper">
     <resultMap type="com.nob.pick.badge.query.dto.BadgeQueryDTO" id="badgeResultMap">
         <id property="id" column="id"/>
+        <result property="name" column="name"/>
         <result property="requirement" column="requirement"/>
         <result property="advantage" column="advantage"/>
         <result property="description" column="description"/>
@@ -16,6 +17,7 @@
     <select id="selectAllBadges" resultMap="badgeResultMap">
         SELECT
                id
+             , name
              , requirement
              , advantage
              , description
@@ -29,6 +31,7 @@
     <select id="selectBadgesByChallengeId" resultMap="badgeResultMap">
         SELECT
                id
+             , name
              , requirement
              , advantage
              , description
@@ -37,5 +40,20 @@
           FROM BADGE
          WHERE is_deleted = 'N'
            AND challenge_id = #{challengeId};
+    </select>
+
+    <!-- 뱃지 id로 뱃지 정보 조회-->
+    <select id="selectBadgeById" resultMap="badgeResultMap">
+        SELECT
+                id
+              , name
+              , requirement
+              , advantage
+              , description
+              , is_deleted
+              , challenge_id
+          FROM BADGE
+         WHERE is_deleted = 'N'
+           AND id = #{id}
     </select>
 </mapper>

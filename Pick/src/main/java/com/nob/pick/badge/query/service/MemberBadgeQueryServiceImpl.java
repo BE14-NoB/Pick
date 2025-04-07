@@ -22,4 +22,9 @@ public class MemberBadgeQueryServiceImpl implements MemberBadgeQueryService {
 	public List<MemberBadgeQueryDTO> getBadgesByMember(int memberId) {
 		return memberBadgeQueryMapper.selectBadgesByMemberId(memberId);
 	}
+
+	@Override
+	public int getTotalAdvantageByMemberId(int memberId) {
+		return memberBadgeQueryMapper.getTotalAdvantageByMemberId(memberId);
+	}
 }

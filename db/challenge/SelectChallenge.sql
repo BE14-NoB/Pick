@@ -56,8 +56,9 @@ SELECT
 -- 뱃지 목록 전체 조회(삭제되지 않은)
 SELECT
        id
+     , name
      , requirement
-     , adventage
+     , advantage
      , description
      , is_deleted
      , challenge_id
@@ -71,6 +72,7 @@ SELECT
      , MB.level
      , MB.badge_id
      , MB.member_id
+     , B.name
      , B.description
   FROM MEMBER_BADGE MB
   JOIN BADGE B ON MB.badge_id = B.id
