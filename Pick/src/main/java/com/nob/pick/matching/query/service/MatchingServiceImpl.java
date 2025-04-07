@@ -1,15 +1,17 @@
 package com.nob.pick.matching.query.service;
 
-import com.nob.pick.common.config.infrastructure.MemberServiceClient;
+import com.nob.pick.badge.query.service.MemberBadgeQueryService;
 import com.nob.pick.matching.query.aggregate.Matching;
 import com.nob.pick.matching.query.aggregate.MatchingEntry;
 import com.nob.pick.matching.query.aggregate.TechnologyCategory;
 import com.nob.pick.matching.query.dto.*;
 import com.nob.pick.matching.query.mapper.MatchingMapper;
+import com.nob.pick.matching.query.vo.ResponseMemberVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.nob.pick.matching.query.infrastructure.MatchingMemberServiceClient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,13 +22,15 @@ import java.util.stream.Collectors;
 public class MatchingServiceImpl implements MatchingService{
 
     private final MatchingMapper matchingMapper;
-//    private final MemberService memberService;
-    private final MemberServiceClient memberServiceClient;
+    private final MatchingMemberServiceClient matchingMemberServiceClient;
+    private final MemberBadgeQueryService memberBadgeQueryService;
+
 
     @Autowired
-    public MatchingServiceImpl(MatchingMapper matchingMapper, MemberServiceClient memberServiceClient) {
+    public MatchingServiceImpl(MatchingMapper matchingMapper, MatchingMemberServiceClient matchingMemberServiceClient, MemberBadgeQueryService memberBadgeQueryService) {
         this.matchingMapper = matchingMapper;
-        this.memberServiceClient = memberServiceClient;
+        this.matchingMemberServiceClient = matchingMemberServiceClient;
+        this.memberBadgeQueryService = memberBadgeQueryService;
     }
 
     @Override
@@ -55,7 +59,7 @@ public class MatchingServiceImpl implements MatchingService{
 
     @Override
     public List<MatchingEntryDTO> getMatchingEntryByMatchingId(int matchingId, boolean status) {
-        List<MatchingEntry> matchingEntryList = new ArrayList<>();
+        List<MatchingEntry> matchingEntryList;
         if(status)
             matchingEntryList = matchingMapper.selectMatchingEntryByAccepted(matchingId);
         else
@@ -99,29 +103,37 @@ public class MatchingServiceImpl implements MatchingService{
     @Override
     @Transactional
     public List<MatchingDTO> getSearchMatching(SearchMatchingDTO searchMatchingDTO) {
+        // 신청한 회원 정보
+        ResponseMemberVO member = matchingMemberServiceClient.getMemberId();
+        log.info("member: {}", member);
         // 신청자 레벨
+        int memberLevel = matchingMemberServiceClient.getMemberProfileByMemberId(member.getId()).getLevel();
 
-        int memberLevel = memberServiceClient.getMemberProfileByMemberId(searchMatchingDTO.getMemberId()).getId();
-
-        log.info("searchMatchingDTO: {}", searchMatchingDTO);
         // 전체 방 조회
         List<Matching> matchingList = matchingMapper.selectAllMatching();
-        List<MatchingDTO> matchingDTOList = matching2MatchingDTO(matchingList);
 
         List<MatchingInfo> matchingInfoList = matchingList.stream()
                 .map(matching -> {
-                    int level = memberServiceClient.getMemberProfileByMemberId(matching.getMemberId()).getLevel();
+                    int level = matchingMemberServiceClient.getMemberProfileByMemberId(matching.getMemberId()).getLevel();
                     return new MatchingInfo(matching.getId(), matching.getMemberId(), level);
                 })
                 .collect(Collectors.toList());
 
+        // 레벨에 획득 뱃지 advantage 추가
+        memberLevel += memberBadgeQueryService.getTotalAdvantageByMemberId(member.getId());
+        
         log.info("managerList: {}", matchingInfoList);
+
+        // 매칭 정보 입력
         MatchingInfoDTO matchingInfoDTO = new MatchingInfoDTO();
         matchingInfoDTO.setMemberLevel(memberLevel);
         matchingInfoDTO.setMatchingInfoList(matchingInfoList);
-        if(searchMatchingDTO.getTechnologyCategoryCode() != null ) {
-            matchingInfoDTO.setTechnologyCategoryId(searchMatchingDTO.getTechnologyCategoryCode());
-        }
+        // null: 선택 안함
+        matchingInfoDTO.setTechnologyCategoryId(searchMatchingDTO.getTechnologyCategoryId());
+        matchingInfoDTO.setDurationTimeRangeMin(searchMatchingDTO.getDurationTimeRangeMin());
+        matchingInfoDTO.setDurationTimeRangeMax(searchMatchingDTO.getDurationTimeRangeMax());
+        matchingInfoDTO.setMaximumParticipantRangeMin(searchMatchingDTO.getMaximumParticipantRangeMin());
+        matchingInfoDTO.setMaximumParticipantRangeMax(searchMatchingDTO.getMaximumParticipantRangeMax());
 
         log.info("matchingInfo: {}", matchingInfoDTO);
 
@@ -131,24 +143,11 @@ public class MatchingServiceImpl implements MatchingService{
     }
 
     @Override
-    public List<MatchingDTO> getSearchMatchingTest(SearchMatchingDTO searchMatchingDTO, int memberLevel) {
-        List<Matching> matchingList = matchingMapper.selectAllMatching();   // 전체 방 조회
-        List<MatchingInfo> matchingInfoList = matchingList.stream()
-                .map(matching -> {
-                    int randomLevel = (int) (Math.random() * 25) + 1;
-                    return new MatchingInfo(matching.getId(), matching.getMemberId(), randomLevel);
-                }).collect(Collectors.toList());    // 방의 id와 멤버의 id
+    public List<MatchingDTO> getMatchingByManagerId(int managerId) {
 
-        MatchingInfoDTO matchingInfoDTO = new MatchingInfoDTO();
-        matchingInfoDTO.setMemberLevel(memberLevel);
-        matchingInfoDTO.setMatchingInfoList(matchingInfoList);
-        if(searchMatchingDTO.getTechnologyCategoryCode() != null ) {
-            matchingInfoDTO.setTechnologyCategoryId(searchMatchingDTO.getTechnologyCategoryCode());
-        }
+        List<Matching> matchingList = matchingMapper.selectMatchingByManagerId(managerId);
 
-        List<Matching> Result = matchingMapper.searchMatching(matchingInfoDTO);
-
-        return matching2MatchingDTO(Result);
+        return matching2MatchingDTO(matchingList);
     }
 
     private List<TechnologyCategoryDTO> technologyCategory2TechnologyCategoryDTO(List<TechnologyCategory> technologyCategoryList) {

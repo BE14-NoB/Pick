@@ -12,10 +12,7 @@ import com.nob.pick.matching.query.vo.ResponseTechnologyCategoryVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -131,9 +128,23 @@ public class MatchingController {
         return ResponseEntity.ok().body(returnValue);
     }
 
+    // 방장 id로 매칭방 조회
+    @GetMapping("/matching/manager/{managerId}")
+    public ResponseEntity<List<ResponseMatchingVO>> findMatchingByManagerId(@PathVariable int managerId) {
+
+        List<MatchingDTO> matchingDTOList = matchingService.getMatchingByManagerId(managerId);
+
+        List<ResponseMatchingVO> returnValue = matchingDTO2ResponseMatching(matchingDTOList);
+
+        return ResponseEntity.ok().body(returnValue);
+    }
+
+    // 기술 분류, 최대 인원, 개발 기간 -> 매칭
     @GetMapping("/matching/searchMatching")
-    public ResponseEntity<List<ResponseMatchingVO>> findMatchingByLevel(@RequestBody RequestSearchMatchingVO request) {
-        SearchMatchingDTO searchMatchingDTO = requestSearchMatching2SearchMatchingDTO(request);
+    public ResponseEntity<List<ResponseMatchingVO>> findMatchingByLevel(@RequestBody RequestSearchMatchingVO requestSearchMatchingVO) {
+
+        SearchMatchingDTO searchMatchingDTO = RequestSearchMatchingVO2DTO(requestSearchMatchingVO);
+
         List<MatchingDTO> matchingDTOList = matchingService.getSearchMatching(searchMatchingDTO);
 
         List<ResponseMatchingVO> returnValue = matchingDTO2ResponseMatching(matchingDTOList);
@@ -141,12 +152,20 @@ public class MatchingController {
         return ResponseEntity.ok().body(returnValue);
     }
 
-    private SearchMatchingDTO requestSearchMatching2SearchMatchingDTO(RequestSearchMatchingVO request) {
+    private SearchMatchingDTO RequestSearchMatchingVO2DTO(RequestSearchMatchingVO requestSearchMatchingVO) {
         SearchMatchingDTO searchMatchingDTO = new SearchMatchingDTO();
-        searchMatchingDTO.setMemberId(request.getMemberId());
-        if(request.getTechnologyCategoryId() != null) {
-            searchMatchingDTO.setTechnologyCategoryCode(request.getTechnologyCategoryId());
-        }
+
+        // 카테고리 id
+        searchMatchingDTO.setTechnologyCategoryId(requestSearchMatchingVO.getTechnologyCategoryId());
+
+        // 개발 기간
+        searchMatchingDTO.setDurationTimeRangeMin(requestSearchMatchingVO.getDurationTimeRangeMin());
+        searchMatchingDTO.setDurationTimeRangeMax(requestSearchMatchingVO.getDurationTimeRangeMin());
+
+        // 최대 인원
+        searchMatchingDTO.setMaximumParticipantRangeMin(requestSearchMatchingVO.getMaximumParticipantRangeMin());
+        searchMatchingDTO.setMaximumParticipantRangeMax(requestSearchMatchingVO.getMaximumParticipantRangeMax());
+
         return searchMatchingDTO;
     }
 

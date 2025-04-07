@@ -5,26 +5,27 @@
 <mapper namespace="com.nob.pick.matching.query.mapper.MatchingMapper">
     <resultMap id="matchingResultMap" type="com.nob.pick.matching.query.aggregate.Matching">
         <id property="id" column="MATCHING_ID"/>
-        <result property="createdDateAt" column="CREATED_DATE_AT" typeHandler="com.nob.pick.common.config.typehandler.LocalDateTimeTypeHandler"/>
-        <result property="isCompleted" column="IS_COMPLETED" typeHandler="com.nob.pick.common.config.typehandler.StringYnTypeHandler"/>
-        <result property="isDeleted" column="IS_DELETED" typeHandler="com.nob.pick.common.config.typehandler.StringYnTypeHandler"/>
+        <result property="createdDateAt" column="CREATED_DATE_AT"/>
+        <result property="isCompleted" column="IS_COMPLETED"/>
+        <result property="isDeleted" column="IS_DELETED"/>
         <result property="maximumParticipant" column="MAXIMUM_PARTICIPANT"/>
         <result property="currentParticipant" column="CURRENT_PARTICIPANT"/>
+        <result property="durationTime" column="DURATION_TIME"/>
         <result property="levelRange" column="LEVEL_RANGE"/>
         <result property="memberId" column="MEMBER_ID"/>
         <collection property="technologyCategories" ofType="com.nob.pick.matching.query.aggregate.TechnologyCategory">
             <id property="id" column="TECHNOLOGY_ID"/>
             <result property="name" column="NAME"/>
-            <result property="isDeleted" column="IS_DELETED" typeHandler="com.nob.pick.common.config.typehandler.StringYnTypeHandler"/>
+            <result property="isDeleted" column="IS_DELETED"/>
             <result property="refTechnologyCategoryId" column="REF_TECHNOLOGY_CATEGORY_ID"/>
         </collection>
     </resultMap>
 
     <resultMap id="matchingEntryResultMap" type="com.nob.pick.matching.query.aggregate.MatchingEntry">
         <id property="id" column="MATCHING_ENTRY_ID"/>
-        <result property="appliedDateAt" column="APPLIED_DATE_AT" typeHandler="com.nob.pick.common.config.typehandler.LocalDateTimeTypeHandler"/>
-        <result property="isCanceled" column="IS_CANCELED" typeHandler="com.nob.pick.common.config.typehandler.StringYnTypeHandler"/>
-        <result property="isAccepted" column="IS_ACCEPTED" typeHandler="com.nob.pick.common.config.typehandler.StringYnTypeHandler"/>
+        <result property="appliedDateAt" column="APPLIED_DATE_AT"/>
+        <result property="isCanceled" column="IS_CANCELED"/>
+        <result property="isAccepted" column="IS_ACCEPTED"/>
         <result property="memberId" column="MEMBER_ID"/>
         <result property="matchingId" column="MATCHING_ID"/>
     </resultMap>
@@ -32,7 +33,7 @@
     <resultMap id="technologyCategoryResultMap" type="com.nob.pick.matching.query.aggregate.TechnologyCategory">
         <id property="id" column="TECHNOLOGY_CATEGORY_ID"/>
         <result property="name" column="NAME"/>
-        <result property="isDeleted" column="IS_DELETED" typeHandler="com.nob.pick.common.config.typehandler.StringYnTypeHandler"/>
+        <result property="isDeleted" column="IS_DELETED"/>
         <result property="refTechnologyCategoryId" column="REF_TECHNOLOGY_CATEGORY_ID"/>
     </resultMap>
 
@@ -45,6 +46,7 @@
              , A.IS_DELETED
              , A.MAXIMUM_PARTICIPANT
              , A.CURRENT_PARTICIPANT
+             , A.DURATION_TIME
              , A.LEVEL_RANGE
              , A.MEMBER_ID
              , B.ID AS TECHNOLOGY_ID
@@ -67,6 +69,7 @@
              , A.IS_DELETED
              , A.MAXIMUM_PARTICIPANT
              , A.CURRENT_PARTICIPANT
+             , A.DURATION_TIME
              , A.LEVEL_RANGE
              , A.MEMBER_ID
              , B.ID AS TECHNOLOGY_ID
@@ -81,6 +84,30 @@
          ORDER BY 1 DESC
     </select>
 
+    <!-- 방장 id로 매칭방 조회 -->
+    <select id="selectMatchingByManagerId" resultMap="matchingResultMap" parameterType="_int">
+        SELECT
+               A.ID AS MATCHING_ID
+             , A.CREATED_DATE_AT
+             , A.IS_COMPLETED
+             , A.IS_DELETED
+             , A.MAXIMUM_PARTICIPANT
+             , A.CURRENT_PARTICIPANT
+             , A.DURATION_TIME
+             , A.LEVEL_RANGE
+             , A.MEMBER_ID
+             , B.ID AS TECHNOLOGY_ID
+             , B.NAME
+             , B.IS_DELETED
+             , B.REF_TECHNOLOGY_CATEGORY_ID
+          FROM MATCHING A
+          JOIN TECHNOLOGY_CATEGORY B ON A.TECHNOLOGY_CATEGORY_ID = B.ID
+         WHERE A.IS_COMPLETED = 'N'
+           AND A.IS_DELETED = 'N'
+           AND A.MEMBER_ID = #{managerId}
+         ORDER BY 1 DESC
+    </select>
+
     <!-- 카테고리 id로 매칭방 조회 -->
     <select id="selectMatchingByTechnologyCategoryId" resultMap="matchingResultMap" parameterType="_int">
         SELECT
@@ -90,6 +117,7 @@
              , A.IS_DELETED
              , A.MAXIMUM_PARTICIPANT
              , A.CURRENT_PARTICIPANT
+             , A.DURATION_TIME
              , A.LEVEL_RANGE
              , A.MEMBER_ID
              , B.ID AS TECHNOLOGY_ID
@@ -196,6 +224,7 @@
              , A.IS_DELETED
              , A.MAXIMUM_PARTICIPANT
              , A.CURRENT_PARTICIPANT
+             , A.DURATION_TIME
              , A.LEVEL_RANGE
              , A.MEMBER_ID
              , B.ID AS TECHNOLOGY_ID
@@ -209,9 +238,21 @@
                    (A.ID = #{item.matchingId}
                    AND #{memberLevel} BETWEEN #{item.managerLevel} - A.LEVEL_RANGE
                    AND #{item.managerLevel} + A.LEVEL_RANGE)
-                   <if test="technologyCategoryId != null and technologyCategoryId != ''">
+                   <if test="technologyCategoryId != null">
                        AND (B.ID = #{technologyCategoryId}
                        OR B.REF_TECHNOLOGY_CATEGORY_ID = #{technologyCategoryId})
+                   </if>
+                   <if test="durationTimeRangeMin != null">
+                       AND A.DURATION_TIME &gt;= #{durationTimeRangeMin}
+                   </if>
+                   <if test="durationTimeRangeMax != null">
+                       AND A.DURATION_TIME &lt;= #{durationTimeRangeMax}
+                   </if>
+                   <if test="maximumParticipantRangeMin != null">
+                       AND A.MAXIMUM_PARTICIPANT &gt;= #{maximumParticipantRangeMin}
+                   </if>
+                   <if test="maximumParticipantRangeMax != null">
+                       AND A.MAXIMUM_PARTICIPANT &lt;= #{maximumParticipantRangeMax}
                    </if>
                </foreach>
            AND A.IS_COMPLETED = 'N'

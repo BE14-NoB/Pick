@@ -12,5 +12,9 @@ import java.util.List;
 public class MatchingInfoDTO {
     private int memberLevel;   // 신청자 레벨
     List<MatchingInfo> matchingInfoList;
-    private int technologyCategoryId;
+    private Integer technologyCategoryId;
+    private Integer maximumParticipantRangeMin;
+    private Integer maximumParticipantRangeMax;
+    private Integer durationTimeRangeMin;
+    private Integer durationTimeRangeMax;
 }

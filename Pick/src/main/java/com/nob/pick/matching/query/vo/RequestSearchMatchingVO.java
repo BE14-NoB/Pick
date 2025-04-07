@@ -1,13 +1,12 @@
 package com.nob.pick.matching.query.vo;
 
-import lombok.*;
+import lombok.Getter;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Setter
 @Getter
-@ToString
 public class RequestSearchMatchingVO {
-    private int memberId;
     private Integer technologyCategoryId;
+    private Integer maximumParticipantRangeMin;
+    private Integer maximumParticipantRangeMax;
+    private Integer durationTimeRangeMin;
+    private Integer durationTimeRangeMax;
 }
