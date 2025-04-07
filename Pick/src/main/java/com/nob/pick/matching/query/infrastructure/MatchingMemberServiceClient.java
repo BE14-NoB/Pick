@@ -1,5 +1,6 @@
 package com.nob.pick.matching.query.infrastructure;
 
+import com.nob.pick.infrastructure.FeignClientConfig;
 import com.nob.pick.matching.query.vo.ResponseMemberProfileVO;
 import com.nob.pick.matching.query.vo.ResponseMemberVO;
 import org.springframework.cloud.openfeign.FeignClient;
