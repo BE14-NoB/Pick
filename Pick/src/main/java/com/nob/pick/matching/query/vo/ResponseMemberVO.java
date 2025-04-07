@@ -11,7 +11,6 @@ public class ResponseMemberVO {
     private int age;
     private String phoneNumber;
     private String email;
-    private String password;
     private String nickname;
-    private int reportedCount;
+    private int regulatedCount;
 }
