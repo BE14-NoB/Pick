@@ -1,6 +1,6 @@
 package com.nob.pick.matching.query.service;
 
-import com.nob.pick.infrastructure.MemberServiceClient;
+import com.nob.pick.common.config.infrastructure.MemberServiceClient;
 import com.nob.pick.matching.query.aggregate.Matching;
 import com.nob.pick.matching.query.aggregate.MatchingEntry;
 import com.nob.pick.matching.query.aggregate.TechnologyCategory;

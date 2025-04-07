@@ -1,4 +1,4 @@
-package com.nob.pick.infrastructure;
+package com.nob.pick.common.config.infrastructure;
 
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
