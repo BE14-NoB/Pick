@@ -151,3 +151,5 @@ pickconfigserver-0.0.1-SNAPSHOT.jar
 
 # intellij
 *.idea
+
+config
