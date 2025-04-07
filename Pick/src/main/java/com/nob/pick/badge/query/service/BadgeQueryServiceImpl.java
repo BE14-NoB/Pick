@@ -27,4 +27,9 @@ public class BadgeQueryServiceImpl implements BadgeQueryService {
 	public List<BadgeQueryDTO> getBadgesByChallengeId(int challengeId) {
 		return badgeQueryMapper.selectBadgesByChallengeId(challengeId);
 	}
+
+	@Override
+	public BadgeQueryDTO getBadgeById(int id) {
+		return badgeQueryMapper.selectBadgeById(id);
+	}
 }

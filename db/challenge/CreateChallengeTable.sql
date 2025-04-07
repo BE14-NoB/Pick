@@ -42,12 +42,13 @@ CREATE TABLE IF NOT EXISTS DAILY_MISSION
 -- 뱃지 테이블
 CREATE TABLE IF NOT EXISTS BADGE
 (
-    id           INTEGER    NOT NULL AUTO_INCREMENT
+    id           INTEGER      NOT NULL AUTO_INCREMENT
+,   name         VARCHAR(255) NOT NULL
 ,   requirement  INTEGER
-,   advantage    INTEGER    NOT NULL
-,   description  TEXT       NOT NULL
-,   is_deleted   VARCHAR(4) NOT NULL DEFAULT 'N'
-,   challenge_id INTEGER    NOT NULL
+,   advantage    INTEGER      NOT NULL
+,   description  TEXT         NOT NULL
+,   is_deleted   VARCHAR(4)   NOT NULL DEFAULT 'N'
+,   challenge_id INTEGER      NOT NULL
 ,   CONSTRAINT pk_badge_id PRIMARY KEY (id)
 ,   CONSTRAINT fk_badge_challenge_id FOREIGN KEY (challenge_id) REFERENCES challenge(id)
 );

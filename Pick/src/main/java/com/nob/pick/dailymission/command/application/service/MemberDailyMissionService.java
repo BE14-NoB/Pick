@@ -1,10 +1,11 @@
 package com.nob.pick.dailymission.command.application.service;
 
+import com.nob.pick.common.client.MemberClient;
 import com.nob.pick.dailymission.command.domain.aggregate.DailyMission;
 import com.nob.pick.dailymission.command.domain.aggregate.MemberDailyMission;
 import com.nob.pick.dailymission.command.domain.repository.DailyMissionRepository;
 import com.nob.pick.dailymission.command.domain.repository.MemberDailyMissionRepository;
-import com.nob.pick.dailymission.command.infrastructure.MemberClient;
+
 // import com.nob.pick.member.command.entity.Member;
 // import com.nob.pick.member.command.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;

@@ -3,6 +3,7 @@ package com.nob.pick.dailymission.command.application.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +12,7 @@ import com.nob.pick.dailymission.command.application.service.MemberDailyMissionS
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/daily-mission")
 public class MemberDailyMissionController {
 
 	private final MemberDailyMissionService memberDailyMissionService;
@@ -18,7 +20,7 @@ public class MemberDailyMissionController {
 	private static final Logger logger = LoggerFactory.getLogger(MemberDailyMissionController.class);
 
 	// 모든 회원에게 일일 미션 부여
-	@PostMapping("/daily-mission/assign")
+	@PostMapping("/assign")
 	public ResponseEntity<String> assignDailyMissions() {
 		try {
 			memberDailyMissionService.assignDailyMissionsToAllMembers();

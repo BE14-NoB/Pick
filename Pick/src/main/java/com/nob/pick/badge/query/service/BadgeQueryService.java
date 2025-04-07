@@ -9,4 +9,6 @@ public interface BadgeQueryService {
 	List<BadgeQueryDTO> getAllBadges();
 
 	List<BadgeQueryDTO> getBadgesByChallengeId(int challengeId);
+
+	BadgeQueryDTO getBadgeById(int id);
 }
