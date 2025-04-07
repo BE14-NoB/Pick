@@ -128,6 +128,17 @@ public class MatchingController {
         return ResponseEntity.ok().body(returnValue);
     }
 
+    // 방장 id로 매칭방 조회
+    @GetMapping("/matching/manager/{managerId}")
+    public ResponseEntity<List<ResponseMatchingVO>> findMatchingByManagerId(@PathVariable int managerId) {
+
+        List<MatchingDTO> matchingDTOList = matchingService.getMatchingByManagerId(managerId);
+
+        List<ResponseMatchingVO> returnValue = matchingDTO2ResponseMatching(matchingDTOList);
+
+        return ResponseEntity.ok().body(returnValue);
+    }
+
     // 기술 분류, 최대 인원, 개발 기간 -> 매칭
     @GetMapping("/matching/searchMatching")
     public ResponseEntity<List<ResponseMatchingVO>> findMatchingByLevel(@RequestBody RequestSearchMatchingVO requestSearchMatchingVO) {

@@ -84,6 +84,30 @@
          ORDER BY 1 DESC
     </select>
 
+    <!-- 방장 id로 매칭방 조회 -->
+    <select id="selectMatchingByManagerId" resultMap="matchingResultMap" parameterType="_int">
+        SELECT
+               A.ID AS MATCHING_ID
+             , A.CREATED_DATE_AT
+             , A.IS_COMPLETED
+             , A.IS_DELETED
+             , A.MAXIMUM_PARTICIPANT
+             , A.CURRENT_PARTICIPANT
+             , A.DURATION_TIME
+             , A.LEVEL_RANGE
+             , A.MEMBER_ID
+             , B.ID AS TECHNOLOGY_ID
+             , B.NAME
+             , B.IS_DELETED
+             , B.REF_TECHNOLOGY_CATEGORY_ID
+          FROM MATCHING A
+          JOIN TECHNOLOGY_CATEGORY B ON A.TECHNOLOGY_CATEGORY_ID = B.ID
+         WHERE A.IS_COMPLETED = 'N'
+           AND A.IS_DELETED = 'N'
+           AND A.MEMBER_ID = #{managerId}
+         ORDER BY 1 DESC
+    </select>
+
     <!-- 카테고리 id로 매칭방 조회 -->
     <select id="selectMatchingByTechnologyCategoryId" resultMap="matchingResultMap" parameterType="_int">
         SELECT

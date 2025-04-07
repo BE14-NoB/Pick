@@ -25,6 +25,7 @@ public class MatchingServiceImpl implements MatchingService{
     private final MatchingMemberServiceClient matchingMemberServiceClient;
     private final MemberBadgeQueryService memberBadgeQueryService;
 
+
     @Autowired
     public MatchingServiceImpl(MatchingMapper matchingMapper, MatchingMemberServiceClient matchingMemberServiceClient, MemberBadgeQueryService memberBadgeQueryService) {
         this.matchingMapper = matchingMapper;
@@ -58,7 +59,7 @@ public class MatchingServiceImpl implements MatchingService{
 
     @Override
     public List<MatchingEntryDTO> getMatchingEntryByMatchingId(int matchingId, boolean status) {
-        List<MatchingEntry> matchingEntryList = new ArrayList<>();
+        List<MatchingEntry> matchingEntryList;
         if(status)
             matchingEntryList = matchingMapper.selectMatchingEntryByAccepted(matchingId);
         else
@@ -139,6 +140,14 @@ public class MatchingServiceImpl implements MatchingService{
         List<Matching> Result = matchingMapper.searchMatching(matchingInfoDTO);
 
         return matching2MatchingDTO(Result);
+    }
+
+    @Override
+    public List<MatchingDTO> getMatchingByManagerId(int managerId) {
+
+        List<Matching> matchingList = matchingMapper.selectMatchingByManagerId(managerId);
+
+        return matching2MatchingDTO(matchingList);
     }
 
     private List<TechnologyCategoryDTO> technologyCategory2TechnologyCategoryDTO(List<TechnologyCategory> technologyCategoryList) {
