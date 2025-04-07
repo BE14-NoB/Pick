@@ -13,7 +13,8 @@ import lombok.ToString;
 @ToString
 public class BadgeQueryDTO {
 	private int id;
-	private Integer requirement;
+	private String name;
+	private int requirement;
 	private int advantage;
 	private String description;
 	private Boolean isDeleted;

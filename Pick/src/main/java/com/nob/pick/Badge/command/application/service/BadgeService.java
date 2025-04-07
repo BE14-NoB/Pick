@@ -45,6 +45,7 @@ public class BadgeService {
 			.orElseThrow(() -> new IllegalArgumentException("챌린지를 찾을 수 없습니다."));
 
 		Badge badge = new Badge();
+		badge.setName(badgeDto.getName());
 		badge.setRequirement(badgeDto.getRequirement());
 		badge.setAdvantage(badgeDto.getAdvantage());
 		badge.setDescription(badgeDto.getDescription());
@@ -58,6 +59,7 @@ public class BadgeService {
 		Badge badge = badgeRepository.findById(badgeId)
 			.orElseThrow(() -> new IllegalArgumentException("뱃지를 찾을 수 없습니다."));
 
+		badge.setName(badgeDto.getName());
 		badge.setRequirement(badgeDto.getRequirement());
 		badge.setAdvantage(badgeDto.getAdvantage());
 		badge.setDescription(badgeDto.getDescription());

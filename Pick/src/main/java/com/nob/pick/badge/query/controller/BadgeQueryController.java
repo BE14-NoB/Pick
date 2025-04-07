@@ -31,4 +31,9 @@ public class BadgeQueryController {
 	public List<BadgeQueryDTO> getBadgesByChallenge(@PathVariable int challengeId) {
 		return badgeQueryService.getBadgesByChallengeId(challengeId);
 	}
+
+	@GetMapping("/info/{badgeId}")
+	public BadgeQueryDTO getBadgeInfo(@PathVariable int badgeId) {
+		return badgeQueryService.getBadgeById(badgeId);
+	}
 }

@@ -24,6 +24,7 @@ public class Badge {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
+	private String name;
 	private Integer requirement;
 	private int advantage;
 	private String description;
