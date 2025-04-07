@@ -7,6 +7,7 @@ import com.nob.pick.project.command.domain.repository.MeetingRepository;
 import com.nob.pick.project.command.domain.repository.ParticipantRepository;
 import com.nob.pick.project.command.domain.repository.ProjectRoomRepository;
 import com.nob.pick.project.query.dto.MeetingDTO;
+
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +38,7 @@ public class MeetingServiceImpl implements MeetingService {
         log.info("[미팅 생성 요청] meetingDTO = {}", meetingDTO);
 
         int authorId = meetingDTO.getAuthorId();
-        int projectRoomId = meetingDTO.getProjectId();
+        int projectRoomId = meetingDTO.getProjectRoomId();
 
         ProjectRoom projectRoom = projectRoomRepository.findById(projectRoomId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 프로젝트입니다. projectRoomId=" + projectRoomId));
@@ -77,6 +78,5 @@ public class MeetingServiceImpl implements MeetingService {
         return participantRepository.findById(participantId)
                 .orElseThrow(() -> new IllegalArgumentException("참여자를 찾을 수 없습니다. participantId=" + participantId));
     }
-
 
 }
