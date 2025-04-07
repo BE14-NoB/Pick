@@ -14,7 +14,7 @@ import com.nob.pick.post.command.application.dto.MemberNicknameDTO;
 import com.nob.pick.post.command.application.dto.PostDTO;
 import com.nob.pick.post.command.application.service.CommandPostService;
 import com.nob.pick.post.command.domain.aggregate.vo.ResponseRegisterPostVO;
-import com.nob.pick.infrastructure.MemberServiceClient;
+import com.nob.pick.common.config.infrastructure.MemberServiceClient;
 
 import io.jsonwebtoken.lang.Assert;
 import jakarta.servlet.http.HttpServletRequest;

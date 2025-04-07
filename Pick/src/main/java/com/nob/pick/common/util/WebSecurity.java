@@ -77,6 +77,11 @@ public class WebSecurity {
 					.requestMatchers("/member-achievement/**").permitAll()
 					.requestMatchers("/badge/**").permitAll()
 
+					// 매칭 관련 도메인 security
+					.requestMatchers("/matching/**").permitAll()
+					.requestMatchers("/matchingEntry/**").permitAll()
+					.requestMatchers("/technologyCategory/**").permitAll()
+
 					.anyRequest().authenticated()
 			)
 			.sessionManagement(session ->
