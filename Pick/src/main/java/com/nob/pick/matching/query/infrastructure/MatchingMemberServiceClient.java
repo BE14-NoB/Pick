@@ -7,7 +7,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-@FeignClient(name="pick-member-service", configuration= FeignClientConfig.class)
+@FeignClient(name="matching-pick-member-service", configuration= FeignClientConfig.class)
 public interface MatchingMemberServiceClient {
     // 현재 로그인한 회원 정보 가져오기
     @GetMapping("/api/members/member-Info/id")
