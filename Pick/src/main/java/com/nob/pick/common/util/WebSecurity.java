@@ -1,7 +1,7 @@
 package com.nob.pick.common.util;
 
-import com.nob.pick.gitactivity.command.domain.repository.GitHubTokenRepository;
-import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.RequestDispatcher;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,7 +16,11 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.Map;
+
+@Slf4j
 @Configuration
 @EnableWebSecurity
 public class WebSecurity {
@@ -35,7 +39,7 @@ public class WebSecurity {
 	}
 
 	@Bean
-	public SecurityFilterChain securityFilterChain(HttpSecurity http, GitHubTokenRepository gitHubTokenRepository) throws Exception {
+	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http.csrf(csrf -> csrf.disable());
 
 		http.authorizeHttpRequests(authz ->
@@ -114,12 +118,24 @@ public class WebSecurity {
 							String accessToken = client.getAccessToken().getTokenValue();
 							System.out.println("✅ GitHub AccessToken: " + accessToken);
 
-							// 현재 로그인한 사용자 ID 추출 지금은 JWT가 없지만 테스트용으로 userId 임의 설정
-							int userId = 1;
-							gitHubTokenRepository.save(userId, accessToken);
+							// GitHub 유저 ID 가져오기
+							String githubUserId = WebClient.create("https://api.github.com")
+									.get()
+									.uri("/user")
+									.header("Authorization", "Bearer " + accessToken)
+									.retrieve()
+									.bodyToMono(Map.class)
+									.map(user -> String.valueOf(user.get("login")))
+									.block();
 
-							response.setContentType("application/json");
-							response.getWriter().write("{\"message\": \"GitHub 연동 성공!\"}");
+							// 세션에 저장
+							log.info("✅ OAuth success - 세션 ID: {}", request.getSession().getId());
+							request.getSession().setAttribute("githubUserId", githubUserId);
+							request.getSession().setAttribute("githubAccessToken", accessToken);
+
+							// 컨트롤러에서 처리하도록 forward (redirect 시 세션이 달라져서 값을 넘길 수가 없음)
+		 					RequestDispatcher dispatcher = request.getRequestDispatcher("/api/github/callback");
+							dispatcher.forward(request, response);
 						})
 				);
 
