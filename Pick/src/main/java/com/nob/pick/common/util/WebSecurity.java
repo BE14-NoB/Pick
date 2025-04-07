@@ -1,5 +1,7 @@
 package com.nob.pick.common.util;
 
+import jakarta.servlet.RequestDispatcher;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,9 +11,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.Map;
+
+@Slf4j
 @Configuration
 @EnableWebSecurity
 public class WebSecurity {
@@ -19,12 +28,14 @@ public class WebSecurity {
 	private final Environment env;
 	private final JwtUtil jwtUtil;
 	private final JwtFilter jwtFilter;
+	private final OAuth2AuthorizedClientService authorizedClientService;
 
 	@Autowired
-	public WebSecurity(Environment env, JwtUtil jwtUtil, JwtFilter jwtFilter) {
+	public WebSecurity(Environment env, JwtUtil jwtUtil, JwtFilter jwtFilter, OAuth2AuthorizedClientService authorizedClientService) {
 		this.env = env;
 		this.jwtUtil = jwtUtil;
 		this.jwtFilter = jwtFilter;
+		this.authorizedClientService = authorizedClientService;
 	}
 
 	@Bean
@@ -35,6 +46,10 @@ public class WebSecurity {
 				authz
 					.requestMatchers("/**").permitAll()
 
+
+					// OAuth2
+					.requestMatchers("/oauth2/**", "/login/oauth2/**").permitAll()
+						.requestMatchers("/api/github/**").permitAll()
 					// SecurityConfig에서 가져온 설정
 					.requestMatchers("/api/members/signup").permitAll()
 
@@ -85,7 +100,7 @@ public class WebSecurity {
 					.anyRequest().authenticated()
 			)
 			.sessionManagement(session ->
-				session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+				session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))			// 깃 토큰 때문에 임시로 STATELESS -> IF_REQUIRED 수정
 			.exceptionHandling(exceptionHandling ->
 				exceptionHandling
 					.authenticationEntryPoint((request, response, authException) -> {
@@ -98,7 +113,36 @@ public class WebSecurity {
 						response.setContentType("application/json");
 						response.getWriter().write("{\"error\": \"Forbidden\", \"message\": \"" + accessDeniedException.getMessage() + "\"}");
 					})
-			);
+			)
+				.oauth2Login(oauth2 -> oauth2
+						.successHandler((request, response, authentication) -> {
+							OAuth2AuthenticationToken auth = (OAuth2AuthenticationToken) authentication;
+							OAuth2AuthorizedClient client = authorizedClientService
+									.loadAuthorizedClient(auth.getAuthorizedClientRegistrationId(), auth.getName());
+
+							String accessToken = client.getAccessToken().getTokenValue();
+							System.out.println("✅ GitHub AccessToken: " + accessToken);
+
+							// GitHub 유저 ID 가져오기
+							String githubUserId = WebClient.create("https://api.github.com")
+									.get()
+									.uri("/user")
+									.header("Authorization", "Bearer " + accessToken)
+									.retrieve()
+									.bodyToMono(Map.class)
+									.map(user -> String.valueOf(user.get("login")))
+									.block();
+
+							// 세션에 저장
+							log.info("✅ OAuth success - 세션 ID: {}", request.getSession().getId());
+							request.getSession().setAttribute("githubUserId", githubUserId);
+							request.getSession().setAttribute("githubAccessToken", accessToken);
+
+							// 컨트롤러에서 처리하도록 forward (redirect 시 세션이 달라져서 값을 넘길 수가 없음)
+		 					RequestDispatcher dispatcher = request.getRequestDispatcher("/api/github/callback");
+							dispatcher.forward(request, response);
+						})
+				);
 
 		http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
