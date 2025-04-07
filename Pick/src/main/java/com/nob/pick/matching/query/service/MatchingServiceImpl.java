@@ -99,7 +99,7 @@ public class MatchingServiceImpl implements MatchingService{
 
     @Override
     @Transactional
-    public List<MatchingDTO> getSearchMatching(int technologyCategoryId) {
+    public List<MatchingDTO> getSearchMatching(SearchMatchingDTO searchMatchingDTO) {
         // 신청한 회원 정보
         ResponseMemberVO member = matchingMemberServiceClient.getMemberId();
         log.info("member: {}", member);
@@ -116,36 +116,24 @@ public class MatchingServiceImpl implements MatchingService{
                 })
                 .collect(Collectors.toList());
 
+        // 회원별 획득 뱃지 레벨 --------------
+
+        //-----------------------
+        
         log.info("managerList: {}", matchingInfoList);
+
+        // 매칭 정보 입력
         MatchingInfoDTO matchingInfoDTO = new MatchingInfoDTO();
         matchingInfoDTO.setMemberLevel(memberLevel);
         matchingInfoDTO.setMatchingInfoList(matchingInfoList);
-        if(technologyCategoryId != 0) {
-            matchingInfoDTO.setTechnologyCategoryId(technologyCategoryId);
-        }
+        // null: 선택 안함
+        matchingInfoDTO.setTechnologyCategoryId(searchMatchingDTO.getTechnologyCategoryId());
+        matchingInfoDTO.setDurationTimeRangeMin(searchMatchingDTO.getDurationTimeRangeMin());
+        matchingInfoDTO.setDurationTimeRangeMax(searchMatchingDTO.getDurationTimeRangeMax());
+        matchingInfoDTO.setMaximumParticipantRangeMin(searchMatchingDTO.getMaximumParticipantRangeMin());
+        matchingInfoDTO.setMaximumParticipantRangeMax(searchMatchingDTO.getMaximumParticipantRangeMax());
 
         log.info("matchingInfo: {}", matchingInfoDTO);
-
-        List<Matching> Result = matchingMapper.searchMatching(matchingInfoDTO);
-
-        return matching2MatchingDTO(Result);
-    }
-
-    @Override
-    public List<MatchingDTO> getSearchMatchingTest(SearchMatchingDTO searchMatchingDTO, int memberLevel) {
-        List<Matching> matchingList = matchingMapper.selectAllMatching();   // 전체 방 조회
-        List<MatchingInfo> matchingInfoList = matchingList.stream()
-                .map(matching -> {
-                    int randomLevel = (int) (Math.random() * 25) + 1;
-                    return new MatchingInfo(matching.getId(), matching.getMemberId(), randomLevel);
-                }).collect(Collectors.toList());    // 방의 id와 멤버의 id
-
-        MatchingInfoDTO matchingInfoDTO = new MatchingInfoDTO();
-        matchingInfoDTO.setMemberLevel(memberLevel);
-        matchingInfoDTO.setMatchingInfoList(matchingInfoList);
-        if(searchMatchingDTO.getTechnologyCategoryCode() != null ) {
-            matchingInfoDTO.setTechnologyCategoryId(searchMatchingDTO.getTechnologyCategoryCode());
-        }
 
         List<Matching> Result = matchingMapper.searchMatching(matchingInfoDTO);
 

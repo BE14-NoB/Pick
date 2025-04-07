@@ -5,6 +5,8 @@ import lombok.Getter;
 @Getter
 public class RequestSearchMatchingVO {
     private Integer technologyCategoryId;
-    private Integer maximum_participant;
-    private Integer duration_time;
+    private Integer maximumParticipantRangeMin;
+    private Integer maximumParticipantRangeMax;
+    private Integer durationTimeRangeMin;
+    private Integer durationTimeRangeMax;
 }

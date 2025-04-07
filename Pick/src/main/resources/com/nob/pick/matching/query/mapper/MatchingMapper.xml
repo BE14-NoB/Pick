@@ -10,6 +10,7 @@
         <result property="isDeleted" column="IS_DELETED"/>
         <result property="maximumParticipant" column="MAXIMUM_PARTICIPANT"/>
         <result property="currentParticipant" column="CURRENT_PARTICIPANT"/>
+        <result property="durationTime" column="DURATION_TIME"/>
         <result property="levelRange" column="LEVEL_RANGE"/>
         <result property="memberId" column="MEMBER_ID"/>
         <collection property="technologyCategories" ofType="com.nob.pick.matching.query.aggregate.TechnologyCategory">
@@ -45,6 +46,7 @@
              , A.IS_DELETED
              , A.MAXIMUM_PARTICIPANT
              , A.CURRENT_PARTICIPANT
+             , A.DURATION_TIME
              , A.LEVEL_RANGE
              , A.MEMBER_ID
              , B.ID AS TECHNOLOGY_ID
@@ -67,6 +69,7 @@
              , A.IS_DELETED
              , A.MAXIMUM_PARTICIPANT
              , A.CURRENT_PARTICIPANT
+             , A.DURATION_TIME
              , A.LEVEL_RANGE
              , A.MEMBER_ID
              , B.ID AS TECHNOLOGY_ID
@@ -90,6 +93,7 @@
              , A.IS_DELETED
              , A.MAXIMUM_PARTICIPANT
              , A.CURRENT_PARTICIPANT
+             , A.DURATION_TIME
              , A.LEVEL_RANGE
              , A.MEMBER_ID
              , B.ID AS TECHNOLOGY_ID
@@ -196,6 +200,7 @@
              , A.IS_DELETED
              , A.MAXIMUM_PARTICIPANT
              , A.CURRENT_PARTICIPANT
+             , A.DURATION_TIME
              , A.LEVEL_RANGE
              , A.MEMBER_ID
              , B.ID AS TECHNOLOGY_ID
@@ -209,9 +214,21 @@
                    (A.ID = #{item.matchingId}
                    AND #{memberLevel} BETWEEN #{item.managerLevel} - A.LEVEL_RANGE
                    AND #{item.managerLevel} + A.LEVEL_RANGE)
-                   <if test="technologyCategoryId != null and technologyCategoryId != ''">
+                   <if test="technologyCategoryId != null">
                        AND (B.ID = #{technologyCategoryId}
                        OR B.REF_TECHNOLOGY_CATEGORY_ID = #{technologyCategoryId})
+                   </if>
+                   <if test="durationTimeRangeMin != null">
+                       AND A.DURATION_TIME &gt;= #{durationTimeRangeMin}
+                   </if>
+                   <if test="durationTimeRangeMax != null">
+                       AND A.DURATION_TIME &lt;= #{durationTimeRangeMax}
+                   </if>
+                   <if test="maximumParticipantRangeMin != null">
+                       AND A.MAXIMUM_PARTICIPANT &gt;= #{maximumParticipantRangeMin}
+                   </if>
+                   <if test="maximumParticipantRangeMax != null">
+                       AND A.MAXIMUM_PARTICIPANT &lt;= #{maximumParticipantRangeMax}
                    </if>
                </foreach>
            AND A.IS_COMPLETED = 'N'

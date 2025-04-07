@@ -134,7 +134,7 @@ public class MatchingController {
 
         SearchMatchingDTO searchMatchingDTO = RequestSearchMatchingVO2DTO(requestSearchMatchingVO);
 
-        List<MatchingDTO> matchingDTOList = matchingService.getSearchMatching(technologyCategoryId);
+        List<MatchingDTO> matchingDTOList = matchingService.getSearchMatching(searchMatchingDTO);
 
         List<ResponseMatchingVO> returnValue = matchingDTO2ResponseMatching(matchingDTOList);
 
@@ -144,6 +144,18 @@ public class MatchingController {
     private SearchMatchingDTO RequestSearchMatchingVO2DTO(RequestSearchMatchingVO requestSearchMatchingVO) {
         SearchMatchingDTO searchMatchingDTO = new SearchMatchingDTO();
 
+        // 카테고리 id
+        searchMatchingDTO.setTechnologyCategoryId(requestSearchMatchingVO.getTechnologyCategoryId());
+
+        // 개발 기간
+        searchMatchingDTO.setDurationTimeRangeMin(requestSearchMatchingVO.getDurationTimeRangeMin());
+        searchMatchingDTO.setDurationTimeRangeMax(requestSearchMatchingVO.getDurationTimeRangeMin());
+
+        // 최대 인원
+        searchMatchingDTO.setMaximumParticipantRangeMin(requestSearchMatchingVO.getMaximumParticipantRangeMin());
+        searchMatchingDTO.setMaximumParticipantRangeMax(requestSearchMatchingVO.getMaximumParticipantRangeMax());
+
+        return searchMatchingDTO;
     }
 
     private List<ResponseMatchingEntryVO> matchingEntryDTO2ResponseMatchingEntry(List<MatchingEntryDTO> matchingEntryDTOList) {
