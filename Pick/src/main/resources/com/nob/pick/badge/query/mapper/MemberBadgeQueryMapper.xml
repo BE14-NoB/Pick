@@ -22,4 +22,13 @@
           FROM MEMBER_BADGE
          WHERE member_id = #{memberId}
     </select>
+
+    <!-- 회원 ID로 뱃지의 가산점 합계 조회 -->
+    <select id="getTotalAdvantageByMemberId" parameterType="int" resultType="int">
+        SELECT COALESCE(SUM(b.advantage), 0)
+          FROM MEMBER_BADGE MB
+          JOIN BADGE B ON MB.badge_id = B.id
+         WHERE MB.member_id = #{memberId}
+           AND B.is_deleted = 'N'
+    </select>
 </mapper>

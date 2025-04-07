@@ -12,4 +12,6 @@ public interface BadgeQueryMapper {
 	List<BadgeQueryDTO> selectAllBadges();
 
 	List<BadgeQueryDTO> selectBadgesByChallengeId(int challengeId);
+
+	BadgeQueryDTO selectBadgeById(int id);
 }

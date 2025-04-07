@@ -70,15 +70,11 @@ public class MeetingController {
 
     // todo. 회의록 수정
 
-
-
     // todo. 회의록 삭제-> soft delete 후 휴지통 행? 복구 가능 ?
 
     // todo. 회의록 템플릿 적용
-    
 
     // todo. 회의록 복구
-
 
 
 }
