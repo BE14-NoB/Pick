@@ -1,5 +1,6 @@
 package com.nob.pick.matching.query.service;
 
+import com.nob.pick.badge.query.service.MemberBadgeQueryService;
 import com.nob.pick.matching.query.aggregate.Matching;
 import com.nob.pick.matching.query.aggregate.MatchingEntry;
 import com.nob.pick.matching.query.aggregate.TechnologyCategory;
@@ -21,13 +22,14 @@ import java.util.stream.Collectors;
 public class MatchingServiceImpl implements MatchingService{
 
     private final MatchingMapper matchingMapper;
-//    private final MemberService memberService;
     private final MatchingMemberServiceClient matchingMemberServiceClient;
+    private final MemberBadgeQueryService memberBadgeQueryService;
 
     @Autowired
-    public MatchingServiceImpl(MatchingMapper matchingMapper, MatchingMemberServiceClient matchingMemberServiceClient) {
+    public MatchingServiceImpl(MatchingMapper matchingMapper, MatchingMemberServiceClient matchingMemberServiceClient, MemberBadgeQueryService memberBadgeQueryService) {
         this.matchingMapper = matchingMapper;
         this.matchingMemberServiceClient = matchingMemberServiceClient;
+        this.memberBadgeQueryService = memberBadgeQueryService;
     }
 
     @Override
@@ -116,9 +118,8 @@ public class MatchingServiceImpl implements MatchingService{
                 })
                 .collect(Collectors.toList());
 
-        // 회원별 획득 뱃지 레벨 --------------
-
-        //-----------------------
+        // 레벨에 획득 뱃지 advantage 추가
+        memberLevel += memberBadgeQueryService.getTotalAdvantageByMemberId(member.getId());
         
         log.info("managerList: {}", matchingInfoList);
 
