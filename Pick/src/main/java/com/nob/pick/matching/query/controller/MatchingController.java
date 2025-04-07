@@ -143,7 +143,7 @@ public class MatchingController {
     @GetMapping("/matching/searchMatching")
     public ResponseEntity<List<ResponseMatchingVO>> findMatchingByLevel(@RequestBody RequestSearchMatchingVO requestSearchMatchingVO) {
 
-        SearchMatchingDTO searchMatchingDTO = RequestSearchMatchingVO2DTO(requestSearchMatchingVO);
+        SearchMatchingDTO searchMatchingDTO = requestSearchMatchingVO2DTO(requestSearchMatchingVO);
 
         List<MatchingDTO> matchingDTOList = matchingService.getSearchMatching(searchMatchingDTO);
 
@@ -152,7 +152,7 @@ public class MatchingController {
         return ResponseEntity.ok().body(returnValue);
     }
 
-    private SearchMatchingDTO RequestSearchMatchingVO2DTO(RequestSearchMatchingVO requestSearchMatchingVO) {
+    private SearchMatchingDTO requestSearchMatchingVO2DTO(RequestSearchMatchingVO requestSearchMatchingVO) {
         SearchMatchingDTO searchMatchingDTO = new SearchMatchingDTO();
 
         // 카테고리 id

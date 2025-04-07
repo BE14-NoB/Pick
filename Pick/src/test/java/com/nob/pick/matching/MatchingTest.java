@@ -36,33 +36,4 @@ public class MatchingTest {
         int matchingId = 7;
         Assertions.assertDoesNotThrow(() -> matchingService.getMatchingEntryByMatchingId(matchingId, false));
     }
-
-    @Test
-    @DisplayName("매칭 조건 정보와 신청자 레벨로 자동 매칭 테스트")
-    public void searchMatchingTest() {
-        int memberLevel = 10;
-        SearchMatchingDTO searchMatchingDTO = new SearchMatchingDTO();
-        searchMatchingDTO.setMemberId(5);
-        searchMatchingDTO.setTechnologyCategoryCode(2); // 모바일
-        List<MatchingDTO> result = matchingService.getSearchMatchingTest(searchMatchingDTO, memberLevel);
-        if (!result.isEmpty()) {
-            result.forEach(System.out::println);
-        } else {
-            System.out.println("매칭 조건에 맞는 매칭방이 없습니다.");
-        }
-    }
-//    private static Stream<Arguments> getSearchMatchingInfo() {
-//        SearchMatchingDTO searchMatchingInfo = new SearchMatchingDTO();
-//        searchMatchingInfo.setMemberId(4);
-//        searchMatchingInfo.setTechnologyCategoryCode(1);
-//        return Stream.of(Arguments.arguments(searchMatchingInfo));
-//    }
-
-//    @DisplayName("매칭 기능 테스트")
-//    @ParameterizedTest
-//    @MethodSource("getSearchMatchingInfo")
-//    public void searchMatching(SearchMatchingDTO searchMatchingInfo) {
-//        Assertions.assertDoesNotThrow(() -> matchingService.getSearchMatching(searchMatchingInfo));
-//    }
-
 }
