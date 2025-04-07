@@ -6,7 +6,7 @@ import lombok.ToString;
 @Getter
 @ToString
 public class ResponseMemberVO {
-    private Long id;
+    private int id;
     private String name;
     private int age;
     private String phoneNumber;

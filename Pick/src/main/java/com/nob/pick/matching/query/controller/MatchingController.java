@@ -2,8 +2,10 @@ package com.nob.pick.matching.query.controller;
 
 import com.nob.pick.matching.query.dto.MatchingDTO;
 import com.nob.pick.matching.query.dto.MatchingEntryDTO;
+import com.nob.pick.matching.query.dto.SearchMatchingDTO;
 import com.nob.pick.matching.query.dto.TechnologyCategoryDTO;
 import com.nob.pick.matching.query.service.MatchingService;
+import com.nob.pick.matching.query.vo.RequestSearchMatchingVO;
 import com.nob.pick.matching.query.vo.ResponseMatchingEntryVO;
 import com.nob.pick.matching.query.vo.ResponseMatchingVO;
 import com.nob.pick.matching.query.vo.ResponseTechnologyCategoryVO;
@@ -126,14 +128,22 @@ public class MatchingController {
         return ResponseEntity.ok().body(returnValue);
     }
 
-    // 기술 분류를 안고른다면 0
+    // 기술 분류, 최대 인원, 개발 기간 -> 매칭
     @GetMapping("/matching/searchMatching")
-    public ResponseEntity<List<ResponseMatchingVO>> findMatchingByLevel(@RequestParam(defaultValue = "0") int technologyCategoryId) {
+    public ResponseEntity<List<ResponseMatchingVO>> findMatchingByLevel(@RequestBody RequestSearchMatchingVO requestSearchMatchingVO) {
+
+        SearchMatchingDTO searchMatchingDTO = RequestSearchMatchingVO2DTO(requestSearchMatchingVO);
+
         List<MatchingDTO> matchingDTOList = matchingService.getSearchMatching(technologyCategoryId);
 
         List<ResponseMatchingVO> returnValue = matchingDTO2ResponseMatching(matchingDTOList);
 
         return ResponseEntity.ok().body(returnValue);
+    }
+
+    private SearchMatchingDTO RequestSearchMatchingVO2DTO(RequestSearchMatchingVO requestSearchMatchingVO) {
+        SearchMatchingDTO searchMatchingDTO = new SearchMatchingDTO();
+
     }
 
     private List<ResponseMatchingEntryVO> matchingEntryDTO2ResponseMatchingEntry(List<MatchingEntryDTO> matchingEntryDTOList) {

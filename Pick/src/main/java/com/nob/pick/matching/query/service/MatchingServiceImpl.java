@@ -1,6 +1,5 @@
 package com.nob.pick.matching.query.service;
 
-import com.nob.pick.infrastructure.MemberServiceClient;
 import com.nob.pick.matching.query.aggregate.Matching;
 import com.nob.pick.matching.query.aggregate.MatchingEntry;
 import com.nob.pick.matching.query.aggregate.TechnologyCategory;
@@ -11,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.nob.pick.matching.query.infrastructure.MatchingMemberServiceClient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,12 +22,12 @@ public class MatchingServiceImpl implements MatchingService{
 
     private final MatchingMapper matchingMapper;
 //    private final MemberService memberService;
-    private final MemberServiceClient memberServiceClient;
+    private final MatchingMemberServiceClient matchingMemberServiceClient;
 
     @Autowired
-    public MatchingServiceImpl(MatchingMapper matchingMapper, MemberServiceClient memberServiceClient) {
+    public MatchingServiceImpl(MatchingMapper matchingMapper, MatchingMemberServiceClient matchingMemberServiceClient) {
         this.matchingMapper = matchingMapper;
-        this.memberServiceClient = memberServiceClient;
+        this.matchingMemberServiceClient = matchingMemberServiceClient;
     }
 
     @Override
@@ -101,17 +101,17 @@ public class MatchingServiceImpl implements MatchingService{
     @Transactional
     public List<MatchingDTO> getSearchMatching(int technologyCategoryId) {
         // 신청한 회원 정보
-        ResponseMemberVO member = memberServiceClient.getMemberByToken();
+        ResponseMemberVO member = matchingMemberServiceClient.getMemberId();
         log.info("member: {}", member);
         // 신청자 레벨
-        int memberLevel = memberServiceClient.getMemberProfileByMemberId(member.getId()).getLevel();
+        int memberLevel = matchingMemberServiceClient.getMemberProfileByMemberId(member.getId()).getLevel();
 
         // 전체 방 조회
         List<Matching> matchingList = matchingMapper.selectAllMatching();
 
         List<MatchingInfo> matchingInfoList = matchingList.stream()
                 .map(matching -> {
-                    int level = memberServiceClient.getMemberProfileByMemberId(matching.getMemberId()).getLevel();
+                    int level = matchingMemberServiceClient.getMemberProfileByMemberId(matching.getMemberId()).getLevel();
                     return new MatchingInfo(matching.getId(), matching.getMemberId(), level);
                 })
                 .collect(Collectors.toList());

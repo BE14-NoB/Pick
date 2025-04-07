@@ -8,6 +8,7 @@ import lombok.*;
 @Setter
 @ToString
 public class SearchMatchingDTO {
-    private int memberId;
-    private Integer technologyCategoryCode;
+    private Integer technologyCategoryId;
+    private Integer maximum_participant;
+    private Integer duration_time;
 }
