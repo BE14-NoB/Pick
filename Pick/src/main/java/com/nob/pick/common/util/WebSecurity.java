@@ -34,7 +34,7 @@ public class WebSecurity {
 		http.authorizeHttpRequests(authz ->
 				authz
 					.requestMatchers("/**").permitAll()
-					.requestMatchers("/ws/**").permitAll()
+					.requestMatchers("/ws/**").permitAll()		// 웹소켓
 					// SecurityConfig에서 가져온 설정
 					.requestMatchers("/api/members/signup").permitAll()
 
@@ -76,6 +76,9 @@ public class WebSecurity {
 					.requestMatchers("/achievement/**").permitAll()
 					.requestMatchers("/member-achievement/**").permitAll()
 					.requestMatchers("/badge/**").permitAll()
+
+					// 프로젝트 관련 도메인 security 설정
+					.requestMatchers("/project/**").permitAll()
 
 					.anyRequest().authenticated()
 			)

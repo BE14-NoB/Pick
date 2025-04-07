@@ -116,12 +116,18 @@ public class ProjectRoomController {
 		return ResponseEntity.ok().build();
 	}
 
-	// TODO. 프로젝트 입장 코드 메일로 초대
+	// 프로젝트 입장 코드 메일로 초대
 	@PostMapping("/invite/send")
 	public ResponseEntity<?> sendInviteMail(@RequestBody RequestInviteEmailVO requestVO) {
 		invitationService.sendProjectInviteEmail(requestVO);
 		return ResponseEntity.ok("초대장이 이메일로 전송되었습니다!");
 	}
+
+
+	//
+
+
+	//
 
 
 }

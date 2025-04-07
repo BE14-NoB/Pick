@@ -39,7 +39,7 @@ public class MeetingController {
         return ResponseEntity.ok().body("자동 저장됨");
     }
 
-    //
+    // 템플릿 적용
     @PostMapping("/meeting/{meetingId}/apply-template")
     public ResponseEntity<?> applyTemplate(
         @PathVariable int meetingId,

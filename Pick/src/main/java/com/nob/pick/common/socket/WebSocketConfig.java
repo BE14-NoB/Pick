@@ -8,6 +8,10 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+
+/*
+	노션 같은 실시간 회의록 작성 기능을 위한 웹소켓 설정 
+ */
 @Configuration
 @EnableWebSocketMessageBroker		// STOMP 기반 WebSocket 메시지 브로커 기능을 활성화
 @RequiredArgsConstructor
