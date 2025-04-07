@@ -13,10 +13,10 @@ import lombok.*;
 public class GitHubAccount {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id")
+    @Column(name = "id")
     private int id;
 
-    @Column(name="user_id")
+    @Column(name = "user_id")
     private String userId;
 
     @Column(name = "access_token")

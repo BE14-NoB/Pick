@@ -9,7 +9,7 @@ import java.util.Map;
 
 @Slf4j
 @Service("QueryGitHubAccountService")
-public class GitHubAccountServiceImpl implements GitHubAccountService{
+public class GitHubAccountServiceImpl implements GitHubAccountService {
 //    private final JwtUtil jwtUtil;
 //
 //    public GitHubActivityService(JwtUtil jwtUtil) {

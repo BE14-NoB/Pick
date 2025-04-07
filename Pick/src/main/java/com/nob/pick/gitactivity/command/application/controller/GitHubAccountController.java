@@ -26,8 +26,8 @@ public class GitHubAccountController {
 
     @Autowired
     public GitHubAccountController(JwtUtil jwtUtil
-                                    , GitHubAccountService gitHubAccountService
-                                    , OAuth2AuthorizedClientService authorizedClientService) {
+            , GitHubAccountService gitHubAccountService
+            , OAuth2AuthorizedClientService authorizedClientService) {
         this.jwtUtil = jwtUtil;
         this.gitHubAccountService = gitHubAccountService;
         this.authorizedClientService = authorizedClientService;
@@ -47,11 +47,11 @@ public class GitHubAccountController {
         String githubUserId = (String) session.getAttribute("githubUserId");
         String accessToken = (String) session.getAttribute("githubAccessToken");
 
-        if(githubUserId == null) {
+        if (githubUserId == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("세션에 GitHub 로그인 정보가 없습니다.");
         }
 
-        if( accessToken == null) {
+        if (accessToken == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("세션에 GitHub 엑세스 토큰이 없습니다.");
         }
 
@@ -79,7 +79,7 @@ public class GitHubAccountController {
 
             // insert 작업이라 forward만 하면 안되기 때문에 redirect 설정
             response.sendRedirect("/api/github/success");          // 🚩 추후에 마이페이지로 돌아가게 할 예정
-            return  ResponseEntity.ok("GitHub 연동 완료!");     // redirect 중이라 안해도 되지만 null은 싫어서
+            return ResponseEntity.ok("GitHub 연동 완료!");     // redirect 중이라 안해도 되지만 null은 싫어서
         } catch (Exception e) {
             log.error("GitHub 정보 저장 실패: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("GitHub 정보 저장 실패");
