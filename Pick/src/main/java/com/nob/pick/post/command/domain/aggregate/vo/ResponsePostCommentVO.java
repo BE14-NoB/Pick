@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ResponsePostCommentVO {
-	private int id;
+	private Long id;
 	private String title;
 	private String content;
 	private int category;

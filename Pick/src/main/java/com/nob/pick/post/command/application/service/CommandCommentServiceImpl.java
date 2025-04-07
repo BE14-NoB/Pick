@@ -1,10 +1,13 @@
 package com.nob.pick.post.command.application.service;
 
+import java.text.SimpleDateFormat;
+
 import org.springframework.stereotype.Service;
 
 import com.nob.pick.post.command.application.dto.CommentDTO;
 import com.nob.pick.post.command.domain.aggregate.entity.Comment;
 import com.nob.pick.post.command.domain.repository.CommentRepository;
+import com.nob.pick.post.query.service.CommentService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,11 +18,24 @@ import lombok.extern.slf4j.Slf4j;
 public class CommandCommentServiceImpl implements CommandCommentService {
 	
 	private final CommentRepository commentRepository;
+	private final CommentService commentService;
 	
 	@Override
-	public void registerComment(int postId, CommentDTO newComment) {
+	public void registerComment(Long postId, Long rootCommentId, CommentDTO newComment) {
 		Comment comment = commentDTOToComment(newComment);
+		comment.setPostId(postId);
+		comment.setRootCommentId(rootCommentId);
 		commentRepository.save(comment);
+	}
+	
+	@Override
+	public String modifyComment(Long commentId, CommentDTO modifiedComment, Long memberId) {
+		if (!memberId.equals(commentService.getCommentById(commentId).getCommentMember().getMemberId())) {
+			return "You cannot modify other member's comment";
+		}
+		modifiedComment.setCommentId(commentId);
+		modifiedComment.setCommentUpdateAt(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new java.util.Date()));
+		return "Complete";
 	}
 	
 	private Comment commentDTOToComment(CommentDTO newComment) {

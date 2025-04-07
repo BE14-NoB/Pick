@@ -34,7 +34,7 @@ public class CommandPostServiceImpl implements CommandPostService {
 	
 	@Override
 	@Transactional
-	public String deletePost(int postId, Long memberId) {
+	public String deletePost(Long postId, Long memberId) {
 		Post targetPost;
 		
 		// 게시글 id로 게시글 찾기 시도

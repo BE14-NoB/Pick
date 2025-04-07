@@ -47,9 +47,9 @@ public class DeletePostTest {
 		Post deletedPost;
 		Post blindedPost;
 		try {
-			defaultPost = postRepository.findById(1).orElseThrow();
-			deletedPost = postRepository.findById(2).orElseThrow();
-			blindedPost = postRepository.findById(3).orElseThrow();
+			defaultPost = postRepository.findById(1L).orElseThrow();
+			deletedPost = postRepository.findById(2L).orElseThrow();
+			blindedPost = postRepository.findById(3L).orElseThrow();
 		} catch (NoSuchElementException e) {
 			return;
 		}
@@ -70,8 +70,8 @@ public class DeletePostTest {
 	
 	@ParameterizedTest
 	@DisplayName("게시글 id로 삭제")
-	@ValueSource(ints={1, 2, 3, 100})
-	public void deletePostTest(int postId) {
+	@ValueSource(longs={1, 2, 3, 100})
+	public void deletePostTest(Long postId) {
 		PostDTO targetPost = postService.getPostById(postId);
 		String postStatus = (
 			targetPost != null ?

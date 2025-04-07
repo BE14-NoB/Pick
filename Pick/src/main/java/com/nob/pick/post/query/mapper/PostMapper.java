@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import com.nob.pick.post.command.application.dto.CommentDTO;
 import com.nob.pick.post.command.application.dto.PostDTO;
 import com.nob.pick.post.command.application.dto.PostImageDTO;
 import com.nob.pick.post.command.application.dto.PostListDTO;
@@ -15,11 +14,9 @@ public interface PostMapper {
 	
 	List<PostListDTO> selectPostListByTitle(String keyword);
 	
-	List<PostListDTO> selectPostListByCategory(int i);
+	List<PostListDTO> selectPostListByCategory(int category);
 	
-	PostDTO selectPostById(int id);
+	PostDTO selectPostById(Long id);
 	
-	List<PostImageDTO> selectPostImageListByPostId(int id);
-	
-	List<CommentDTO> selectCommentListByPostId(int id);
+	List<PostImageDTO> selectPostImageListByPostId(Long id);
 }

@@ -28,7 +28,7 @@ public class Comment {
 	@Id
 	@Column(name = "id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
+	private Long id;
 	
 	@Column(name = "is_adopted")
 	private String isAdopted;
@@ -46,10 +46,10 @@ public class Comment {
 	private int status = 0;
 	
 	@Column(name = "post_id", nullable = false)
-	private int postId;
+	private Long postId;
 	
 	@Column(name = "root_comment_id")
-	private Integer rootCommentId;	// nullable
+	private Long rootCommentId;	// nullable
 	
 	@Column(name = "member_id", nullable = false)
 	private Long memberId;

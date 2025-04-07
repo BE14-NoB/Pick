@@ -31,6 +31,7 @@ public class CommandPostController {
 	private final PostMemberServiceClient msc;
 	private final JwtUtil jwtUtil;
 	
+	/* 설명. 게시글 등록 */
 	@PostMapping("/register")
 	public ResponseEntity<ResponseRegisterPostVO> registerPost(@RequestBody PostDTO newPost, HttpServletRequest request) {
 		log.info("NewPost: {}", newPost);
@@ -44,12 +45,15 @@ public class CommandPostController {
 							 .body(successRegisterPost);
 	}
 	
+	/* 설명. 게시글 삭제 */
 	@PostMapping("/delete")
-	public ResponseEntity<String> deletePost(@RequestParam int postId, HttpServletRequest request) {
+	public ResponseEntity<String> deletePost(@RequestParam Long postId, HttpServletRequest request) {
 		log.info("Deleting post {}", postId);
 		Long memberId = jwtUtil.getId(request.getHeader("Authorization"));
 		return ResponseEntity.ok(commandPostService.deletePost(postId, memberId));
 	}
+	
+	/* 설명. 게시글 수정 */
 	
 	private ResponseRegisterPostVO postDTOToResponseRegisterPostVO(PostDTO postDTO) {
 		ResponseRegisterPostVO rrpVO = new ResponseRegisterPostVO();

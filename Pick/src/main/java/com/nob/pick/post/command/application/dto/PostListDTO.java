@@ -12,7 +12,7 @@ import lombok.ToString;
 @Setter
 @ToString
 public class PostListDTO {
-	private int id;
+	private Long id;
 	private String title;
 	private PostCategory category;
 	private String uploadAt;

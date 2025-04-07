@@ -3,7 +3,7 @@ package com.nob.pick.infrastructure;
 import java.util.Map;
 
 import com.nob.pick.matching.query.vo.ResponseMemberProfileVO;
-import com.nob.pick.member.query.dto.MemberDTO;
+// import com.nob.pick.member.query.dto.MemberDTO;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +20,6 @@ public interface MemberServiceClient {
     @GetMapping("/api/members/user-info")
     Map<String, Object> getUserInfo(@RequestHeader("Authorization") String authorizationHeader);
 
-    @GetMapping("/pick-member-service/api/members/{id}")
-    ResponseEntity<MemberDTO> getMemberById(@PathVariable("id") int memberId);
+    // @GetMapping("/pick-member-service/api/members/{id}")
+    // ResponseEntity<MemberDTO> getMemberById(@PathVariable("id") int memberId);
 }

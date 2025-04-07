@@ -6,5 +6,7 @@ import com.nob.pick.post.command.application.dto.CommentDTO;
 
 @Service
 public interface CommandCommentService {
-	void registerComment(int postId, CommentDTO newComment);
+	void registerComment(Long postId, Long rootCommentId, CommentDTO newComment);
+	
+	String modifyComment(Long commentId, CommentDTO modifiedComment, Long memberId);
 }
