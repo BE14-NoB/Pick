@@ -49,7 +49,7 @@ public class CommandPostController {
 	@PostMapping("/delete")
 	public ResponseEntity<String> deletePost(@RequestParam Long postId, HttpServletRequest request) {
 		log.info("Deleting post {}", postId);
-		Long memberId = jwtUtil.getId(request.getHeader("Authorization"));
+		Long memberId = (long)jwtUtil.getId(request.getHeader("Authorization").substring(7).trim());
 		return ResponseEntity.ok(commandPostService.deletePost(postId, memberId));
 	}
 	
@@ -68,7 +68,9 @@ public class CommandPostController {
 	}
 	
 	private MemberNicknameDTO getMemberNicknameDTO(HttpServletRequest request) {
-		MemberDTO member = msc.getMemberById(jwtUtil.getId(request.getHeader("Authorization"))).getBody();
+		int memberId = jwtUtil.getId(request.getHeader("Authorization").substring(7).trim());
+		log.info("Member Id: {}", memberId);
+		MemberDTO member = msc.getMemberById(memberId).getBody();
 		Assert.notNull(member);
 		return new MemberNicknameDTO(member.getId(), member.getNickname());
 	}

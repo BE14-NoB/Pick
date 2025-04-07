@@ -10,6 +10,6 @@ import com.nob.pick.post.command.application.dto.member.MemberDTO;
 @FeignClient(name="pick-member-to-post-service", url="localhost:8000", configuration= FeignClientConfig.class)
 public interface PostMemberServiceClient {
 
-    @GetMapping("/api/members/{id}")
-    ResponseEntity<MemberDTO> getMemberById(@PathVariable("id") Long memberId);
+    @GetMapping("pick-member-service/api/members/{id}")
+    ResponseEntity<MemberDTO> getMemberById(@PathVariable("id") int id);
 }

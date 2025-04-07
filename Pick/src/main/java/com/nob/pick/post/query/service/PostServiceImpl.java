@@ -24,8 +24,8 @@ public class PostServiceImpl implements PostService {
 	@Override
 	public List<PostListDTO> getPostListByStatus(String status) {
 		log.info("PostService");
-		log.info("Check parseStatus: {}", PostStatus.valueOf(status).getValue());
-		List<PostListDTO> postListDTOList = postMapper.selectPostListByStatus(PostStatus.valueOf(status).getValue());
+		log.info("Check parseStatus: {}", PostStatus.valueOf(status.toUpperCase()).getValue());
+		List<PostListDTO> postListDTOList = postMapper.selectPostListByStatus(PostStatus.valueOf(status.toUpperCase()).getValue());
 		log.info("PostService After postListDTOList: {}", postListDTOList.toString());
 		return postListDTOList;
 	}
@@ -38,8 +38,8 @@ public class PostServiceImpl implements PostService {
 	@Override
 	public List<PostListDTO> getPostListByCategory(String category) {
 		log.info("Service from Controller");
-		log.info("parsed category: {}", PostCategory.valueOf(category).getValue());
-		return postMapper.selectPostListByCategory(PostCategory.valueOf(category).getValue());
+		log.info("parsed category: {}", PostCategory.valueOf(category.toUpperCase()).getValue());
+		return postMapper.selectPostListByCategory(PostCategory.valueOf(category.toUpperCase()).getValue());
 	}
 	
 	@Override

@@ -1,5 +1,7 @@
 package com.nob.pick.post.command.application.controller;
 
+import java.net.URI;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,36 +33,37 @@ public class CommandCommentController {
 	@PostMapping("/register/{postId}")
 	public ResponseEntity<String> registerComment(@PathVariable(name="postId") Long postId, @RequestBody CommentDTO newComment, HttpServletRequest request) {
 		
-		Long memberId = jwtUtil.getId(request.getHeader("Authorization"));
+		Long memberId = (long)jwtUtil.getId(request.getHeader("Authorization"));
 		newComment.setCommentMember(new MemberNicknameDTO(memberId, null));
 		
 		Long rootCommentId = null;
 		commandCommentService.registerComment(postId, rootCommentId, newComment);
 		
-		return ResponseEntity.status(HttpStatus.CREATED)
-							 .body("redirect:/post/" + postId);
+		return ResponseEntity.created(URI.create("/post/" + postId)) // 201 Created + Location 헤더
+							 .build();
 	}
 	
 	/* 설명. 대댓글 등록('댓글 등록' 기능과 URN 형식이 달라 기능 분리) */
 	@PostMapping("/register/{postId}/{rootCommentId}")
 	public ResponseEntity<String> registerReplyComment(@PathVariable(name="postId") Long postId, @PathVariable(name="rootCommentId") Long rootCommentId, @RequestBody CommentDTO newComment, HttpServletRequest request) {
 		
-		Long memberId = jwtUtil.getId(request.getHeader("Authorization"));
+		Long memberId = (long)jwtUtil.getId(request.getHeader("Authorization"));
 		newComment.setCommentMember(new MemberNicknameDTO(memberId, null));
 		commandCommentService.registerComment(postId, rootCommentId, newComment);
 		
-		return ResponseEntity.status(HttpStatus.CREATED)
-							 .body("redirect:/post/" + postId);
+		return ResponseEntity.created(URI.create("/post/" + postId)) // 201 Created + Location 헤더
+							 .build();
 	}
 	
 	/* 설명. 댓글 수정(내용만 받기) */
 	@PostMapping("/modify/{commentId}")
 	public ResponseEntity<String> modifyComment(@PathVariable(name="commentId") Long commentId, @RequestBody CommentDTO modifiedComment, HttpServletRequest request) {
-		Long memberId = jwtUtil.getId(request.getHeader("Authorization"));
+		Long memberId = (long)jwtUtil.getId(request.getHeader("Authorization"));
 		String message = commandCommentService.modifyComment(commentId, modifiedComment, memberId);
 		if (message.equals("Complete")) {
 			Long postId = modifiedComment.getCommentPostId();
-			return ResponseEntity.ok("redirect:/post/" + postId);
+			return ResponseEntity.created(URI.create("/post/" + postId)) // 201 Created + Location 헤더
+								 .build();
 		} else {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
 		}

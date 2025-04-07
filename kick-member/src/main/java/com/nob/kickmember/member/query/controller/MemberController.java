@@ -169,39 +169,39 @@ public class MemberController {
 		return ResponseEntity.ok(languages);
 	}
 
-	@GetMapping("/id")
-	public ResponseEntity<?> getMemberId(@PathVariable("id") Long id) {
+	@GetMapping("/{id}")
+	public ResponseEntity<?> getMemberById(@PathVariable("id") int id) {
 		// SecurityContextHolder 에서 현재 사용자 정보를 가져온다.
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		// Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-		if (authentication == null || !authentication.isAuthenticated()
-			|| !(authentication.getPrincipal() instanceof CustomUserDetails userDetails)) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-				.body(Collections.singletonMap("error", "인증되지 않은 사용자입니다."));
-		}
+		// if (authentication == null || !authentication.isAuthenticated()
+		// 	|| !(authentication.getPrincipal() instanceof CustomUserDetails userDetails)) {
+		// 	return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+		// 		.body(Collections.singletonMap("error", "인증되지 않은 사용자입니다."));
+		// }
+		//
+		// Long currentMemberId = userDetails.getId();
 
-		Long currentMemberId = userDetails.getId();
+		// // 권한 검증: 현재 사용자가 요청한 id와 동일한지 확인
+		// if (!currentMemberId.equals(id)) {
+		// 	return ResponseEntity.status(HttpStatus.FORBIDDEN)
+		// 		.body(Collections.singletonMap("error", "본인의 정보만 조회할 수 있습니다."));
+		// }
 
-		// 권한 검증: 현재 사용자가 요청한 id와 동일한지 확인
-		if (!currentMemberId.equals(id)) {
-			return ResponseEntity.status(HttpStatus.FORBIDDEN)
-				.body(Collections.singletonMap("error", "본인의 정보만 조회할 수 있습니다."));
-		}
+		// // id 값이 int 범위를 벗어나는지 검증
+		// if (id < Integer.MIN_VALUE || id > Integer.MAX_VALUE) {
+		// 	return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+		// 		.body(Collections.singletonMap("error", "ID 값이 int 범위를 벗어났습니다."));
+		// }
 
-		// id 값이 int 범위를 벗어나는지 검증
-		if (id < Integer.MIN_VALUE || id > Integer.MAX_VALUE) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-				.body(Collections.singletonMap("error", "ID 값이 int 범위를 벗어났습니다."));
-		}
+		// // 다운캐스팅
+		// int intId = id.intValue();
+		// if (intId <= 0) {
+		// 	return ResponseEntity.badRequest()
+		// 		.body(Collections.singletonMap("error", "유효하지 않은 ID입니다."));
+		// }
 
-		// 다운캐스팅
-		int intId = id.intValue();
-		if (intId <= 0) {
-			return ResponseEntity.badRequest()
-				.body(Collections.singletonMap("error", "유효하지 않은 ID입니다."));
-		}
-
-		MemberDTO member = memberService.findMemberInfoById(intId);
+		MemberDTO member = memberService.findMemberInfoById(id);
 		if (member == null) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND)
 				.body(Collections.singletonMap("error", "회원을 찾을 수 없습니다."));

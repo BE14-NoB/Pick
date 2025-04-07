@@ -55,7 +55,7 @@
     </select>
 
     <!-- 설명. 단일 댓글 조회 -->
-    <select id="selectCommentByPostId" resultMap="CommentResultMap" parameterType="_long">
+    <select id="selectCommentById" resultMap="CommentResultMap" parameterType="_long">
         SELECT
                C.ID AS COMMENT_ID
              , C.IS_ADOPTED AS COMMENT_IS_ADOPTED

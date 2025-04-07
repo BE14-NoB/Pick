@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import org.springframework.stereotype.Service;
 
 import com.nob.pick.post.command.application.dto.CommentDTO;
+import com.nob.pick.post.command.application.dto.PostStatus;
 import com.nob.pick.post.command.domain.aggregate.entity.Comment;
 import com.nob.pick.post.command.domain.repository.CommentRepository;
 import com.nob.pick.post.query.service.CommentService;
@@ -22,8 +23,10 @@ public class CommandCommentServiceImpl implements CommandCommentService {
 	
 	@Override
 	public void registerComment(Long postId, Long rootCommentId, CommentDTO newComment) {
+		newComment.setCommentStatus(PostStatus.DEFAULT);
 		Comment comment = commentDTOToComment(newComment);
 		comment.setPostId(postId);
+		comment.setUploadAt(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new java.util.Date()));
 		comment.setRootCommentId(rootCommentId);
 		commentRepository.save(comment);
 	}
@@ -42,6 +45,7 @@ public class CommandCommentServiceImpl implements CommandCommentService {
 		Comment comment = new Comment();
 		
 		comment.setId(newComment.getCommentId());
+		comment.setContent(newComment.getCommentContent());
 		comment.setIsAdopted(newComment.getCommentIsAdopted());
 		comment.setUploadAt(newComment.getCommentUploadAt());
 		comment.setUpdateAt(newComment.getCommentUpdateAt());

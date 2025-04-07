@@ -24,6 +24,9 @@ public class CommentController {
 	@GetMapping("/{commentId}")
 	public ResponseEntity<ResponseCommentVO> getCommentById(@PathVariable("commentId") Long commentId) {
 		CommentDTO commentDTO = commentService.getCommentById(commentId);
+		if (commentDTO == null) {
+			return ResponseEntity.notFound().build();
+		}
 		ResponseCommentVO returnValue = commentDTOToResponseCommentVO(commentDTO);
 		return ResponseEntity.ok().body(returnValue);
 	}
