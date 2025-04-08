@@ -300,6 +300,7 @@ CREATE TABLE if NOT EXISTS PROJECT_MEETING
     , author_id	        INTEGER NOT NULL				    COMMENT '회의록 작성자'
     , upload_time       VARCHAR(255) NOT NULL				COMMENT '작성일'
     , update_time	    VARCHAR(255) 				        COMMENT '수정일'
+    , is_deleted        VARCHAR(4) NOT NULL DEFAULT 'N' 	        COMMENT '회의록 삭제 여부'
     , CONSTRAINT pk_id PRIMARY KEY (id)
     , CONSTRAINT fk_project_meeting_member FOREIGN KEY(author_id) REFERENCES MEMBER(id)
     , CONSTRAINT fk_proejct_meeting_project_room_id FOREIGN KEY (project_room_id) REFERENCES PROJECT_ROOM (id)
