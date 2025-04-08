@@ -1,19 +1,18 @@
 package com.nob.pick.dailymission.command.application.service;
 
-import com.nob.pick.common.client.MemberClient;
+import com.nob.pick.dailymission.command.application.infrastructure.MemberClient;
 import com.nob.pick.dailymission.command.domain.aggregate.DailyMission;
 import com.nob.pick.dailymission.command.domain.aggregate.MemberDailyMission;
 import com.nob.pick.dailymission.command.domain.repository.DailyMissionRepository;
 import com.nob.pick.dailymission.command.domain.repository.MemberDailyMissionRepository;
 
-// import com.nob.pick.member.command.entity.Member;
-// import com.nob.pick.member.command.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -25,24 +24,25 @@ public class MemberDailyMissionService {
 	private final MemberDailyMissionRepository memberDailyMissionRepository;
 	private final MemberClient memberClient;
 
-	// 매일 자정에 모든 회원에게 일일 미션을 부여
-	@Scheduled(cron = "0 0 0 * * ?")
-	public void assignDailyMissionsToAllMembers() {
-		log.info("일일 미션 부여 시작!");
+	// 로그인한 회원에게 하루에 한 번만 일일 미션을 부여
+	@Transactional
+	public void assignTodayMissionIfNotYet(int memberId) {
+		String today = LocalDate.now().toString();
 
-		List<DailyMission> dailyMissions = dailyMissionRepository.findByIsDeletedFalse();
+		// 오늘 부여된 기록이 하나라도 있으면 return
+		boolean exists = memberDailyMissionRepository.existsByMemberIdAndAcceptedDate(memberId, today);
+		if (exists) return;
 
-		List<Long> memberIds = memberClient.getAllMemberIds();
+		// 삭제되지 않은 일일 미션 전체 조회
+		List<DailyMission> missions = dailyMissionRepository.findByIsDeletedFalse();
+		for (DailyMission mission : missions) {
+			MemberDailyMission newMission = new MemberDailyMission();
+			newMission.setMemberId(memberId);
+			newMission.setDailyMission(mission);
+			newMission.setIsCompleted(false);
+			newMission.setAcceptedDate(today);
 
-		for (Long memberId : memberIds) {
-			for (DailyMission dailyMission : dailyMissions) {
-				MemberDailyMission memberDailyMission = new MemberDailyMission();
-				memberDailyMission.setMemberId(memberId);
-				memberDailyMission.setDailyMission(dailyMission);
-				memberDailyMission.setIsCompleted(false);
-				memberDailyMission.setAcceptedDate(null);
-				memberDailyMissionRepository.save(memberDailyMission);
-			}
+			memberDailyMissionRepository.save(newMission);
 		}
 	}
 
