@@ -12,6 +12,6 @@ import lombok.ToString;
 @Setter
 @ToString
 public class MemberNicknameDTO {
-	private int memberId;
+	private Long memberId;
 	private String memberNickname;
 }

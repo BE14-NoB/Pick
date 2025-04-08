@@ -13,6 +13,6 @@ public class ResponsePostVO {
 	private String uploadAt;
 	private String updateAt;
 	private int status;
-	private int memberId;
+	private Long memberId;
 	private String nickname;
 }

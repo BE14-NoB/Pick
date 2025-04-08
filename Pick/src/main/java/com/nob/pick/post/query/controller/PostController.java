@@ -18,6 +18,7 @@ import com.nob.pick.post.command.domain.aggregate.vo.ResponseCommentVO;
 import com.nob.pick.post.command.domain.aggregate.vo.ResponsePostCommentVO;
 import com.nob.pick.post.command.domain.aggregate.vo.ResponsePostImageVO;
 import com.nob.pick.post.command.domain.aggregate.vo.ResponsePostListVO;
+import com.nob.pick.post.query.service.CommentService;
 import com.nob.pick.post.query.service.PostService;
 
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 public class PostController {
 	
 	private final PostService postService;
+	private final CommentService commentService;
 	
 	/* 설명. 전체 게시글 목록 조회 */
 	@GetMapping("/list/{status}")
@@ -44,10 +46,13 @@ public class PostController {
 	
 	/* 설명. 단일 게시글 조회 */
 	@GetMapping("/{id}")
-	public ResponseEntity<ResponsePostCommentVO> getPostComment(@PathVariable int id) {
+	public ResponseEntity<ResponsePostCommentVO> getPostComment(@PathVariable Long id) {
 		PostDTO postDTO = postService.getPostById(id);
+		if (postDTO == null) {
+			return ResponseEntity.notFound().build();
+		}
 		List<PostImageDTO> postImageDTOList = postService.getPostImageListByPostId(id);
-		List<CommentDTO> commentDTOList = postService.getCommentListByPostId(id);
+		List<CommentDTO> commentDTOList = commentService.getCommentListByPostId(id);
 		PostCommentDTO postCommentDTO = postCommentDTOBuilder(postDTO, postImageDTOList, commentDTOList);
 		ResponsePostCommentVO returnValue = postCommentDTOToResponsePostCommentVO(postCommentDTO);
 		
