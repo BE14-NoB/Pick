@@ -211,6 +211,7 @@ public class MatchingController {
             responseMatching.setMemberId(matchingDTO.getMemberId());
             responseMatching.setMaximumParticipant(matchingDTO.getMaximumParticipant());
             responseMatching.setCurrentParticipant(matchingDTO.getCurrentParticipant());
+            responseMatching.setDurationTime(matchingDTO.getDurationTime());
             responseMatching.setLevelRange(matchingDTO.getLevelRange());
             responseMatching.setTechnologyCategories(matchingDTO.getTechnologyCategories());
 

@@ -15,6 +15,7 @@ public class MatchingDTO {
     private int levelRange;
     private int maximumParticipant;
     private int currentParticipant;
+    private int durationTime;
 
     private List<TechnologyCategoryDTO> technologyCategories;
 }

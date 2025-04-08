@@ -37,7 +37,7 @@ public class MatchingServiceImpl implements MatchingService{
     public List<MatchingDTO> getMatching() {
 
         List<Matching> matchingList = matchingMapper.selectAllMatching();
-
+        log.info(""+matchingList);
         return matching2MatchingDTO(matchingList);
     }
 
@@ -193,6 +193,7 @@ public class MatchingServiceImpl implements MatchingService{
             matchingDTO.setLevelRange(matching.getLevelRange());
             matchingDTO.setMaximumParticipant(matching.getMaximumParticipant());
             matchingDTO.setCurrentParticipant(matching.getCurrentParticipant());
+            matchingDTO.setDurationTime(matching.getDurationTime());
 
             List<TechnologyCategory> technologyCategoryList = matching.getTechnologyCategories();
             List<TechnologyCategoryDTO> technologyCategoryDTOList = technologyCategory2TechnologyCategoryDTO(technologyCategoryList);
