@@ -3,6 +3,7 @@ package com.nob.pick.gitactivity.command.application.controller;
 import com.nob.pick.common.util.JwtUtil;
 import com.nob.pick.gitactivity.command.application.dto.GitHubAccountDTO;
 import com.nob.pick.gitactivity.command.application.service.GitHubAccountService;
+import com.nob.pick.gitactivity.command.application.service.GitHubActivityService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -10,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -22,15 +22,16 @@ import java.util.Map;
 public class GitHubAccountController {
     private final JwtUtil jwtUtil;
     private final GitHubAccountService gitHubAccountService;
-    private final OAuth2AuthorizedClientService authorizedClientService;
+    private final GitHubActivityService gitHubActivityService;
 
     @Autowired
-    public GitHubAccountController(JwtUtil jwtUtil
+    public GitHubAccountController(
+            JwtUtil jwtUtil
             , GitHubAccountService gitHubAccountService
-            , OAuth2AuthorizedClientService authorizedClientService) {
+            , GitHubActivityService gitHubActivityService) {
         this.jwtUtil = jwtUtil;
         this.gitHubAccountService = gitHubAccountService;
-        this.authorizedClientService = authorizedClientService;
+        this.gitHubActivityService = gitHubActivityService;
     }
 
     // 자동 연동 콜백 처리 (클라이언트가 GitHub 로그인 후 호출)
@@ -103,11 +104,16 @@ public class GitHubAccountController {
     @PostMapping("/issue")
     public ResponseEntity<?> createIssue(@RequestBody Map<String, String> body, HttpServletRequest request) {
         String jwt = extractJwt(request);
-        String owner = body.get("owner");
         String repo = body.get("repo");
         String title = body.get("title");
         String content = body.getOrDefault("body", "");
-//        gitHubActivityService.createIssueForUser(jwt, owner, repo, title, content);
+
+        int memberId = jwtUtil.getId(jwt);
+        
+        // 🚩 memberId를 통해 member를 찾고 해당 데이터의 githubAccountId 값 가져오기
+        int gitHubAccountId = 1;        // 우선 임의로 1 저장
+
+        gitHubActivityService.createGitIssue(gitHubAccountId, repo, title, content);
         return ResponseEntity.ok("이슈 생성 완료");
     }
 
