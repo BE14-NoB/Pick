@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
+// 이슈, PR 생성 등 깃 활동 관련
 @Slf4j
 @RestController
 @RequestMapping("/api/github")
