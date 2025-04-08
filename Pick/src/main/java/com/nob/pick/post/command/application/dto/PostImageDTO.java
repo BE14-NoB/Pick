@@ -12,7 +12,7 @@ import lombok.ToString;
 @Setter
 @ToString
 public class PostImageDTO {
-	private int postImageId;
+	private Long postImageId;
 	private String postImagePath;
 	private String postImageRenamedName;
 	private String postImageIsThumbnail;

@@ -6,7 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ResponsePostImageVO {
-	private int postImageId;
+	private Long postImageId;
 	private String postImagePath;
 	private String postImageRenamedName;
 	private String postImageIsThumbnail;

@@ -14,7 +14,7 @@ import lombok.ToString;
 @Setter
 @ToString
 public class PostCommentDTO {
-	private int id;
+	private Long id;
 	private String title;
 	private String content;
 	private PostCategory category;

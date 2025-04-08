@@ -12,13 +12,13 @@ import lombok.ToString;
 @Setter
 @ToString
 public class CommentDTO {
-	private int commentId;
+	private Long commentId;
 	private String commentIsAdopted;
 	private String commentUploadAt;
 	private String commentUpdateAt;
 	private String commentContent;
 	private PostStatus commentStatus;
-	private int commentPostId;
-	private Integer commentRootCommentId;	// nullable
+	private Long commentPostId;
+	private Long commentRootCommentId;	// nullable
 	private MemberNicknameDTO commentMember;
 }
