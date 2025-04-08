@@ -14,9 +14,11 @@ CREATE TABLE IF NOT EXISTS MEMBER
 ,   password       VARCHAR(255) NOT NULL
 ,   nickname       VARCHAR(255) NOT NULL UNIQUE
 ,   status         TINYINT      NOT NULL COMMENT '활성화, 비활성화(정지), 탈퇴 한번에 관리 (Enum)'
-,   regulated_count INTEGER      NOT NULL COMMENT '조회 덜하기 위해 회원 테이블 속성 추가'
+,   regulated_count INTEGER     NOT NULL COMMENT '조회 덜하기 위해 회원 테이블 속성 추가'
 ,   user_grant     TINYINT      NOT NULL COMMENT 'ADMIN, MEMBER'
+,   github_user_id  VARCHAR(255) NULL    COMMENT '깃 계정 ID (FK)'
 ,   CONSTRAINT pk_member_id PRIMARY KEY (id)
+,   CONSTRAINT fk_member_github_user_id FOREIGN KEY (github_user_id) REFERENCES GITHUB_ACCOUNT(user_id)
 );
 
 CREATE TABLE IF NOT EXISTS MEMBER_PROFILE_PAGE

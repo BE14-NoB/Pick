@@ -25,4 +25,5 @@ public class MemberDTO {
 	private Status status;
 	private int regulatedCount;
 	private UserGrant userGrant;
+	private String githubAccount;
 }

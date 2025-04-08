@@ -54,7 +54,10 @@ public class Member {
 	@Column(name = "USER_GRANT", nullable = false)
 	private Integer userGrant; // ADMIN(0), MEMBER(1)
 
-	public Member(String name, Integer age, String ihidnum, String phoneNumber, String email, String password, String nickname) {
+	@Column(name = "GITHUB_USER_ID", nullable = true)
+	private String githubUserId;
+
+	public Member(String name, Integer age, String ihidnum, String phoneNumber, String email, String password, String nickname, String githubUserId) {
 		this.name = name;
 		this.age = age;
 		this.ihidnum = ihidnum;
@@ -65,8 +68,12 @@ public class Member {
 		this.status = 0; // 가입시 기본 활성화 상태
 		this.regulatedCount = 0; // 가입시 신고 횟수 0
 		this.userGrant = 1; // 가입시 Member 권한 상태
+		this.githubUserId = githubUserId;
 	}
 
+	@OneToOne
+	@JoinColumn(name = "github_user_id", referencedColumnName = "user_id", insertable = false, updatable = false)
+	private GitHubAccount githubAccount; // 추가
 
 	public List<String> getRoles() {
 		String role = userGrant == UserGrant.ADMIN.getValue() ? "ADMIN" : "MEMBER";
