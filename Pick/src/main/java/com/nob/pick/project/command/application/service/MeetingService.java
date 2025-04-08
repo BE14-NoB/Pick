@@ -9,9 +9,13 @@ public interface MeetingService {
 
     MeetingDTO createEmptyMeeting(int projectId, int authorId) throws AccessDeniedException;
 
-    void autoSaveContent(int meetingId, String content);
-
-    String getTemplateContent(String templateId);
+    String getTemplateContent(int templateId);
 
     void updateMeetingContent(int meetingId, String templateContent);
+
+    void deleteMeeting(int meetingId);
+
+    void restoreMeeting(int meetingId);
+
+    void applyTemplateContent(int meetingId, String templateContent);
 }

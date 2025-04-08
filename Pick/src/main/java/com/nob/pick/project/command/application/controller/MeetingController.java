@@ -32,21 +32,14 @@ public class MeetingController {
         return ResponseEntity.ok(meetingDTO);
     }
 
-    // 회의록 자동 저장
-    @PatchMapping("/meeting/{meetingId}/autosave")
-    public ResponseEntity<?> autoSaveMeeting(@PathVariable int meetingId, @RequestBody String content) {
-        meetingService.autoSaveContent(meetingId, content);
-        return ResponseEntity.ok().body("자동 저장됨");
-    }
-
-    // 템플릿 적용
+    // todo. 회의록 템플릿 적용
     @PostMapping("/meeting/{meetingId}/apply-template")
     public ResponseEntity<?> applyTemplate(
         @PathVariable int meetingId,
-        @RequestParam String templateId
+        @RequestParam int templateId
     ) {
         String templateContent = meetingService.getTemplateContent(templateId);
-        meetingService.updateMeetingContent(meetingId, templateContent);
+        meetingService.applyTemplateContent(meetingId, templateContent);
         return ResponseEntity.ok().body("템플릿 적용 완료");
     }
 
@@ -67,14 +60,24 @@ public class MeetingController {
         return ResponseEntity.ok().body(message);
     }
 
+    // 회의록에
 
     // todo. 회의록 수정
 
-    // todo. 회의록 삭제-> soft delete 후 휴지통 행? 복구 가능 ?
+    // todo. 회의록 삭제-> soft delete
+    @PostMapping("/meeting/delete/{meetingId}")
+    public ResponseEntity<?> deleteMeeting(@PathVariable int meetingId) {
+        meetingService.deleteMeeting(meetingId);
+        return ResponseEntity.ok().build();
 
-    // todo. 회의록 템플릿 적용
+    }
 
     // todo. 회의록 복구
+    @PostMapping("/meeting/restore/{meetingId}")
+    public ResponseEntity<?> restoreMeeting(@PathVariable int meetingId) {
+        meetingService.restoreMeeting(meetingId);
+        return ResponseEntity.ok().build();
+    }
 
 
 }

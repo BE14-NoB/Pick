@@ -59,6 +59,7 @@ dependencies {
     // spring boot의 모니터링 시스템 또는 동적 설정 변경 등 부가적인 기능 제공
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
+    // ------------ 회의록 실시간 편집 --------------------------------
     //  WebSocket + STOMP 지원
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
 
@@ -70,6 +71,7 @@ dependencies {
     // JSON 직렬화용 Jackson
     implementation 'com.fasterxml.jackson.core:jackson-databind'
 
+    // ---------------------------------------------------------------
     // 입장 코드 전달용 메일 전송 라이브러리
     implementation 'org.springframework.boot:spring-boot-starter-mail'
 

@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.nob.pick.common.util.JwtUtil;
-import com.nob.pick.infrastructure.MemberServiceClient;
 import com.nob.pick.project.command.application.dto.ProjectInviteRequestDTO;
 import com.nob.pick.project.command.application.dto.ProjectRoomEditDTO;
 import com.nob.pick.project.command.application.service.InvitationService;
@@ -27,6 +26,7 @@ import com.nob.pick.project.command.application.service.ProjectRoomServiceImpl;
 import com.nob.pick.project.command.application.dto.RequestProjectRoomDTO;
 import com.nob.pick.project.command.application.vo.RequestInviteEmailVO;
 import com.nob.pick.project.command.application.vo.ResponseProjectRoomVO;
+import com.nob.pick.service.AuthService;
 
 import feign.Response;
 import jakarta.servlet.http.HttpServletRequest;
@@ -38,16 +38,17 @@ import lombok.extern.slf4j.Slf4j;
 public class ProjectRoomController {
 	private final ProjectRoomServiceImpl projectRoomService;
 	private final InvitationServiceImpl invitationService;
-	private final MemberServiceClient msc;
 	private final JwtUtil jwtUtil;
+	private final AuthService authService;
 
 
 	@Autowired
-	public ProjectRoomController(ProjectRoomServiceImpl projectRoomService, InvitationServiceImpl invitationService, MemberServiceClient msc, JwtUtil jwtUtil) {
+	public ProjectRoomController(ProjectRoomServiceImpl projectRoomService, InvitationServiceImpl invitationService, JwtUtil jwtUtil,
+		AuthService authService) {
 		this.projectRoomService = projectRoomService;
 		this.invitationService = invitationService;
-		this.msc = msc;
 		this.jwtUtil = jwtUtil;
+		this.authService = authService;
 	}
 
 	/*  (랜덤 매칭 방)
@@ -94,7 +95,7 @@ public class ProjectRoomController {
 		log.info("{} 번 프로젝트 {} 정보 수정  : ", projectId , projectInfo.getName() );
 
 		String token = request.getHeader("Authorization");
-		Map<String, Object> userInfo = msc.getUserInfo(token);
+		Map<String, Object> userInfo = authService.getCurrentUserInfo();
 		int memberId = (int) userInfo.get("id");
 
 		// int memberId = jwtUtil.getId(request.getHeader("Authorization").replace("Bearer ", ""));

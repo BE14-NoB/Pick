@@ -3,7 +3,10 @@ package com.nob.pick.project.command.domain.aggregate.entity;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.nob.pick.common.config.BooleanToYNConverter;
+
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -43,6 +46,10 @@ public class ProjectMeeting {
 	@Column(name="update_time")
 	private LocalDateTime updateTime;
 
+	@Convert(converter = BooleanToYNConverter.class)
+	@Column(nullable = false)
+	private Boolean isDeleted = false;
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="author_id", nullable = false)
 	private Participant participant;
@@ -51,4 +58,18 @@ public class ProjectMeeting {
 	@JoinColumn(name="project_room_id", nullable = false)
 	private ProjectRoom projectRoom;
 
+	public void applyTemplate(String templateContent) {
+		this.content = templateContent;
+		this.updateTime = LocalDateTime.now();
+	}
+
+	public void softDelete() {
+		this.isDeleted = true;
+		this.updateTime = LocalDateTime.now();
+	}
+
+	public void restore() {
+		this.isDeleted = false;
+		this.updateTime = LocalDateTime.now();
+	}
 }
