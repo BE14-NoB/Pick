@@ -11,7 +11,7 @@ import java.util.Map;
 
 @Slf4j
 @Service("CommandGitHubActivityService")
-public class GitHubActivityServiceImpl implements GitHubActivityService{
+public class GitHubActivityServiceImpl implements GitHubActivityService {
     private final GitHubAccountRepository gitHubAccountRepository;
 
     GitHubActivityServiceImpl(GitHubAccountRepository gitHubAccountRepository) {

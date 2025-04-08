@@ -47,6 +47,9 @@ public class GitHubActivityController {
         return ResponseEntity.ok("이슈 생성 완료");
     }
 
+    // PR 생성 API
+
+
     private String extractJwt(HttpServletRequest request) {
         String header = request.getHeader("Authorization");
         if (header != null && header.startsWith("Bearer ")) {
