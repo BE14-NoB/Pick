@@ -16,6 +16,7 @@ public class Matching {
     private int levelRange;
     private int maximumParticipant;
     private int currentParticipant;
+    private int durationTime;
     private int memberId;
 
     private List<TechnologyCategory> technologyCategories;

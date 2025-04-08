@@ -31,6 +31,9 @@ public class MatchingEntity {
     @Column(name="current_participant", nullable = false)
     private int currentParticipant;
 
+    @Column(name="duration_time", nullable = false)
+    private int durationTime;
+
     @Column(name="level_range", nullable = false)
     private int levelRange;
 
