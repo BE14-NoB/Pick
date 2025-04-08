@@ -8,14 +8,14 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ResponsePostCommentVO {
-	private int id;
+	private Long id;
 	private String title;
 	private String content;
 	private int category;
 	private String uploadAt;
 	private String updateAt;
 	private int status;
-	private int memberId;
+	private Long memberId;
 	private String memberNickname;
 	private List<ResponsePostImageVO> postImageVOList;
 	private List<ResponseCommentVO> commentVOList;

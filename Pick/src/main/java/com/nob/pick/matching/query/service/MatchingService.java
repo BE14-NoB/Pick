@@ -26,5 +26,6 @@ public interface MatchingService {
     List<TechnologyCategoryDTO> getParentTechnologyCategory();
 
     List<MatchingDTO> getSearchMatching(SearchMatchingDTO searchMatchingDTO);
-    List<MatchingDTO> getSearchMatchingTest(SearchMatchingDTO searchMatchingDTO, int memberLevel);
+
+    List<MatchingDTO> getMatchingByManagerId(int managerId);
 }

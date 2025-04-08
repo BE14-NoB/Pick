@@ -30,4 +30,6 @@ public interface MatchingMapper {
     List<TechnologyCategory> selectParentTechnologyCategory();
 
     List<Matching> searchMatching(MatchingInfoDTO matchingInfoDTO);
+
+    List<Matching> selectMatchingByManagerId(int managerId);
 }
