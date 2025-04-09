@@ -1,5 +1,7 @@
 package com.nob.pick.dailymission.query.dto;
 
+import java.time.LocalDate;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,7 +16,7 @@ import lombok.ToString;
 public class MemberDailyMissionQueryDTO {
 	private int id;
 	private boolean isCompleted;
-	private String acceptedDate;
+	private LocalDate acceptedDate;
 	private int dailyMissionId;
 	private int memberId;
 }
