@@ -14,17 +14,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.nob.pick.dailymission.command.application.service.DailyMissionAssignmentService;
-import com.nob.pick.dailymission.command.domain.aggregate.DailyMission;
-import com.nob.pick.dailymission.command.domain.aggregate.MemberDailyMission;
-import com.nob.pick.dailymission.command.domain.repository.DailyMissionRepository;
-import com.nob.pick.dailymission.command.domain.repository.MemberDailyMissionRepository;
 import com.nob.pick.dailymission.query.dto.DailyMissionQueryDTO;
 import com.nob.pick.dailymission.query.dto.MemberDailyMissionQueryDTO;
 import com.nob.pick.dailymission.query.service.DailyMissionQueryService;
 import com.nob.pick.dailymission.query.service.MemberDailyMissionQueryService;
-import com.nob.pick.member.command.entity.Member;
-import com.nob.pick.member.command.repository.MemberRepository;
 
 @SpringBootTest
 @AutoConfigureMockMvc

@@ -72,14 +72,6 @@ public class MatchingTest {
     }
 
     @Test
-    @DisplayName("상위 기술 카테고리 조회 테스트")
-    public void findParentTechnologyCategoryTest() {
-        List<TechnologyCategoryDTO> result = matchingService.getParentTechnologyCategory();
-        result.forEach(System.out::println);
-    }
-
-
-    @Test
     @DisplayName("방장 id로 매칭방 조회")
     public void findMatchingByManagerIdTest() {
         int managerId = 2;

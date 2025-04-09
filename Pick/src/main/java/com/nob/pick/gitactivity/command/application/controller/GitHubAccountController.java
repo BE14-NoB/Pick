@@ -1,6 +1,5 @@
 package com.nob.pick.gitactivity.command.application.controller;
 
-import com.nob.pick.common.util.JwtUtil;
 import com.nob.pick.gitactivity.command.application.dto.GitHubAccountDTO;
 import com.nob.pick.gitactivity.command.application.service.GitHubAccountService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,27 +9,20 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.Map;
 
-@RestController
+// 깃에 로그인해서 토큰을 받아오고 저장하는 기능 관리
 @Slf4j
+@RestController
 @RequestMapping("/api/github")
 public class GitHubAccountController {
-    private final JwtUtil jwtUtil;
     private final GitHubAccountService gitHubAccountService;
-    private final OAuth2AuthorizedClientService authorizedClientService;
 
     @Autowired
-    public GitHubAccountController(JwtUtil jwtUtil
-            , GitHubAccountService gitHubAccountService
-            , OAuth2AuthorizedClientService authorizedClientService) {
-        this.jwtUtil = jwtUtil;
+    public GitHubAccountController(GitHubAccountService gitHubAccountService) {
         this.gitHubAccountService = gitHubAccountService;
-        this.authorizedClientService = authorizedClientService;
     }
 
     // 자동 연동 콜백 처리 (클라이언트가 GitHub 로그인 후 호출)
@@ -86,29 +78,9 @@ public class GitHubAccountController {
         }
     }
 
-    private String extractJwt(HttpServletRequest request) {
-        String header = request.getHeader("Authorization");
-        if (header != null && header.startsWith("Bearer ")) {
-            return header.substring(7);
-        }
-        return null;
-    }
-
     @GetMapping("/success")
     public String successPage() {
         return "GitHub 연동이 완료되었습니다!";
-    }
-
-    // 사용자가 버튼 클릭 → 이슈 생성 API
-    @PostMapping("/issue")
-    public ResponseEntity<?> createIssue(@RequestBody Map<String, String> body, HttpServletRequest request) {
-        String jwt = extractJwt(request);
-        String owner = body.get("owner");
-        String repo = body.get("repo");
-        String title = body.get("title");
-        String content = body.getOrDefault("body", "");
-//        gitHubActivityService.createIssueForUser(jwt, owner, repo, title, content);
-        return ResponseEntity.ok("이슈 생성 완료");
     }
 
 }
