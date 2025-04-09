@@ -338,18 +338,19 @@ CREATE TABLE IF NOT EXISTS TECHNOLOGY_CATEGORY
 
 CREATE TABLE IF NOT EXISTS MATCHING
 (
-    id                     INTEGER      NOT NULL AUTO_INCREMENT
-    , created_date_at        VARCHAR(255) NOT NULL
-    , is_completed           VARCHAR(4)   NOT NULL DEFAULT 'N'
-    , is_deleted               VARCHAR(4) NOT NULL DEFAULT 'N'
-    , maximum_participant INTEGER NOT NULL DEFAULT 5
-    , current_participant INTEGER NOT NULL DEFAULT 1
-    , level_range            INTEGER      NOT NULL DEFAULT 5
-    , member_id              INTEGER      NOT NULL
-    , technology_category_id INTEGER      NOT NULL
-    , CONSTRAINT pk_id PRIMARY KEY (id)
-    , CONSTRAINT fk_matching_member_id FOREIGN KEY (member_id) REFERENCES MEMBER (id)
-    , CONSTRAINT fk_matching_technology_category_id FOREIGN KEY (technology_category_id) REFERENCES TECHNOLOGY_CATEGORY (id)
+  id                     INTEGER      NOT NULL AUTO_INCREMENT
+, created_date_at        VARCHAR(255) NOT NULL
+, is_completed           VARCHAR(4)   NOT NULL DEFAULT 'N'
+, is_deleted               VARCHAR(4) NOT NULL DEFAULT 'N'
+, maximum_participant INTEGER NOT NULL DEFAULT 5
+, current_participant INTEGER NOT NULL DEFAULT 1
+, duration_time          INTEGER      NOT NULL DEFAULT 3
+, level_range            INTEGER      NOT NULL DEFAULT 5
+, member_id              INTEGER      NOT NULL
+, technology_category_id INTEGER      NOT NULL
+, CONSTRAINT pk_id PRIMARY KEY (id)
+, CONSTRAINT fk_matching_member_id FOREIGN KEY (member_id) REFERENCES MEMBER (id)
+, CONSTRAINT fk_matching_technology_category_id FOREIGN KEY (technology_category_id) REFERENCES TECHNOLOGY_CATEGORY (id)
 );
 
 CREATE TABLE IF NOT EXISTS MATCHING_ENTRY
@@ -826,45 +827,83 @@ INSERT INTO TECHNOLOGY_CATEGORY
 , ref_technology_category_id
 )
 VALUES
-('PC', 'N', NULL)
-     , ('모바일', 'N', NULL)
-     , ('보안', 'N', NULL)
-     , ('AI', 'N', NULL)
-     , ('기타', 'N', NULL)
-     , ('웹', 'N', 1)
-     , ('게임', 'N', 1)
-     , ('게임', 'N', 2)
-     , ('VR/AR', 'N', 5)
-     , ('IoT', 'N', 5)
-     , ('안드로이드', 'N', 2)
-     , ('ios', 'N', 2)
-     , ('딥러닝', 'N', 4)
-     , ('머신러닝', 'N', 4)
-     , ('클라우드', 'N', 5)
-     , ('블록체인', 'N', 3);
+('웹', 'N', NULL),
+('게임', 'N', NULL),
+('보안', 'N', NULL),
+('AI / ML', 'N', NULL),
+('모바일', 'N', NULL),
+('DevOps', 'N', NULL),
+('데이터 엔지니어링', 'N', NULL),
+('로보틱스', 'N', NULL),
+('시스템 프로그래밍', 'N', NULL),
+('기타', 'N', NULL),
+('프론트엔드', 'N', 1),
+('백엔드', 'N', 1),
+('풀스택', 'N', 1),
+('Unity', 'N', 2),
+('Unreal Engine', 'N', 2),
+('안드로이드', 'N', 2),
+('iOS', 'N', 2),
+('웹 기반', 'N', 2),
+('네트워크 보안', 'N', 3),
+('웹 보안', 'N', 3),
+('모바일 보안', 'N', 3),
+('블록체인', 'N', 3),
+('인증 및 암호화', 'N', 3),
+('데이터 분석', 'N', 4),
+('머신러닝', 'N', 4),
+('자연어 처리', 'N', 4),
+('데이터 마이닝', 'N', 4),
+('게임 AI 개발', 'N', 4),
+('안드로이드', 'N', 5),
+('iOS', 'N', 5),
+('크로스플랫폼', 'N', 5),
+('CI/CD 파이프라인', 'N', 6),
+('클라우드', 'N', 6),
+('서버리스', 'N', 6),
+('컨테이너', 'N', 6),
+('빅데이터', 'N', 7),
+('데이터 웨어하우스', 'N', 7),
+('데이터 모델링', 'N', 7),
+('실시간 데이터 처리', 'N', 7),
+('로봇 소프트웨어', 'N', 8),
+('자율 주행 기술', 'N', 8),
+('로봇 비전 및 제어', 'N', 8),
+('운영체제', 'N', 9),
+('파일 시스템', 'N', 9),
+('네트워크 프로그래밍', 'N', 9),
+('어셈블리 프로그래밍', 'N', 9),
+('VR/AR', 'N', 10),
+('3D 모델링', 'N', 10),
+('애니메이션', 'N', 10),
+('사운드 프로세싱', 'N', 10),
+('기타', 'N', 10),
+('암호화폐', 'N', 10),
+('NFT', 'N', 10);
 
-INSERT INTO MATCHING
+INSERT INTO MATCHING 
 (
   created_date_at
 , is_completed
 , is_deleted
 , maximum_participant
 , current_participant
+, duration_time
 , level_range
 , member_id
 , technology_category_id
-)
+) 
 VALUES
-    ('2024-03-01 10:30:00', 'N', 'N', 5, 3, 3, 1, 7),
-    ('2024-03-02 12:45:00', 'N', 'N', 7, 1, 5, 6, 6),
-    ('2024-03-03 15:00:00', 'N', 'N', 4, 3, 2, 18, 6),
-    ('2024-03-04 09:20:00', 'N', 'N', 4, 3, 10, 14, 5),
-    ('2024-03-05 14:10:00', 'Y', 'N', 5, 5, 7, 10, 4),
-    ('2024-03-06 17:30:00', 'N', 'N', 6, 4, 6, 2, 9),
-    ('2024-03-07 11:00:00', 'N', 'Y', 6, 4, 5, 5, 8),
-    ('2024-03-08 16:40:00', 'N', 'N', 5, 2, 5, 3, 7),
-    ('2024-03-09 08:55:00', 'Y', 'N', 4, 4, 11, 15, 9),
-    ('2024-03-10 13:25:00', 'N', 'N', 8, 5, 12, 18, 2);
+('2024-03-01 10:30:00', 'N', 'N', 5, 3, 3, 3, 1, 7),
+('2024-03-02 12:45:00', 'N', 'N', 7, 1, 4, 5, 6, 6),
+('2024-03-03 15:00:00', 'N', 'N', 4, 3, 6, 2, 18, 6),
+('2024-03-04 09:20:00', 'N', 'N', 4, 3, 3, 10, 14, 5),
+('2024-03-05 14:10:00', 'Y', 'N', 5, 5, 6, 7, 10, 4),
+('2024-03-06 17:30:00', 'N', 'N', 6, 4, 12, 6, 2, 9),
+('2024-03-07 11:00:00', 'N', 'Y', 6, 4, 9, 5, 5, 8),
+('2024-03-08 16:40:00', 'N', 'N', 5, 2, 2, 5, 3, 4),
+('2024-03-09 08:55:00', 'Y', 'N', 4, 4, 6, 11, 15, 9),
+('2024-03-10 13:25:00', 'N', 'N', 8, 5, 5, 12, 18, 2);
 
 INSERT INTO MATCHING_ENTRY
 (

@@ -79,6 +79,9 @@ public class MatchingServiceImpl implements MatchingService {
         if(matchingDTO.getTechnologyCategoryId() != 0) {
             findMatching.setTechnologyCategoryId(matchingDTO.getTechnologyCategoryId());
         }
+        if(matchingDTO.getDurationTime() != 0) {
+            findMatching.setDurationTime(matchingDTO.getDurationTime());
+        }
 
         matchingRepository.save(findMatching);
         resultMatchingEntity2MatchingDTO(findMatching, matchingDTO);
@@ -103,7 +106,7 @@ public class MatchingServiceImpl implements MatchingService {
         registMatchingEntry.setIsCanceled("N");
         registMatchingEntry.setIsAccepted("N");
         matchingEntryRepository.save(registMatchingEntry);
-        resultMatchingEntryEntity2MatchingDTO(registMatchingEntry, matchingEntryDTO);
+        resultMatchingEntryEntity2MatchingEntryDTO(registMatchingEntry, matchingEntryDTO);
     }
 
     @Override
@@ -114,7 +117,7 @@ public class MatchingServiceImpl implements MatchingService {
 
         findMatchingEntry.setIsCanceled("Y");
         matchingEntryRepository.save(findMatchingEntry);
-        resultMatchingEntryEntity2MatchingDTO(findMatchingEntry, matchingEntryDTO);
+        resultMatchingEntryEntity2MatchingEntryDTO(findMatchingEntry, matchingEntryDTO);
     }
 
     @Override
@@ -129,12 +132,12 @@ public class MatchingServiceImpl implements MatchingService {
         findMatching.setCurrentParticipant(findMatching.getCurrentParticipant() + 1);   // 현재 인원 1명 추가
         if(findMatching.getCurrentParticipant() >= findMatching.getMaximumParticipant()) {
             findMatching.setIsCompleted("Y");
-//            CompletedMatching(findMatching); // 프로젝트 룸 생성
+            CompletedMatching(findMatching); // 프로젝트 룸 생성
         }
 
         matchingRepository.save(findMatching);
         matchingEntryRepository.save(findMatchingEntry);
-        resultMatchingEntryEntity2MatchingDTO(findMatchingEntry, matchingEntryDTO);
+        resultMatchingEntryEntity2MatchingEntryDTO(findMatchingEntry, matchingEntryDTO);
     }
 
     private void CompletedMatching(MatchingEntity findMatching) {
@@ -212,7 +215,7 @@ public class MatchingServiceImpl implements MatchingService {
         return technologyCategoryEntity;
     }
 
-    private void resultMatchingEntryEntity2MatchingDTO(MatchingEntryEntity matchingEntryEntity, CommandMatchingEntryDTO matchingEntryDTO) {
+    private void resultMatchingEntryEntity2MatchingEntryDTO(MatchingEntryEntity matchingEntryEntity, CommandMatchingEntryDTO matchingEntryDTO) {
         matchingEntryDTO.setId(matchingEntryEntity.getId());
         matchingEntryDTO.setMemberId(matchingEntryEntity.getMemberId());
         matchingEntryDTO.setIsAccepted(matchingEntryEntity.getIsAccepted());
@@ -235,6 +238,7 @@ public class MatchingServiceImpl implements MatchingService {
         matchingDTO.setIsDeleted(resultMatchingEntity.getIsDeleted());
         matchingDTO.setMaximumParticipant(resultMatchingEntity.getMaximumParticipant());
         matchingDTO.setCurrentParticipant(resultMatchingEntity.getCurrentParticipant());
+        matchingDTO.setDurationTime(resultMatchingEntity.getDurationTime());
         matchingDTO.setLevelRange(resultMatchingEntity.getLevelRange());
         matchingDTO.setMemberId(resultMatchingEntity.getMemberId());
         matchingDTO.setTechnologyCategoryId(resultMatchingEntity.getTechnologyCategoryId());
@@ -257,6 +261,11 @@ public class MatchingServiceImpl implements MatchingService {
             matchingEntity.setCurrentParticipant(matchingDTO.getCurrentParticipant());
         } else {
             matchingEntity.setCurrentParticipant(1);
+        }
+        if(matchingDTO.getDurationTime() != 0) {
+            matchingEntity.setDurationTime(matchingDTO.getDurationTime());
+        } else {
+            matchingEntity.setDurationTime(3);
         }
 
         matchingEntity.setMemberId(matchingDTO.getMemberId());
