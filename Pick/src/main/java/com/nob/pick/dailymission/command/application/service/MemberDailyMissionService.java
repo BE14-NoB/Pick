@@ -9,6 +9,7 @@ import com.nob.pick.dailymission.command.domain.repository.MemberDailyMissionRep
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,16 +47,12 @@ public class MemberDailyMissionService {
 		}
 	}
 
-	// // 일주일마다 회원별 일일 미션 삭제
-	// @Scheduled(cron = "0 0 0 * * 0")
-	// public void deleteOldDailyMissions() {
-	// 	// 1주일이 지난 날짜를 계산
-	// 	LocalDate oneWeekAgo = LocalDate.now().minusWeeks(1);
-	//
-	// 	// LocalDate를 String 형식으로 변환 (yyyy-MM-dd 형식)
-	// 	String oneWeekAgoString = oneWeekAgo.format(DateTimeFormatter.ISO_LOCAL_DATE);
-	//
-	// 	// 변환된 String 값을 이용하여 삭제
-	// 	memberDailyMissionRepository.deleteAllByAcceptedDateBefore(oneWeekAgoString);
-	// }
+	// 매주 월요일 오전 00:00에 실행
+	@Scheduled(cron = "0 0 0 * * MON")
+	@Transactional
+	public void deleteAllMemberDailyMissions() {
+		log.info("회원별 일일 미션 전체 삭제 시작");
+		memberDailyMissionRepository.deleteAll();
+		log.info("회원별 일일 미션 전체 삭제 완료");
+	}
 }

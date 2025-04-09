@@ -3,6 +3,7 @@ package com.nob.pick.dailymission.command.application.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,5 +37,12 @@ public class MemberDailyMissionController {
 		memberDailyMissionService.assignTodayMissionIfNotYet(memberId);
 
 		return ResponseEntity.ok("일일 미션 부여 완료 또는 이미 부여됨");
+	}
+
+	// 회원별 일일 미션 전체 삭제 (하드 딜리트)
+	@DeleteMapping("/reset")
+	public ResponseEntity<String> resetMemberDailyMissions() {
+		memberDailyMissionService.deleteAllMemberDailyMissions();
+		return ResponseEntity.ok("모든 회원 일일 미션이 초기화되었습니다.");
 	}
 }
