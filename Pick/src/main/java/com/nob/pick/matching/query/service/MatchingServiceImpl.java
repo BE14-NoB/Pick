@@ -6,7 +6,6 @@ import com.nob.pick.matching.query.aggregate.MatchingEntry;
 import com.nob.pick.matching.query.aggregate.TechnologyCategory;
 import com.nob.pick.matching.query.dto.*;
 import com.nob.pick.matching.query.mapper.MatchingMapper;
-import com.nob.pick.matching.query.vo.ResponseMemberVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +14,7 @@ import com.nob.pick.matching.query.infrastructure.MatchingMemberServiceClient;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -37,7 +37,7 @@ public class MatchingServiceImpl implements MatchingService{
     public List<MatchingDTO> getMatching() {
 
         List<Matching> matchingList = matchingMapper.selectAllMatching();
-
+        log.info(""+matchingList);
         return matching2MatchingDTO(matchingList);
     }
 
@@ -104,10 +104,10 @@ public class MatchingServiceImpl implements MatchingService{
     @Transactional
     public List<MatchingDTO> getSearchMatching(SearchMatchingDTO searchMatchingDTO) {
         // 신청한 회원 정보
-        ResponseMemberVO member = matchingMemberServiceClient.getMemberId();
+        Map<String, Object> member = matchingMemberServiceClient.getUserInfo();
         log.info("member: {}", member);
         // 신청자 레벨
-        int memberLevel = matchingMemberServiceClient.getMemberProfileByMemberId(member.getId()).getLevel();
+        int memberLevel = matchingMemberServiceClient.getMemberProfileByMemberId((int)member.get("id")).getLevel();
 
         // 전체 방 조회
         List<Matching> matchingList = matchingMapper.selectAllMatching();
@@ -120,7 +120,8 @@ public class MatchingServiceImpl implements MatchingService{
                 .collect(Collectors.toList());
 
         // 레벨에 획득 뱃지 advantage 추가
-        memberLevel += memberBadgeQueryService.getTotalAdvantageByMemberId(member.getId());
+        memberLevel += memberBadgeQueryService.getTotalAdvantageByMemberId((int)member.get("id"));
+        log.info("advantage: {}", memberBadgeQueryService.getTotalAdvantageByMemberId((int)member.get("id")));
         
         log.info("managerList: {}", matchingInfoList);
 
@@ -193,6 +194,7 @@ public class MatchingServiceImpl implements MatchingService{
             matchingDTO.setLevelRange(matching.getLevelRange());
             matchingDTO.setMaximumParticipant(matching.getMaximumParticipant());
             matchingDTO.setCurrentParticipant(matching.getCurrentParticipant());
+            matchingDTO.setDurationTime(matching.getDurationTime());
 
             List<TechnologyCategory> technologyCategoryList = matching.getTechnologyCategories();
             List<TechnologyCategoryDTO> technologyCategoryDTOList = technologyCategory2TechnologyCategoryDTO(technologyCategoryList);

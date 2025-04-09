@@ -14,6 +14,7 @@ public class ResponseMatchingVO {
     private String isDeleted;
     private int maximumParticipant;
     private int currentParticipant;
+    private int durationTime;
     private int levelRange;
     private int memberId;
     private int technologyCategoryId;

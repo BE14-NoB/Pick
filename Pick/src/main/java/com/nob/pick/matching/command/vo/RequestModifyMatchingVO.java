@@ -10,6 +10,7 @@ import lombok.*;
 public class RequestModifyMatchingVO {
     private int id;
     private String isCompleted;
+    private Integer durationTime;
     private Integer maximumParticipant;
     private Integer levelRange;
     private Integer technologyCategoryId;

@@ -182,6 +182,7 @@ public class MatchingController {
         responseMatching.setIsDeleted(matchingDTO.getIsDeleted());
         responseMatching.setMaximumParticipant(matchingDTO.getMaximumParticipant());
         responseMatching.setCurrentParticipant(matchingDTO.getCurrentParticipant());
+        responseMatching.setDurationTime(matchingDTO.getDurationTime());
         responseMatching.setLevelRange(matchingDTO.getLevelRange());
         responseMatching.setMemberId(matchingDTO.getMemberId());
         responseMatching.setTechnologyCategoryId(matchingDTO.getTechnologyCategoryId());
@@ -194,6 +195,7 @@ public class MatchingController {
 
         matchingDTO.setId(modifyMatching.getId());
         if(modifyMatching.getMaximumParticipant() != null) { matchingDTO.setMaximumParticipant(modifyMatching.getMaximumParticipant()); }
+        if(modifyMatching.getDurationTime() != null) { matchingDTO.setDurationTime(modifyMatching.getDurationTime()); }
         if(modifyMatching.getIsCompleted() != null) { matchingDTO.setIsCompleted(modifyMatching.getIsCompleted()); }
         if(modifyMatching.getLevelRange() != null) { matchingDTO.setLevelRange(modifyMatching.getLevelRange()); }
         if(modifyMatching.getTechnologyCategoryId() !=null) { matchingDTO.setTechnologyCategoryId(modifyMatching.getTechnologyCategoryId()); }
@@ -205,6 +207,7 @@ public class MatchingController {
         CommandMatchingDTO matchingDTO = new CommandMatchingDTO();
 
         matchingDTO.setMaximumParticipant(newMatching.getMaximumParticipant());
+        matchingDTO.setDurationTime(newMatching.getDurationTime());
         matchingDTO.setLevelRange(newMatching.getLevelRange());
         matchingDTO.setMemberId(newMatching.getMemberId());
         matchingDTO.setTechnologyCategoryId(newMatching.getTechnologyCategoryId());
