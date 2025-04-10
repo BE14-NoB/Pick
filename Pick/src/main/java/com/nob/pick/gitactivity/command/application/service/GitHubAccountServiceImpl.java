@@ -37,6 +37,10 @@ public class GitHubAccountServiceImpl implements GitHubAccountService {
 
     @Override
     public void deleteGitHubAccount(int gitHubAccountId) {
+
+        // 🚩 실제 git 토큰을 삭제하는 기능이 추가되어야 함
+
+        // DB에서 저장된 데이터 삭제
         gitHubAccountRepository.deleteById(gitHubAccountId);
     }
 }
