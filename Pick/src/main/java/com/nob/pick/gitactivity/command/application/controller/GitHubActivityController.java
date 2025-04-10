@@ -38,15 +38,6 @@ public class GitHubActivityController {
         return ResponseEntity.ok("이슈 생성 완료");
     }
 
-    // 브랜치 목록 조회 API (PR 생성 시 사용자가 선택할 목록 (figma - "PR 생성 페이지 - 브랜치 선택" 페이지 참조))
-    @GetMapping("/branches")
-    public ResponseEntity<?> getBranches(@RequestParam String repo, HttpServletRequest request) {
-        int gitHubAccountId = getGitHubAccountId(extractJwt(request));
-
-        List<String> branches = gitHubActivityService.getBranches(gitHubAccountId, repo);
-        return ResponseEntity.ok(branches);
-    }
-
     // PR 생성 API (사용자가 프론트에서 선택한 브랜치명 -> main)
     @PostMapping("/pull-request")
     public ResponseEntity<?> createPullRequestAuto(@RequestBody Map<String, String> body, HttpServletRequest request) {
@@ -60,6 +51,41 @@ public class GitHubActivityController {
 
         gitHubActivityService.createPullRequest(gitHubAccountId, repo, head, title, content);
         return ResponseEntity.ok("PR 생성 완료");
+    }
+
+    // 이슈 목록 조회
+    @GetMapping("/issues")
+    public ResponseEntity<?> getIssues(@RequestParam String repo, HttpServletRequest request) {
+        int gitHubAccountId = getGitHubAccountId(extractJwt(request));
+        List<Map<String, Object>> issues = gitHubActivityService.getIssues(gitHubAccountId, repo);
+        return ResponseEntity.ok(issues);
+    }
+
+    // 커밋 목록 조회
+    @GetMapping("/commits")
+    public ResponseEntity<?> getCommits(@RequestParam String repo, HttpServletRequest request) {
+        int gitHubAccountId = getGitHubAccountId(extractJwt(request));
+
+        List<Map<String, Object>> commits = gitHubActivityService.getCommits(gitHubAccountId, repo);
+        return ResponseEntity.ok(commits);
+    }
+
+    // pr 목록 조회
+    @GetMapping("/pull-requests")
+    public ResponseEntity<?> getPullRequests(@RequestParam String repo, HttpServletRequest request) {
+        int gitHubAccountId = getGitHubAccountId(extractJwt(request));
+
+        List<Map<String, Object>> prs = gitHubActivityService.getPullRequests(gitHubAccountId, repo);
+        return ResponseEntity.ok(prs);
+    }
+
+    // 브랜치 목록 조회 API (PR 생성 시 사용자가 선택할 목록 (figma - "PR 생성 페이지 - 브랜치 선택" 페이지 참조))
+    @GetMapping("/branches")
+    public ResponseEntity<?> getBranches(@RequestParam String repo, HttpServletRequest request) {
+        int gitHubAccountId = getGitHubAccountId(extractJwt(request));
+
+        List<String> branches = gitHubActivityService.getBranches(gitHubAccountId, repo);
+        return ResponseEntity.ok(branches);
     }
 
     // 🚩 memberId를 통해 member 데이터를 찾고 해당 데이터의 githubAccountId 값 가져오기

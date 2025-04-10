@@ -85,6 +85,50 @@ public class GitHubActivityServiceImpl implements GitHubActivityService {
                 .collect(Collectors.toList());
     }
 
+    // 이슈 목록 가져오기
+    @Override
+    public List<Map<String, Object>> getIssues(int id, String repo) {
+        GitHubAccount account = getGitHubAccount(id);
+        WebClient client = buildGitHubClient(account.getAccessToken());
+
+        return client.get()
+                .uri("/repos/{owner}/{repo}/issues", account.getUserId(), repo)
+                .retrieve()
+                .bodyToFlux(new ParameterizedTypeReference<Map<String, Object>>() {
+                })
+                .collectList()
+                .block();
+    }
+
+    // 커밋 목록 가져오기
+    @Override
+    public List<Map<String, Object>> getCommits(int id, String repo) {
+        GitHubAccount account = getGitHubAccount(id);
+        WebClient client = buildGitHubClient(account.getAccessToken());
+
+        return client.get()
+                .uri("/repos/{owner}/{repo}/commits", account.getUserId(), repo)
+                .retrieve()
+                .bodyToFlux(new ParameterizedTypeReference<Map<String, Object>>() {
+                })
+                .collectList()
+                .block();
+    }
+
+    // PR 목록 가져오기
+    @Override
+    public List<Map<String, Object>> getPullRequests(int id, String repo) {
+        GitHubAccount account = getGitHubAccount(id);
+        WebClient client = buildGitHubClient(account.getAccessToken());
+
+        return client.get()
+                .uri("/repos/{owner}/{repo}/pulls", account.getUserId(), repo)
+                .retrieve()
+                .bodyToFlux(new ParameterizedTypeReference<Map<String, Object>>() {
+                })
+                .collectList()
+                .block();
+    }
 
     // 깃 토큰가지고 WebClient 생성
     private WebClient buildGitHubClient(String token) {
