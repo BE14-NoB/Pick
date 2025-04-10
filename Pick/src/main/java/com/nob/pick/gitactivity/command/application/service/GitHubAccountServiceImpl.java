@@ -34,4 +34,9 @@ public class GitHubAccountServiceImpl implements GitHubAccountService {
             return saved.getId();
         }
     }
+
+    @Override
+    public void deleteGitHubAccount(int gitHubAccountId) {
+        gitHubAccountRepository.deleteById(gitHubAccountId);
+    }
 }

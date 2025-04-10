@@ -92,15 +92,13 @@ public class GitHubAccountController {
         int gitHubAccountId = getGitHubAccountId(extractJwt(request));
 
         try {
-//            gitHubAccountService.deleteGitHubAccount(gitHubAccountId);
+            gitHubAccountService.deleteGitHubAccount(gitHubAccountId);
             return ResponseEntity.ok("GitHub 인증 데이터가 성공적으로 삭제되었습니다.");
         } catch (Exception e) {
             log.error("GitHub 인증 데이터 삭제 실패: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("GitHub 인증 데이터 삭제 실패");
         }
     }
-
-
 
     // 🚩 memberId를 통해 member 데이터를 찾고 해당 데이터의 githubAccountId 값 가져오기
     private int getGitHubAccountId(String jwt) {
