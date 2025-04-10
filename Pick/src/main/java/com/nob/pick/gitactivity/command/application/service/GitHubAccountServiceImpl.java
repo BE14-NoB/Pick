@@ -17,12 +17,21 @@ public class GitHubAccountServiceImpl implements GitHubAccountService {
 
     @Override
     public int registGitHubAccount(GitHubAccountDTO gitHubAccountDTO) {
-        GitHubAccount gitHubAccount = GitHubAccount.builder()
-                .userId(gitHubAccountDTO.getUserId())
-                .accessToken(gitHubAccountDTO.getAccessToken())
-                .build();
+        GitHubAccount existing = gitHubAccountRepository.findByUserId(gitHubAccountDTO.getUserId()).orElse(null);
 
-        GitHubAccount savedAccount = gitHubAccountRepository.save(gitHubAccount);
-        return savedAccount.getId();
+        if (existing != null) {
+            log.info("기존 GitHub 계정 존재 - accessToken 업데이트");
+            existing.updateToken(gitHubAccountDTO.getAccessToken());
+            GitHubAccount updated = gitHubAccountRepository.save(existing);
+            return updated.getId();
+        } else {
+            log.info("새 GitHub 계정 정보 저장");
+            GitHubAccount newAccount = GitHubAccount.builder()
+                    .userId(gitHubAccountDTO.getUserId())
+                    .accessToken(gitHubAccountDTO.getAccessToken())
+                    .build();
+            GitHubAccount saved = gitHubAccountRepository.save(newAccount);
+            return saved.getId();
+        }
     }
 }

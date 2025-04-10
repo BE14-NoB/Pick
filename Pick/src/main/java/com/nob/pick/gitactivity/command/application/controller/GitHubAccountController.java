@@ -1,5 +1,6 @@
 package com.nob.pick.gitactivity.command.application.controller;
 
+import com.nob.pick.common.util.JwtUtil;
 import com.nob.pick.gitactivity.command.application.dto.GitHubAccountDTO;
 import com.nob.pick.gitactivity.command.application.service.GitHubAccountService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,10 +19,12 @@ import java.io.IOException;
 @RestController
 @RequestMapping("/api/github")
 public class GitHubAccountController {
+    private final JwtUtil jwtUtil;
     private final GitHubAccountService gitHubAccountService;
 
     @Autowired
-    public GitHubAccountController(GitHubAccountService gitHubAccountService) {
+    public GitHubAccountController(JwtUtil jwtUtil, GitHubAccountService gitHubAccountService) {
+        this.jwtUtil = jwtUtil;
         this.gitHubAccountService = gitHubAccountService;
     }
 
@@ -83,4 +86,34 @@ public class GitHubAccountController {
         return "GitHub 연동이 완료되었습니다!";
     }
 
+    // 깃 인증 정보 삭제 (DB에서 hard delete) - 연동 해제하기 버튼 누르면 호출
+    @DeleteMapping("/account")
+    public ResponseEntity<?> deleteGitHubAccount(HttpServletRequest request) {
+        int gitHubAccountId = getGitHubAccountId(extractJwt(request));
+
+        try {
+//            gitHubAccountService.deleteGitHubAccount(gitHubAccountId);
+            return ResponseEntity.ok("GitHub 인증 데이터가 성공적으로 삭제되었습니다.");
+        } catch (Exception e) {
+            log.error("GitHub 인증 데이터 삭제 실패: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("GitHub 인증 데이터 삭제 실패");
+        }
+    }
+
+
+
+    // 🚩 memberId를 통해 member 데이터를 찾고 해당 데이터의 githubAccountId 값 가져오기
+    private int getGitHubAccountId(String jwt) {
+        int memberId = jwtUtil.getId(jwt);
+
+        return 1;       // 임시값
+    }
+
+    private String extractJwt(HttpServletRequest request) {
+        String header = request.getHeader("Authorization");
+        if (header != null && header.startsWith("Bearer ")) {
+            return header.substring(7);
+        }
+        return null;
+    }
 }
