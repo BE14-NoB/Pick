@@ -1,6 +1,9 @@
 package com.nob.pick.gitactivity.command.application.controller;
 
 import com.nob.pick.common.util.JwtUtil;
+import com.nob.pick.gitactivity.command.application.dto.CommitDTO;
+import com.nob.pick.gitactivity.command.application.dto.IssueDTO;
+import com.nob.pick.gitactivity.command.application.dto.PullRequestDTO;
 import com.nob.pick.gitactivity.command.application.service.GitHubActivityService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -57,7 +60,7 @@ public class GitHubActivityController {
     @GetMapping("/issues")
     public ResponseEntity<?> getIssues(@RequestParam String repo, HttpServletRequest request) {
         int gitHubAccountId = getGitHubAccountId(extractJwt(request));
-        List<Map<String, Object>> issues = gitHubActivityService.getIssues(gitHubAccountId, repo);
+        List<IssueDTO> issues = gitHubActivityService.getIssues(gitHubAccountId, repo);
         return ResponseEntity.ok(issues);
     }
 
@@ -66,7 +69,7 @@ public class GitHubActivityController {
     public ResponseEntity<?> getCommits(@RequestParam String repo, HttpServletRequest request) {
         int gitHubAccountId = getGitHubAccountId(extractJwt(request));
 
-        List<Map<String, Object>> commits = gitHubActivityService.getCommits(gitHubAccountId, repo);
+        List<CommitDTO> commits = gitHubActivityService.getCommits(gitHubAccountId, repo);
         return ResponseEntity.ok(commits);
     }
 
@@ -75,7 +78,7 @@ public class GitHubActivityController {
     public ResponseEntity<?> getPullRequests(@RequestParam String repo, HttpServletRequest request) {
         int gitHubAccountId = getGitHubAccountId(extractJwt(request));
 
-        List<Map<String, Object>> prs = gitHubActivityService.getPullRequests(gitHubAccountId, repo);
+        List<PullRequestDTO> prs = gitHubActivityService.getPullRequests(gitHubAccountId, repo);
         return ResponseEntity.ok(prs);
     }
 
