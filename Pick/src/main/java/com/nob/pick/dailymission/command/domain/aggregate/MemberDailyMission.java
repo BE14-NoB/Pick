@@ -40,5 +40,5 @@ public class MemberDailyMission {
 	private DailyMission dailyMission;
 
 	@Column(name = "member_id", nullable = false)
-	private Long memberId;
+	private int memberId;
 }
