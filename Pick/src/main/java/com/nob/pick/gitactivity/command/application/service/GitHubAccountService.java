@@ -4,4 +4,6 @@ import com.nob.pick.gitactivity.command.application.dto.GitHubAccountDTO;
 
 public interface GitHubAccountService {
     int registGitHubAccount(GitHubAccountDTO githubAccountDTO);
+
+    void deleteGitHubAccount(int gitHubAccountId);
 }

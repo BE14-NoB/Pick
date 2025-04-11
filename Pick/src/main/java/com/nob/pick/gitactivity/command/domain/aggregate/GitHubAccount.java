@@ -21,4 +21,8 @@ public class GitHubAccount {
 
     @Column(name = "access_token")
     private String accessToken;
+
+    public void updateToken(String token) {
+        this.accessToken = token;
+    }
 }
