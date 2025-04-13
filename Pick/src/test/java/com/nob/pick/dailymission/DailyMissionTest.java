@@ -144,12 +144,12 @@ public class DailyMissionTest {
 	void completeDailyMission() throws Exception {
 		// GIVEN
 		int memberId = 1;
-		int missionId = 1;
+		int dailyMissionId = 7;
 		String token = jwtUtil.createTokenForTest(memberId);
 
 		// WHEN & THEN
 		mockMvc.perform(
-				put("/daily-mission/{id}/complete", missionId)
+				put("/daily-mission/complete/{dailyMissionId}", dailyMissionId)
 					.header("Authorization", "Bearer " + token)
 					.contentType(MediaType.APPLICATION_JSON)
 			)

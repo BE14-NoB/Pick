@@ -18,5 +18,5 @@ public interface MemberDailyMissionRepository extends JpaRepository<MemberDailyM
 
 	Collection<Object> findByMemberIdAndAcceptedDateBefore(int memberId, String thresholdDate);
 
-	Optional<MemberDailyMission> findByIdAndMemberId(int id, int memberId);
+	Optional<MemberDailyMission> findByMemberIdAndDailyMissionId(int memberId, int dailyMissionId);
 }

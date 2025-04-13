@@ -58,16 +58,12 @@ public class MemberDailyMissionService {
 
 	// 미션 id,회원 id 받아서 해당 회원 일일미션 달성 처리
 	@Transactional
-	public void completeMission(int missionId, int memberId) {
+	public void completeMission(int dailyMissionId, int memberId) {
 		MemberDailyMission mission = memberDailyMissionRepository
-			.findByIdAndMemberId(missionId, memberId)
-			.orElseThrow(() -> new IllegalArgumentException("일일미션을 찾을 수 없습니다."));
+			.findByMemberIdAndDailyMissionId(memberId, dailyMissionId)
+			.orElseThrow(() -> new IllegalArgumentException("일치하는 일일 미션이 없습니다."));
 
-		if (Boolean.TRUE.equals(mission.getIsCompleted())) {
-			throw new IllegalStateException("이미 완료된 미션입니다.");
-		}
-
-		mission.setIsCompleted(true); // 달성여부 Y로 변경
+		mission.setIsCompleted(true);
 		memberDailyMissionRepository.save(mission);
 	}
 }

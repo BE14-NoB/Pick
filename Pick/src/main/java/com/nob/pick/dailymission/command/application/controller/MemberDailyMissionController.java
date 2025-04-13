@@ -52,13 +52,13 @@ public class MemberDailyMissionController {
 	}
 
 	// 일일미션 달성 시 달성여부 변경
-	@PutMapping("/{id}/complete")
+	@PutMapping("/complete/{dailyMissionId}")
 	public ResponseEntity<String> completeMission(
-		@PathVariable int id,
+		@PathVariable int dailyMissionId,
 		@RequestHeader("Authorization") String token
 	) {
 		int memberId = jwtUtil.getId(token.replace("Bearer ", ""));
-		memberDailyMissionService.completeMission(id, memberId);
+		memberDailyMissionService.completeMission(dailyMissionId, memberId);
 		return ResponseEntity.ok("일일미션을 완료했습니다!");
 	}
 }
