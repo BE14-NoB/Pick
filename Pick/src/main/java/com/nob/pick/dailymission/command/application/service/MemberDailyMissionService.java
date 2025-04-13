@@ -55,4 +55,19 @@ public class MemberDailyMissionService {
 		memberDailyMissionRepository.deleteAll();
 		log.info("회원별 일일 미션 전체 삭제 완료");
 	}
+
+	// 미션 id,회원 id 받아서 해당 회원 일일미션 달성 처리
+	@Transactional
+	public void completeMission(int missionId, int memberId) {
+		MemberDailyMission mission = memberDailyMissionRepository
+			.findByIdAndMemberId(missionId, memberId)
+			.orElseThrow(() -> new IllegalArgumentException("일일미션을 찾을 수 없습니다."));
+
+		if (Boolean.TRUE.equals(mission.getIsCompleted())) {
+			throw new IllegalStateException("이미 완료된 미션입니다.");
+		}
+
+		mission.setIsCompleted(true); // 달성여부 Y로 변경
+		memberDailyMissionRepository.save(mission);
+	}
 }

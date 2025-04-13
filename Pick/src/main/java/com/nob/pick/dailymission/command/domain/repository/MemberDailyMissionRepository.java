@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 public interface MemberDailyMissionRepository extends JpaRepository<MemberDailyMission, Integer> {
 	List<MemberDailyMission> findByMemberId(int memberId);
@@ -16,4 +17,6 @@ public interface MemberDailyMissionRepository extends JpaRepository<MemberDailyM
 	boolean existsByMemberIdAndAcceptedDate(int memberId, String today);
 
 	Collection<Object> findByMemberIdAndAcceptedDateBefore(int memberId, String thresholdDate);
+
+	Optional<MemberDailyMission> findByIdAndMemberId(int id, int memberId);
 }
