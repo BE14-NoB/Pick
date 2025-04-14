@@ -19,4 +19,6 @@ public interface GitHubActivityService {
     List<CommitDTO> getCommits(int id, String owner, String repo);
 
     List<PullRequestDTO> getPullRequests(int id, String owner, String repo);
+
+    List<CommitDTO> getBranchCommit(int id, String owner, String repo, String branchName);
 }

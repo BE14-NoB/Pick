@@ -37,34 +37,21 @@ public class GitHubActivityServiceImpl implements GitHubActivityService {
 
         Map<String, Object> issue = Map.of("title", title, "body", body);
 
-        client.post()
-                .uri("/repos/{owner}/{repo}/issues", owner, repo)
-                .bodyValue(issue)
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
+        client.post().uri("/repos/{owner}/{repo}/issues", owner, repo).bodyValue(issue).retrieve().bodyToMono(String.class).block();
     }
 
     // PR 생성
     @Override
-    public void createPullRequest(int id, String owner,String repo, String head, String title, String body) {
+    public void createPullRequest(int id, String owner, String repo, String head, String title, String body) {
         GitHubAccount gitHubAccount = getGitHubAccount(id);
 //        String owner = gitHubAccount.getUserId();
         WebClient client = buildGitHubClient(gitHubAccount.getAccessToken());
 
-        Map<String, Object> prRequest = Map.of(
-                "title", title,
-                "body", body,
-                "head", head,   // 사용자가 선택한 브랜치
+        Map<String, Object> prRequest = Map.of("title", title, "body", body, "head", head,   // 사용자가 선택한 브랜치
                 "base", "main"      // 대상 브랜치는 main으로 고정
         );
 
-        client.post()
-                .uri("/repos/{owner}/{repo}/pulls", owner, repo)
-                .bodyValue(prRequest)
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
+        client.post().uri("/repos/{owner}/{repo}/pulls", owner, repo).bodyValue(prRequest).retrieve().bodyToMono(String.class).block();
     }
 
     // 브랜치 목록 가져오기
@@ -75,17 +62,10 @@ public class GitHubActivityServiceImpl implements GitHubActivityService {
 
         WebClient client = buildGitHubClient(gitHubAccount.getAccessToken());
 
-        List<Map<String, Object>> branches = client.get()
-                .uri("/repos/{owner}/{repo}/branches", owner, repo)
-                .retrieve()
-                .bodyToFlux(new ParameterizedTypeReference<Map<String, Object>>() {
-                })
-                .collectList()
-                .block();
+        List<Map<String, Object>> branches = client.get().uri("/repos/{owner}/{repo}/branches", owner, repo).retrieve().bodyToFlux(new ParameterizedTypeReference<Map<String, Object>>() {
+        }).collectList().block();
 
-        return branches.stream()
-                .map(branch -> (String) branch.get("name"))
-                .filter(name -> !"main".equals(name))       // main 브랜치 빼고 보여주기
+        return branches.stream().map(branch -> (String) branch.get("name")).filter(name -> !"main".equals(name))       // main 브랜치 빼고 보여주기
                 .collect(Collectors.toList());
     }
 
@@ -96,36 +76,19 @@ public class GitHubActivityServiceImpl implements GitHubActivityService {
         WebClient client = buildGitHubClient(account.getAccessToken());
 
         // 모든 정보 가져오기
-        List<Map<String, Object>> raw = client.get()
-                .uri("/repos/{owner}/{repo}/issues", account.getUserId(), repo)
-                .retrieve()
-                .bodyToFlux(new ParameterizedTypeReference<Map<String, Object>>() {
-                })
-                .collectList()
-                .block();
+        List<Map<String, Object>> raw = client.get().uri("/repos/{owner}/{repo}/issues", account.getUserId(), repo).retrieve().bodyToFlux(new ParameterizedTypeReference<Map<String, Object>>() {
+        }).collectList().block();
 
         // 사용할 정보만 가공해서 넘기기
         return raw.stream().map(issue -> {
             Map<String, Object> user = (Map<String, Object>) issue.get("user");
             List<Map<String, Object>> labels = (List<Map<String, Object>>) issue.get("labels");
 
-            List<LabelDTO> labelList = labels.stream()
-                    .map(label -> new LabelDTO((String) label.get("name"), (String) label.get("color")))
-                    .toList();
+            List<LabelDTO> labelList = labels.stream().map(label -> new LabelDTO((String) label.get("name"), (String) label.get("color"))).toList();
 
-            String milestone = issue.get("milestone") != null
-                    ? (String) ((Map<?, ?>) issue.get("milestone")).get("title")
-                    : null;
+            String milestone = issue.get("milestone") != null ? (String) ((Map<?, ?>) issue.get("milestone")).get("title") : null;
 
-            return new IssueDTO(
-                    (int) issue.get("number"),
-                    (String) issue.get("title"),
-                    labelList,
-                    milestone,
-                    (String) user.get("login"),
-                    (String) user.get("avatar_url"),
-                    (String) issue.get("state")
-            );
+            return new IssueDTO((int) issue.get("number"), (String) issue.get("title"), labelList, milestone, (String) user.get("login"), (String) user.get("avatar_url"), (String) issue.get("state"));
         }).toList();
     }
 
@@ -135,13 +98,8 @@ public class GitHubActivityServiceImpl implements GitHubActivityService {
         GitHubAccount account = getGitHubAccount(id);
         WebClient client = buildGitHubClient(account.getAccessToken());
 
-        List<Map<String, Object>> raw = client.get()
-                .uri("/repos/{owner}/{repo}/commits", account.getUserId(), repo)
-                .retrieve()
-                .bodyToFlux(new ParameterizedTypeReference<Map<String, Object>>() {
-                })
-                .collectList()
-                .block();
+        List<Map<String, Object>> raw = client.get().uri("/repos/{owner}/{repo}/commits", account.getUserId(), repo).retrieve().bodyToFlux(new ParameterizedTypeReference<Map<String, Object>>() {
+        }).collectList().block();
 
         return raw.stream().map(commit -> {
             String sha = ((String) commit.get("sha")).substring(0, 7);
@@ -152,13 +110,7 @@ public class GitHubActivityServiceImpl implements GitHubActivityService {
             String author = authorObj != null ? (String) authorObj.get("login") : (String) commitAuthor.get("name");
             String avatar = authorObj != null ? (String) authorObj.get("avatar_url") : null;
 
-            return new CommitDTO(
-                    sha,
-                    (String) commitInfo.get("message"),
-                    author,
-                    avatar,
-                    (String) commitAuthor.get("date")
-            );
+            return new CommitDTO(sha, (String) commitInfo.get("message"), author, avatar, (String) commitAuthor.get("date"));
         }).toList();
     }
 
@@ -168,40 +120,51 @@ public class GitHubActivityServiceImpl implements GitHubActivityService {
         GitHubAccount account = getGitHubAccount(id);
         WebClient client = buildGitHubClient(account.getAccessToken());
 
-        List<Map<String, Object>> raw = client.get()
-                .uri("/repos/{owner}/{repo}/pulls?state=all", account.getUserId(), repo)
-                .retrieve()
-                .bodyToFlux(new ParameterizedTypeReference<Map<String, Object>>() {})
-                .collectList()
-                .block();
+        List<Map<String, Object>> raw = client.get().uri("/repos/{owner}/{repo}/pulls?state=all", account.getUserId(), repo).retrieve().bodyToFlux(new ParameterizedTypeReference<Map<String, Object>>() {
+        }).collectList().block();
 
         return raw.stream().map(pr -> {
             Map<String, Object> user = (Map<String, Object>) pr.get("user");
 
-            return new PullRequestDTO(
-                    (int) pr.get("number"),
-                    (String) pr.get("title"),
-                    (String) user.get("login"),
-                    (String) user.get("avatar_url"),
-                    (String) pr.get("created_at"),
-                    (String) pr.get("state")
-            );
+            return new PullRequestDTO((int) pr.get("number"), (String) pr.get("title"), (String) user.get("login"), (String) user.get("avatar_url"), (String) pr.get("created_at"), (String) pr.get("state"));
+        }).toList();
+    }
+
+    @Override
+    public List<CommitDTO> getBranchCommit(int id, String owner, String repo, String branchName) {
+        GitHubAccount gitHubAccount = getGitHubAccount(id);
+        WebClient client = buildGitHubClient(gitHubAccount.getAccessToken());
+
+        List<Map<String, Object>> commits = client.get().uri(uriBuilder -> uriBuilder.path("/repos/{owner}/{repo}/commits").queryParam("sha", branchName).build(owner, repo)).retrieve().bodyToFlux(new ParameterizedTypeReference<Map<String, Object>>() {
+        }).collectList().block();
+
+        if (commits == null) return List.of();
+
+        return commits.stream().map(commit -> {
+            String sha = (String) commit.get("sha");
+
+            Map<String, Object> commitInfo = (Map<String, Object>) commit.get("commit");
+            String message = (String) commitInfo.get("message");
+
+            Map<String, Object> commitAuthorInfo = (Map<String, Object>) commitInfo.get("author");
+            String date = commitAuthorInfo != null ? (String) commitAuthorInfo.get("date") : null;
+
+            Map<String, Object> authorInfo = (Map<String, Object>) commit.get("author");
+            String author = authorInfo != null ? (String) authorInfo.get("login") : "unknown";
+            String avatarUrl = authorInfo != null ? (String) authorInfo.get("avatar_url") : null;
+
+            return new CommitDTO(sha, message, author, avatarUrl, date);
         }).toList();
     }
 
     // 깃 토큰가지고 WebClient 생성
     private WebClient buildGitHubClient(String token) {
-        return WebClient.builder()
-                .baseUrl("https://api.github.com")
-                .defaultHeader("Authorization", "Bearer " + token)
-                .defaultHeader("Accept", "application/vnd.github+json")
-                .build();
+        return WebClient.builder().baseUrl("https://api.github.com").defaultHeader("Authorization", "Bearer " + token).defaultHeader("Accept", "application/vnd.github+json").build();
     }
 
     // DB에 저장된 데이터 찾기
     private GitHubAccount getGitHubAccount(int id) {
-        return gitHubAccountRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("저장된 깃 정보 없음"));
+        return gitHubAccountRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("저장된 깃 정보 없음"));
     }
 
 }

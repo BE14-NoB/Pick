@@ -93,6 +93,20 @@ public class GitHubActivityController {
         return ResponseEntity.ok(branches);
     }
 
+    // 해당 브랜치의 커밋 목록 조회
+    @GetMapping("/branchCommits")
+    public ResponseEntity<?> getBranchCommits(@RequestParam String repo,
+                                              @RequestParam String owner,
+                                              @RequestParam String branchName,
+                                              HttpServletRequest request) {
+        int gitHubAccountId = getGitHubAccountId(extractJwt(request));
+
+        List<CommitDTO> branches = gitHubActivityService.getBranchCommit(gitHubAccountId, owner, repo, branchName);
+        return ResponseEntity.ok(branches);
+    }
+
+    // 특정
+
     // 🚩 memberId를 통해 member 데이터를 찾고 해당 데이터의 githubAccountId 값 가져오기
     private int getGitHubAccountId(String jwt) {
 //        int memberId = jwtUtil.getId(jwt);
