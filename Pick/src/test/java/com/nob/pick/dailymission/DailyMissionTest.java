@@ -12,8 +12,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.nob.pick.common.util.JwtUtil;
 import com.nob.pick.dailymission.query.dto.DailyMissionQueryDTO;
 import com.nob.pick.dailymission.query.dto.MemberDailyMissionQueryDTO;
 import com.nob.pick.dailymission.query.service.DailyMissionQueryService;
@@ -112,63 +114,46 @@ public class DailyMissionTest {
 			.andExpect(status().isNoContent());
 	}
 
-	// @Autowired
-	// private DailyMissionAssignmentService dailyMissionAssignmentService;
-	//
-	// @Autowired
-	// private MemberRepository memberRepository;
-	//
-	// @Autowired
-	// private MemberDailyMissionRepository memberDailyMissionRepository;
-	//
-	// @Autowired
-	// private DailyMissionRepository dailyMissionRepository;
-	//
-	// @Test
-	// void testAssignDailyMissionsToAllMembers() {
-	// 	// 메소드 호출하여 모든 회원에게 일일 미션 부여
-	// 	dailyMissionAssignmentService.assignDailyMissionsToAllMembers();
-	//
-	// 	// 모든 회원 목록 가져오기
-	// 	List<Member> members = memberRepository.findAll();
-	//
-	// 	// 각 회원에 대해 일일 미션이 부여되었는지 확인
-	// 	for (Member member : members) {
-	// 		List<MemberDailyMission> memberDailyMissions = memberDailyMissionRepository.findByMemberId(member.getId());
-	//
-	// 		// 일일 미션이 존재하는지, 그리고 기본값이 'N'인지 확인
-	// 		for (MemberDailyMission memberDailyMission : memberDailyMissions) {
-	// 			assertEquals(false, memberDailyMission.getIsCompleted());  // 'N'으로 초기화 되어야 함
-	// 		}
-	// 	}
-	// }
+	@Autowired
+	private JwtUtil jwtUtil;
 
-	// @Test
-	// void testDeleteOldDailyMissions() {
-	// 	// 미션을 먼저 생성
-	// 	DailyMission dailyMission = new DailyMission();
-	// 	dailyMission.setContent("Test mission");
-	// 	dailyMission.setExpPoint(10); // 다른 속성 설정
-	//
-	// 	dailyMissionRepository.save(dailyMission);  // DailyMission 저장
-	//
-	// 	// 1주일 이상 지난 미션을 일부러 만들어 놓기
-	// 	MemberDailyMission oldMission = new MemberDailyMission();
-	// 	oldMission.setAcceptedDate(LocalDate.now().minusWeeks(2).toString());  // 2주 전 날짜 설정
-	// 	oldMission.setDailyMission(dailyMission); // dailyMission에 값을 할당
-	// 	memberDailyMissionRepository.save(oldMission);
-	//
-	// 	// 삭제 작업 수행
-	// 	dailyMissionAssignmentService.deleteOldDailyMissions();
-	//
-	// 	// 1주일 전 날짜를 LocalDate로 변환
-	// 	LocalDate oneWeekAgo = LocalDate.now().minusWeeks(1);
-	//
-	// 	// 삭제된 미션이 존재하지 않아야 함
-	// 	List<MemberDailyMission> remainingMissions = memberDailyMissionRepository
-	// 		.findByAcceptedDateBefore(oneWeekAgo.toString()); // String으로 변환하여 전달
-	//
-	// 	// 1주일이 지난 미션은 모두 삭제되어야 하므로, 남아 있는 미션이 없어야 함
-	// 	assertTrue(remainingMissions.isEmpty(), "1주일 이상 지난 미션이 삭제되지 않았습니다.");
-	// }
+	@Test
+	@DisplayName("일일 미션 부여 테스트")
+	void testAssignDailyMissions() throws Exception {
+		// given
+		int memberId = 1;
+		String token = jwtUtil.createTokenForTest(memberId); // JwtUtil 내 테스트용 메서드
+
+		// when & then
+		mockMvc.perform(post("/daily-mission/assign")
+				.header("Authorization", "Bearer " + token))
+			.andExpect(status().isOk())
+			.andExpect(content().string("일일 미션 부여 완료 또는 이미 부여됨"));
+	}
+
+	@Test
+	@DisplayName("일일 미션 초기화 테스트")
+	void testResetMemberDailyMissions() throws Exception {
+		mockMvc.perform(delete("/dailymission/reset"))
+			.andExpect(status().isOk())
+			.andExpect(content().string("모든 회원 일일 미션이 초기화되었습니다."));
+	}
+
+	@Test
+	@DisplayName("일일 미션 완료 처리 테스트")
+	void completeDailyMission() throws Exception {
+		// GIVEN
+		int memberId = 1;
+		int dailyMissionId = 7;
+		String token = jwtUtil.createTokenForTest(memberId);
+
+		// WHEN & THEN
+		mockMvc.perform(
+				put("/daily-mission/complete/{dailyMissionId}", dailyMissionId)
+					.header("Authorization", "Bearer " + token)
+					.contentType(MediaType.APPLICATION_JSON)
+			)
+			.andExpect(status().isOk())
+			.andExpect(content().string("일일미션을 완료했습니다!"));
+	}
 }

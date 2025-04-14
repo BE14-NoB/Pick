@@ -88,4 +88,15 @@ public class JwtUtil {
             throw new IllegalArgumentException("잘못된 토큰 형식입니다: " + token);
         }
     }
+
+    // 테스트용
+    public String createTokenForTest(int memberId) {
+        return Jwts.builder()
+            .claim("id", memberId)
+            .setSubject("test@example.com")
+            .claim("roles", List.of("ROLE_USER"))
+            .setExpiration(new Date(System.currentTimeMillis() + 3600000)) // 1시간 후 만료
+            .signWith(secretKey)
+            .compact();
+    }
 }

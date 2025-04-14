@@ -3,8 +3,13 @@ package com.nob.pick.dailymission.command.application.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.slf4j.Logger;
@@ -44,5 +49,16 @@ public class MemberDailyMissionController {
 	public ResponseEntity<String> resetMemberDailyMissions() {
 		memberDailyMissionService.deleteAllMemberDailyMissions();
 		return ResponseEntity.ok("모든 회원 일일 미션이 초기화되었습니다.");
+	}
+
+	// 일일미션 달성 시 달성여부 변경
+	@PutMapping("/complete/{dailyMissionId}")
+	public ResponseEntity<String> completeMission(
+		@PathVariable int dailyMissionId,
+		@RequestHeader("Authorization") String token
+	) {
+		int memberId = jwtUtil.getId(token.replace("Bearer ", ""));
+		memberDailyMissionService.completeMission(dailyMissionId, memberId);
+		return ResponseEntity.ok("일일미션을 완료했습니다!");
 	}
 }
