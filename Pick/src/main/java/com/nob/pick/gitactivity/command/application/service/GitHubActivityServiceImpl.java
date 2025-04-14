@@ -8,8 +8,10 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -55,16 +57,52 @@ public class GitHubActivityServiceImpl implements GitHubActivityService {
     @Override
     public List<String> getBranches(int id, String owner, String repo) {
         GitHubAccount gitHubAccount = getGitHubAccount(id);
-//        String owner = gitHubAccount.getUserId();
-
         WebClient client = buildGitHubClient(gitHubAccount.getAccessToken());
 
-        List<Map<String, Object>> branches = client.get().uri("/repos/{owner}/{repo}/branches", owner, repo).retrieve().bodyToFlux(new ParameterizedTypeReference<Map<String, Object>>() {
-        }).collectList().block();
+        // 모든 브랜치 목록 조회
+        List<Map<String, Object>> branches = client.get()
+                .uri("/repos/{owner}/{repo}/branches?per_page=100", owner, repo)
+                .retrieve()
+                .bodyToFlux(new ParameterizedTypeReference<Map<String, Object>>() {
+                })
+                .collectList()
+                .block();
 
-        return branches.stream().map(branch -> (String) branch.get("name")).filter(name -> !"main".equals(name))       // main 브랜치 빼고 보여주기
+        List<String> branchNames = branches.stream()
+                .map(branch -> (String) branch.get("name"))
+                .filter(name -> !"main".equals(name))
+                .collect(Collectors.toList());
+
+        // 닫힌 PR 목록 전체 조회 (페이징 처리)
+        Set<String> closedPRBranches = new HashSet<>();
+        int page = 1;
+        while (true) {
+            List<Map<String, Object>> closedPRsPage = client.get()
+                    .uri("/repos/{owner}/{repo}/pulls?state=closed&per_page=100&page={page}", owner, repo, page)
+                    .retrieve()
+                    .bodyToFlux(new ParameterizedTypeReference<Map<String, Object>>() {
+                    })
+                    .collectList()
+                    .block();
+
+            if (closedPRsPage == null || closedPRsPage.isEmpty()) {
+                break; // 더 이상 페이지가 없으면 종료
+            }
+
+            closedPRBranches.addAll(closedPRsPage.stream()
+                    .map(pr -> (Map<String, Object>) pr.get("head"))
+                    .map(head -> (String) head.get("ref"))
+                    .collect(Collectors.toSet()));
+
+            page++;
+        }
+
+        // 닫힌 PR 브랜치만 제외
+        return branchNames.stream()
+                .filter(branchName -> !closedPRBranches.contains(branchName))
                 .collect(Collectors.toList());
     }
+
 
     // 이슈 목록 가져오기
     @Override
