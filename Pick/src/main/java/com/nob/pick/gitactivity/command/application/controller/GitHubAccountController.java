@@ -19,12 +19,12 @@ import java.io.IOException;
 @RestController
 @RequestMapping("/api/github")
 public class GitHubAccountController {
-    private final JwtUtil jwtUtil;
+//    private final JwtUtil jwtUtil;
     private final GitHubAccountService gitHubAccountService;
 
     @Autowired
     public GitHubAccountController(JwtUtil jwtUtil, GitHubAccountService gitHubAccountService) {
-        this.jwtUtil = jwtUtil;
+//        this.jwtUtil = jwtUtil;
         this.gitHubAccountService = gitHubAccountService;
     }
 
@@ -102,7 +102,7 @@ public class GitHubAccountController {
 
     // 🚩 memberId를 통해 member 데이터를 찾고 해당 데이터의 githubAccountId 값 가져오기
     private int getGitHubAccountId(String jwt) {
-        int memberId = jwtUtil.getId(jwt);
+//        int memberId = jwtUtil.getId(jwt);
 
         return 1;       // 임시값
     }

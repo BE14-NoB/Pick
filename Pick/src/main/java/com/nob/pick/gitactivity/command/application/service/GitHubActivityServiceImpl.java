@@ -123,7 +123,8 @@ public class GitHubActivityServiceImpl implements GitHubActivityService {
                     labelList,
                     milestone,
                     (String) user.get("login"),
-                    (String) user.get("avatar_url")
+                    (String) user.get("avatar_url"),
+                    (String) issue.get("state")
             );
         }).toList();
     }

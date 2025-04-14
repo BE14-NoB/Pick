@@ -15,4 +15,5 @@ public class IssueDTO {
     private String milestone;
     private String creator;
     private String avatarUrl;
+    private String issueState;
 }
