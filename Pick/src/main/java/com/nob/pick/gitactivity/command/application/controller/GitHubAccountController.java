@@ -31,25 +31,18 @@ public class GitHubAccountController {
 
     // 자동 연동 콜백 처리 (클라이언트가 GitHub 로그인 후 호출)
     @GetMapping("/callback")
-    public ResponseEntity<?> handleOAuthCallback(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void handleOAuthCallback(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         HttpSession session = request.getSession(false);
-        if (session == null) {
-            log.warn("❌ 세션 없음");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("세션이 존재하지 않습니다.");
+        if (session == null || session.getAttribute("githubUserId") == null || session.getAttribute("githubAccessToken") == null) {
+            log.warn("❌ 세션 정보 누락");
+            response.sendRedirect("/api/github/error");
+            return;
         }
 
         // 세션에 저장되어 있던 유저 아이디와 엑세스 토큰 가져오기
         String githubUserId = (String) session.getAttribute("githubUserId");
         String accessToken = (String) session.getAttribute("githubAccessToken");
-
-        if (githubUserId == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("세션에 GitHub 로그인 정보가 없습니다.");
-        }
-
-        if (accessToken == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("세션에 GitHub 엑세스 토큰이 없습니다.");
-        }
 
         // GITHUB_ACCOUNT 테이블에 저장
         GitHubAccountDTO githubAccountDTO = GitHubAccountDTO.builder()
@@ -72,13 +65,11 @@ public class GitHubAccountController {
             session.removeAttribute("githubUserId");
             session.removeAttribute("githubAccessToken");
 
-
             // insert 작업이라 forward만 하면 안되기 때문에 redirect 설정
-            response.sendRedirect("/api/github/success");          // 🚩 추후에 마이페이지로 돌아가게 할 예정
-            return ResponseEntity.ok("GitHub 연동 완료!");     // redirect 중이라 안해도 되지만 null은 싫어서
+            response.sendRedirect("/api/github/success");
         } catch (Exception e) {
             log.error("GitHub 정보 저장 실패: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("GitHub 정보 저장 실패");
+            response.sendRedirect("/api/github/error");
         }
     }
 
