@@ -20,7 +20,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/github")
 public class GitHubActivityController {
-//    private final JwtUtil jwtUtil;
+    //    private final JwtUtil jwtUtil;
     private final GitHubActivityService gitHubActivityService;
 
     @Autowired

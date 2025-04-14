@@ -14,13 +14,13 @@ import java.util.List;
 
 @Component
 public class JwtUtil {
-	
-	private final Key secretKey;
 
-	public JwtUtil(@Value("${jwt.secret}") String secret) {
-		byte[] keyBytes = Base64.getDecoder().decode(secret);
-		this.secretKey = Keys.hmacShaKeyFor(keyBytes);
-	}
+    private final Key secretKey;
+
+    public JwtUtil(@Value("${jwt.secret}") String secret) {
+        byte[] keyBytes = Base64.getDecoder().decode(secret);
+        this.secretKey = Keys.hmacShaKeyFor(keyBytes);
+    }
 
     public String getEmail(String token) {
         validateTokenFormat(token);
