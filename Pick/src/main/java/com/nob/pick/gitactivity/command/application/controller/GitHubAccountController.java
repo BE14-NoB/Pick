@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.reactive.result.view.RedirectView;
 
 import java.io.IOException;
 
@@ -79,11 +80,6 @@ public class GitHubAccountController {
             log.error("GitHub 정보 저장 실패: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("GitHub 정보 저장 실패");
         }
-    }
-
-    @GetMapping("/success")
-    public String successPage() {
-        return "GitHub 연동이 완료되었습니다!";
     }
 
     // 깃 인증 정보 삭제 (DB에서 hard delete) - 연동 해제하기 버튼 누르면 호출
