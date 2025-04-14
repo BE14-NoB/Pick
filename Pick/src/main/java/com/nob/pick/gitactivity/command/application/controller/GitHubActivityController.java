@@ -60,36 +60,36 @@ public class GitHubActivityController {
 
     // 이슈 목록 조회
     @GetMapping("/issues")
-    public ResponseEntity<?> getIssues(@RequestParam String repo, HttpServletRequest request) {
+    public ResponseEntity<?> getIssues(@RequestParam String repo, @RequestParam String owner, HttpServletRequest request) {
         int gitHubAccountId = getGitHubAccountId(extractJwt(request));
-        List<IssueDTO> issues = gitHubActivityService.getIssues(gitHubAccountId, repo);
+        List<IssueDTO> issues = gitHubActivityService.getIssues(gitHubAccountId, owner, repo);
         return ResponseEntity.ok(issues);
     }
 
     // 커밋 목록 조회
     @GetMapping("/commits")
-    public ResponseEntity<?> getCommits(@RequestParam String repo, HttpServletRequest request) {
+    public ResponseEntity<?> getCommits(@RequestParam String repo, @RequestParam String owner, HttpServletRequest request) {
         int gitHubAccountId = getGitHubAccountId(extractJwt(request));
 
-        List<CommitDTO> commits = gitHubActivityService.getCommits(gitHubAccountId, repo);
+        List<CommitDTO> commits = gitHubActivityService.getCommits(gitHubAccountId, owner, repo);
         return ResponseEntity.ok(commits);
     }
 
     // pr 목록 조회
     @GetMapping("/pull-requests")
-    public ResponseEntity<?> getPullRequests(@RequestParam String repo, HttpServletRequest request) {
+    public ResponseEntity<?> getPullRequests(@RequestParam String repo, @RequestParam String owner, HttpServletRequest request) {
         int gitHubAccountId = getGitHubAccountId(extractJwt(request));
 
-        List<PullRequestDTO> prs = gitHubActivityService.getPullRequests(gitHubAccountId, repo);
+        List<PullRequestDTO> prs = gitHubActivityService.getPullRequests(gitHubAccountId, owner, repo);
         return ResponseEntity.ok(prs);
     }
 
     // 브랜치 목록 조회 API (PR 생성 시 사용자가 선택할 목록 (figma - "PR 생성 페이지 - 브랜치 선택" 페이지 참조))
     @GetMapping("/branches")
-    public ResponseEntity<?> getBranches(@RequestParam String repo, HttpServletRequest request) {
+    public ResponseEntity<?> getBranches(@RequestParam String repo, @RequestParam String owner, HttpServletRequest request) {
         int gitHubAccountId = getGitHubAccountId(extractJwt(request));
 
-        List<String> branches = gitHubActivityService.getBranches(gitHubAccountId, repo);
+        List<String> branches = gitHubActivityService.getBranches(gitHubAccountId, owner, repo);
         return ResponseEntity.ok(branches);
     }
 

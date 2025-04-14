@@ -69,9 +69,9 @@ public class GitHubActivityServiceImpl implements GitHubActivityService {
 
     // 브랜치 목록 가져오기
     @Override
-    public List<String> getBranches(int id, String repo) {
+    public List<String> getBranches(int id, String owner, String repo) {
         GitHubAccount gitHubAccount = getGitHubAccount(id);
-        String owner = gitHubAccount.getUserId();
+//        String owner = gitHubAccount.getUserId();
 
         WebClient client = buildGitHubClient(gitHubAccount.getAccessToken());
 
@@ -91,7 +91,7 @@ public class GitHubActivityServiceImpl implements GitHubActivityService {
 
     // 이슈 목록 가져오기
     @Override
-    public List<IssueDTO> getIssues(int id, String repo) {
+    public List<IssueDTO> getIssues(int id, String owner, String repo) {
         GitHubAccount account = getGitHubAccount(id);
         WebClient client = buildGitHubClient(account.getAccessToken());
 
@@ -131,7 +131,7 @@ public class GitHubActivityServiceImpl implements GitHubActivityService {
 
     // 커밋 목록 가져오기
     @Override
-    public List<CommitDTO> getCommits(int id, String repo) {
+    public List<CommitDTO> getCommits(int id, String owner, String repo) {
         GitHubAccount account = getGitHubAccount(id);
         WebClient client = buildGitHubClient(account.getAccessToken());
 
@@ -164,7 +164,7 @@ public class GitHubActivityServiceImpl implements GitHubActivityService {
 
     // PR 목록 가져오기
     @Override
-    public List<PullRequestDTO> getPullRequests(int id, String repo) {
+    public List<PullRequestDTO> getPullRequests(int id, String owner, String repo) {
         GitHubAccount account = getGitHubAccount(id);
         WebClient client = buildGitHubClient(account.getAccessToken());
 

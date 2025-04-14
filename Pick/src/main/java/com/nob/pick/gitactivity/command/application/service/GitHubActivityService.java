@@ -12,11 +12,11 @@ public interface GitHubActivityService {
 
     void createPullRequest(int id, String owner, String repo, String head, String title, String body);
 
-    List<String> getBranches(int id, String repo);
+    List<String> getBranches(int id, String owner, String repo);
 
-    List<IssueDTO> getIssues(int id, String repo);
+    List<IssueDTO> getIssues(int id, String owner, String repo);
 
-    List<CommitDTO> getCommits(int id, String repo);
+    List<CommitDTO> getCommits(int id, String owner, String repo);
 
-    List<PullRequestDTO> getPullRequests(int id, String repo);
+    List<PullRequestDTO> getPullRequests(int id, String owner, String repo);
 }
