@@ -1,6 +1,7 @@
 package com.nob.pick.gitactivity.command.application.controller;
 
 import com.nob.pick.common.util.JwtUtil;
+import com.nob.pick.gitactivity.command.application.dto.BranchDiffDTO;
 import com.nob.pick.gitactivity.command.application.dto.CommitDTO;
 import com.nob.pick.gitactivity.command.application.dto.IssueDTO;
 import com.nob.pick.gitactivity.command.application.dto.PullRequestDTO;
@@ -105,7 +106,19 @@ public class GitHubActivityController {
         return ResponseEntity.ok(branches);
     }
 
-    // 특정
+    // 특정 브랜치 파일 변경 정보 조회
+    @GetMapping("/branchDiff")
+    public ResponseEntity<BranchDiffDTO> getBranchDiff(
+            @RequestParam String owner,
+            @RequestParam String repo,
+            @RequestParam String base,
+            @RequestParam String head,
+            HttpServletRequest request
+    ) {
+        int gitHubAccountId = getGitHubAccountId(extractJwt(request));
+        BranchDiffDTO diff = gitHubActivityService.getBranchDiff(gitHubAccountId, owner, repo, base, head);
+        return ResponseEntity.ok(diff);
+    }
 
     // 🚩 memberId를 통해 member 데이터를 찾고 해당 데이터의 githubAccountId 값 가져오기
     private int getGitHubAccountId(String jwt) {

@@ -1,9 +1,6 @@
 package com.nob.pick.gitactivity.command.application.service;
 
-import com.nob.pick.gitactivity.command.application.dto.CommitDTO;
-import com.nob.pick.gitactivity.command.application.dto.IssueDTO;
-import com.nob.pick.gitactivity.command.application.dto.LabelDTO;
-import com.nob.pick.gitactivity.command.application.dto.PullRequestDTO;
+import com.nob.pick.gitactivity.command.application.dto.*;
 import com.nob.pick.gitactivity.command.domain.aggregate.GitHubAccount;
 import com.nob.pick.gitactivity.command.domain.repository.GitHubAccountRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -155,6 +152,34 @@ public class GitHubActivityServiceImpl implements GitHubActivityService {
 
             return new CommitDTO(sha, message, author, avatarUrl, date);
         }).toList();
+    }
+
+    @Override
+    public BranchDiffDTO getBranchDiff(int id, String owner, String repo, String base, String head) {
+        GitHubAccount gitHubAccount = getGitHubAccount(id);
+        WebClient client = buildGitHubClient(gitHubAccount.getAccessToken());
+
+        Map<String, Object> result = client.get()
+                .uri("/repos/{owner}/{repo}/compare/{base}...{head}", owner, repo, base, head)
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {
+                })
+                .block();
+
+        if (result == null) return new BranchDiffDTO();
+
+        List<Map<String, Object>> fileList = (List<Map<String, Object>>) result.get("files");
+
+        List<ChangedFileDTO> files = fileList.stream().map(file -> new ChangedFileDTO(
+                (String) file.get("filename"),
+                (String) file.get("status"),
+                (String) file.getOrDefault("patch", "")
+        )).toList();
+
+        int additions = (int) result.getOrDefault("additions", 0);
+        int deletions = (int) result.getOrDefault("deletions", 0);
+
+        return new BranchDiffDTO(files, additions, deletions);
     }
 
     // 깃 토큰가지고 WebClient 생성
