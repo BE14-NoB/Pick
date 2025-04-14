@@ -27,10 +27,10 @@ public class GitHubActivityServiceImpl implements GitHubActivityService {
 
     // 깃 이슈 생성
     @Override
-    public void createGitIssue(int id, String repo, String title, String body) {
+    public void createGitIssue(int id, String owner, String repo, String title, String body) {
         // DB에 저장된 githubToken 가져오기
         GitHubAccount gitHubAccount = getGitHubAccount(id);
-        String owner = gitHubAccount.getUserId();
+//        String owner = gitHubAccount.getUserId();
 
         WebClient client = buildGitHubClient(gitHubAccount.getAccessToken());
         // 🚩 repo는 실제 레포지터리 이름이어야 해서 달라지면 안되므로 body에서 받아오는게 아니라 따로 설정되어야 함
@@ -47,9 +47,9 @@ public class GitHubActivityServiceImpl implements GitHubActivityService {
 
     // PR 생성
     @Override
-    public void createPullRequest(int id, String repo, String head, String title, String body) {
+    public void createPullRequest(int id, String owner,String repo, String head, String title, String body) {
         GitHubAccount gitHubAccount = getGitHubAccount(id);
-        String owner = gitHubAccount.getUserId();
+//        String owner = gitHubAccount.getUserId();
         WebClient client = buildGitHubClient(gitHubAccount.getAccessToken());
 
         Map<String, Object> prRequest = Map.of(

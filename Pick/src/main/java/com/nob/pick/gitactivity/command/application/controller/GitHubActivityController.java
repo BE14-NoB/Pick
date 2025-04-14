@@ -32,12 +32,13 @@ public class GitHubActivityController {
     @PostMapping("/issue")
     public ResponseEntity<?> createIssue(@RequestBody Map<String, String> body, HttpServletRequest request) {
         String repo = body.get("repo");
+        String owner = body.get("owner");
         String title = body.get("title");
         String content = body.getOrDefault("body", "");
 
         int gitHubAccountId = getGitHubAccountId(extractJwt(request));
 
-        gitHubActivityService.createGitIssue(gitHubAccountId, repo, title, content);
+        gitHubActivityService.createGitIssue(gitHubAccountId, owner, repo, title, content);
         return ResponseEntity.ok("이슈 생성 완료");
     }
 
@@ -45,6 +46,7 @@ public class GitHubActivityController {
     @PostMapping("/pull-request")
     public ResponseEntity<?> createPullRequestAuto(@RequestBody Map<String, String> body, HttpServletRequest request) {
         String repo = body.get("repo");
+        String owner = body.get("owner");
         String head = body.get("head");  // 사용자가 선택한 작업 브랜치명
         String title = body.get("title");
         String content = body.getOrDefault("body", "");
@@ -52,7 +54,7 @@ public class GitHubActivityController {
 
         int gitHubAccountId = getGitHubAccountId(extractJwt(request));
 
-        gitHubActivityService.createPullRequest(gitHubAccountId, repo, head, title, content);
+        gitHubActivityService.createPullRequest(gitHubAccountId, owner, repo, head, title, content);
         return ResponseEntity.ok("PR 생성 완료");
     }
 
