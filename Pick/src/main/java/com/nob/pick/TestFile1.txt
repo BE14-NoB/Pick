@@ -1,0 +1,34 @@
+package com.nob.kickmember.common.config;
+
+import org.springframework.boot.ApplicationRunner;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import javax.sql.DataSource;
+import java.sql.Connection;
+
+@Configuration
+public class DatabaseConnectionTestConfig {
+	@Bean
+	public ApplicationRunner testDatabaseConnection(DataSource dataSource) {
+		return args -> {
+			try (Connection connection = dataSource.getConnection()) {
+				System.out.println("Successfully connected to database: " + connection.getCatalog());
+				System.out.println("Current schema: " + connection.getSchema());
+				var resultSet = connection.createStatement().executeQuery(
+					"SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'localkick' AND table_name = 'MEMBER_PROFILE_PAGE'"
+				);
+				if (resultSet.next()) {
+					System.out.println("Table MEMBER_PROFILE_PAGE exists: " + (resultSet.getInt(1) > 0));
+				}
+				var dataResult = connection.createStatement().executeQuery(
+					"SELECT COUNT(*) FROM MEMBER_PROFILE_PAGE WHERE member_id = 32"
+				);
+				if (dataResult.next()) {
+					System.out.println("Data exists for member_id 32: " + (dataResult.getInt(1) > 0));
+				}
+			} catch (Exception e) {
+				System.out.println("Failed to connect to database: " + e.getMessage());
+			}
+		};
+	}
+}
