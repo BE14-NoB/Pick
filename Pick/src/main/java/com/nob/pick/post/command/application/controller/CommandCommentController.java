@@ -29,7 +29,7 @@ public class CommandCommentController {
 	private final JwtUtil jwtUtil;
 	
 	/* 설명. 댓글 등록 */
-	/* 설명. 댓글 등록하면 등록 후 자동으로 댓글 단 글을 다시 불러와서 댓글 달린 것을 표시 */
+	/* 설명. 댓글 등록하면 등록 후 자동으로 댓글 단 글을 다시 불러와서 댓글 달린 것을 표시1 */
 	@PostMapping("/register/{postId}")
 	public ResponseEntity<String> registerComment(@PathVariable(name="postId") Long postId, @RequestBody CommentDTO newComment, HttpServletRequest request) {
 		
