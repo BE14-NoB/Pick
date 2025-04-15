@@ -8,10 +8,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -60,47 +57,29 @@ public class GitHubActivityServiceImpl implements GitHubActivityService {
         WebClient client = buildGitHubClient(gitHubAccount.getAccessToken());
 
         // 모든 브랜치 목록 조회
-        List<Map<String, Object>> branches = client.get()
-                .uri("/repos/{owner}/{repo}/branches?per_page=100", owner, repo)
-                .retrieve()
-                .bodyToFlux(new ParameterizedTypeReference<Map<String, Object>>() {
-                })
-                .collectList()
-                .block();
+        List<Map<String, Object>> branches = client.get().uri("/repos/{owner}/{repo}/branches?per_page=100", owner, repo).retrieve().bodyToFlux(new ParameterizedTypeReference<Map<String, Object>>() {
+        }).collectList().block();
 
-        List<String> branchNames = branches.stream()
-                .map(branch -> (String) branch.get("name"))
-                .filter(name -> !"main".equals(name))
-                .collect(Collectors.toList());
+        List<String> branchNames = branches.stream().map(branch -> (String) branch.get("name")).filter(name -> !"main".equals(name)).collect(Collectors.toList());
 
         // 닫힌 PR 목록 전체 조회 (페이징 처리)
         Set<String> closedPRBranches = new HashSet<>();
         int page = 1;
         while (true) {
-            List<Map<String, Object>> closedPRsPage = client.get()
-                    .uri("/repos/{owner}/{repo}/pulls?state=closed&per_page=100&page={page}", owner, repo, page)
-                    .retrieve()
-                    .bodyToFlux(new ParameterizedTypeReference<Map<String, Object>>() {
-                    })
-                    .collectList()
-                    .block();
+            List<Map<String, Object>> closedPRsPage = client.get().uri("/repos/{owner}/{repo}/pulls?state=closed&per_page=100&page={page}", owner, repo, page).retrieve().bodyToFlux(new ParameterizedTypeReference<Map<String, Object>>() {
+            }).collectList().block();
 
             if (closedPRsPage == null || closedPRsPage.isEmpty()) {
                 break; // 더 이상 페이지가 없으면 종료
             }
 
-            closedPRBranches.addAll(closedPRsPage.stream()
-                    .map(pr -> (Map<String, Object>) pr.get("head"))
-                    .map(head -> (String) head.get("ref"))
-                    .collect(Collectors.toSet()));
+            closedPRBranches.addAll(closedPRsPage.stream().map(pr -> (Map<String, Object>) pr.get("head")).map(head -> (String) head.get("ref")).collect(Collectors.toSet()));
 
             page++;
         }
 
         // 닫힌 PR 브랜치만 제외
-        return branchNames.stream()
-                .filter(branchName -> !closedPRBranches.contains(branchName))
-                .collect(Collectors.toList());
+        return branchNames.stream().filter(branchName -> !closedPRBranches.contains(branchName)).collect(Collectors.toList());
     }
 
 
@@ -111,19 +90,59 @@ public class GitHubActivityServiceImpl implements GitHubActivityService {
         WebClient client = buildGitHubClient(account.getAccessToken());
 
         // 모든 정보 가져오기
-        List<Map<String, Object>> raw = client.get().uri("/repos/{owner}/{repo}/issues", account.getUserId(), repo).retrieve().bodyToFlux(new ParameterizedTypeReference<Map<String, Object>>() {
-        }).collectList().block();
+        List<Map<String, Object>> allIssues = new ArrayList<>();
+        int[] page = {1};
 
-        // 사용할 정보만 가공해서 넘기기
-        return raw.stream().map(issue -> {
+        while (true) {
+            List<Map<String, Object>> pageIssues = client.get()
+                    .uri(uriBuilder -> uriBuilder
+                            .path("/repos/{owner}/{repo}/issues")
+                            .queryParam("state", "all")
+                            .queryParam("per_page", 100)
+                            .queryParam("page", page[0])
+                            .build(owner, repo))
+                    .retrieve()
+                    .bodyToFlux(new ParameterizedTypeReference<Map<String, Object>>() {
+                    })
+                    .collectList()
+                    .block();
+
+            if (pageIssues == null || pageIssues.isEmpty()) {
+                break;
+            }
+
+            allIssues.addAll(pageIssues);
+
+            // 토큰을 위해 200개만
+            if (page[0] >= 2) break;
+            page[0]++;
+        }
+
+        // PR 제외
+        List<Map<String, Object>> pureIssues = allIssues.stream().filter(issue -> !issue.containsKey("pull_request")).toList();
+
+        return pureIssues.stream().map(issue -> {
             Map<String, Object> user = (Map<String, Object>) issue.get("user");
             List<Map<String, Object>> labels = (List<Map<String, Object>>) issue.get("labels");
 
             List<LabelDTO> labelList = labels.stream().map(label -> new LabelDTO((String) label.get("name"), (String) label.get("color"))).toList();
 
+            List<String> labelNames = labels.stream().map(label -> ((String) label.get("name")).toLowerCase()).toList();
+
+            String type = "Other";
+            if (labelNames.stream().anyMatch(name -> name.contains("feature") || name.contains("enhancement"))) {
+                type = "Feature";
+            } else if (labelNames.stream().anyMatch(name -> name.contains("task"))) {
+                type = "Task";
+            } else if (labelNames.stream().anyMatch(name -> name.contains("bug"))) {
+                type = "Bug";
+            } else if (labelNames.stream().anyMatch(name -> name.contains("docs") || name.contains("document"))) {
+                type = "Docs";
+            }
+
             String milestone = issue.get("milestone") != null ? (String) ((Map<?, ?>) issue.get("milestone")).get("title") : null;
 
-            return new IssueDTO((int) issue.get("number"), (String) issue.get("title"), labelList, milestone, (String) user.get("login"), (String) user.get("avatar_url"), (String) issue.get("state"));
+            return new IssueDTO((int) issue.get("number"), (String) issue.get("title"), labelList, milestone, (String) user.get("login"), (String) user.get("avatar_url"), (String) issue.get("state"), type);
         }).toList();
     }
 
@@ -197,22 +216,14 @@ public class GitHubActivityServiceImpl implements GitHubActivityService {
         GitHubAccount gitHubAccount = getGitHubAccount(id);
         WebClient client = buildGitHubClient(gitHubAccount.getAccessToken());
 
-        Map<String, Object> result = client.get()
-                .uri("/repos/{owner}/{repo}/compare/{base}...{head}", owner, repo, base, head)
-                .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {
-                })
-                .block();
+        Map<String, Object> result = client.get().uri("/repos/{owner}/{repo}/compare/{base}...{head}", owner, repo, base, head).retrieve().bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {
+        }).block();
 
         if (result == null) return new BranchDiffDTO();
 
         List<Map<String, Object>> fileList = (List<Map<String, Object>>) result.get("files");
 
-        List<ChangedFileDTO> files = fileList.stream().map(file -> new ChangedFileDTO(
-                (String) file.get("filename"),
-                (String) file.get("status"),
-                (String) file.getOrDefault("patch", "")
-        )).toList();
+        List<ChangedFileDTO> files = fileList.stream().map(file -> new ChangedFileDTO((String) file.get("filename"), (String) file.get("status"), (String) file.getOrDefault("patch", ""))).toList();
 
         int additions = (int) result.getOrDefault("additions", 0);
         int deletions = (int) result.getOrDefault("deletions", 0);

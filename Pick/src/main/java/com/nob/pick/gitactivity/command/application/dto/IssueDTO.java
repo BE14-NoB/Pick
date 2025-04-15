@@ -16,4 +16,5 @@ public class IssueDTO {
     private String creator;
     private String avatarUrl;
     private String issueState;
+    private String type;
 }
