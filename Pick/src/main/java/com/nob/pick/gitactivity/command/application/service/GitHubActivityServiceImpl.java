@@ -57,7 +57,10 @@ public class GitHubActivityServiceImpl implements GitHubActivityService {
         WebClient client = buildGitHubClient(gitHubAccount.getAccessToken());
 
         // 모든 브랜치 목록 조회
-        List<Map<String, Object>> branches = client.get().uri("/repos/{owner}/{repo}/branches?per_page=100", owner, repo).retrieve().bodyToFlux(new ParameterizedTypeReference<Map<String, Object>>() {
+        List<Map<String, Object>> branches = client.get()
+                .uri("/repos/{owner}/{repo}/branches?per_page=100", owner, repo)
+                .retrieve()
+                .bodyToFlux(new ParameterizedTypeReference<Map<String, Object>>() {
         }).collectList().block();
 
         List<String> branchNames = branches.stream().map(branch -> (String) branch.get("name")).filter(name -> !"main".equals(name)).collect(Collectors.toList());
@@ -66,7 +69,10 @@ public class GitHubActivityServiceImpl implements GitHubActivityService {
         Set<String> closedPRBranches = new HashSet<>();
         int page = 1;
         while (true) {
-            List<Map<String, Object>> closedPRsPage = client.get().uri("/repos/{owner}/{repo}/pulls?state=closed&per_page=100&page={page}", owner, repo, page).retrieve().bodyToFlux(new ParameterizedTypeReference<Map<String, Object>>() {
+            List<Map<String, Object>> closedPRsPage = client.get()
+                    .uri("/repos/{owner}/{repo}/pulls?state=closed&per_page=100&page={page}", owner, repo, page)
+                    .retrieve()
+                    .bodyToFlux(new ParameterizedTypeReference<Map<String, Object>>() {
             }).collectList().block();
 
             if (closedPRsPage == null || closedPRsPage.isEmpty()) {
@@ -94,7 +100,14 @@ public class GitHubActivityServiceImpl implements GitHubActivityService {
         int[] page = {1};
 
         while (true) {
-            List<Map<String, Object>> pageIssues = client.get().uri(uriBuilder -> uriBuilder.path("/repos/{owner}/{repo}/issues").queryParam("state", "all").queryParam("per_page", 100).queryParam("page", page[0]).build(owner, repo)).retrieve().bodyToFlux(new ParameterizedTypeReference<Map<String, Object>>() {
+            List<Map<String, Object>> pageIssues = client.get()
+                    .uri(uriBuilder -> uriBuilder.path("/repos/{owner}/{repo}/issues")
+                            .queryParam("state", "all")
+                            .queryParam("per_page", 100)
+                            .queryParam("page", page[0])
+                            .build(owner, repo))
+                    .retrieve()
+                    .bodyToFlux(new ParameterizedTypeReference<Map<String, Object>>() {
             }).collectList().block();
 
             if (pageIssues == null || pageIssues.isEmpty()) {
@@ -142,7 +155,10 @@ public class GitHubActivityServiceImpl implements GitHubActivityService {
         GitHubAccount account = getGitHubAccount(id);
         WebClient client = buildGitHubClient(account.getAccessToken());
 
-        List<Map<String, Object>> raw = client.get().uri("/repos/{owner}/{repo}/commits", account.getUserId(), repo).retrieve().bodyToFlux(new ParameterizedTypeReference<Map<String, Object>>() {
+        List<Map<String, Object>> raw = client.get()
+                .uri("/repos/{owner}/{repo}/commits", account.getUserId(), repo)
+                .retrieve()
+                .bodyToFlux(new ParameterizedTypeReference<Map<String, Object>>() {
         }).collectList().block();
 
         return raw.stream().map(commit -> {
@@ -164,18 +180,35 @@ public class GitHubActivityServiceImpl implements GitHubActivityService {
         GitHubAccount account = getGitHubAccount(id);
         WebClient client = buildGitHubClient(account.getAccessToken());
 
-        List<Map<String, Object>> raw = client.get().uri(uriBuilder -> uriBuilder.path("/repos/{owner}/{repo}/pulls").queryParam("state", "all").build(owner, repo)).retrieve().bodyToFlux(new ParameterizedTypeReference<Map<String, Object>>() {
-        }).collectList().block();
+        List<Map<String, Object>> allPRs = new ArrayList<>();
+        int[] page = {1};
 
-        return raw.stream().map(pr -> {
+        while (page[0] <= 2) { // 최대 200개까지 수집
+            List<Map<String, Object>> pagePRs = client.get()
+                    .uri(uriBuilder -> uriBuilder.path("/repos/{owner}/{repo}/pulls")
+                            .queryParam("state", "all")
+                            .queryParam("per_page", 100)
+                            .queryParam("page", page[0])
+                            .build(owner, repo))
+                    .retrieve()
+                    .bodyToFlux(new ParameterizedTypeReference<Map<String, Object>>() {
+            }).collectList().block();
+
+            if (pagePRs == null || pagePRs.isEmpty()) break;
+
+            allPRs.addAll(pagePRs);
+            page[0]++;
+        }
+
+        return allPRs.stream().map(pr -> {
             Map<String, Object> user = (Map<String, Object>) pr.get("user");
             List<Map<String, Object>> reviewers = (List<Map<String, Object>>) pr.get("requested_reviewers");
 
             int reviewerCount = reviewers != null ? reviewers.size() : 0;
-            int commentCount = pr.get("comments") != null ? (int) pr.get("comments") : 0;
-            int reviewCommentCount = pr.get("review_comments") != null ? (int) pr.get("review_comments") : 0;
+            int reviewCommentCount = ((Number) pr.getOrDefault("review_comments", 0)).intValue();
+            boolean merged = pr.get("merged_at") != null;
 
-            return new PullRequestDTO((int) pr.get("number"), (String) pr.get("title"), (String) user.get("login"), (String) user.get("avatar_url"), (String) pr.get("created_at"), (String) pr.get("state"), reviewerCount, commentCount, reviewCommentCount);
+            return new PullRequestDTO((int) pr.get("number"), (String) pr.get("title"), (String) user.get("login"), (String) user.get("avatar_url"), (String) pr.get("created_at"), (String) pr.get("state"), reviewerCount, reviewCommentCount, merged);
         }).toList();
     }
 
@@ -185,7 +218,11 @@ public class GitHubActivityServiceImpl implements GitHubActivityService {
         GitHubAccount gitHubAccount = getGitHubAccount(id);
         WebClient client = buildGitHubClient(gitHubAccount.getAccessToken());
 
-        List<Map<String, Object>> commits = client.get().uri(uriBuilder -> uriBuilder.path("/repos/{owner}/{repo}/commits").queryParam("sha", branchName).build(owner, repo)).retrieve().bodyToFlux(new ParameterizedTypeReference<Map<String, Object>>() {
+        List<Map<String, Object>> commits = client.get()
+                .uri(uriBuilder -> uriBuilder.path("/repos/{owner}/{repo}/commits")
+                        .queryParam("sha", branchName).build(owner, repo))
+                .retrieve()
+                .bodyToFlux(new ParameterizedTypeReference<Map<String, Object>>() {
         }).collectList().block();
 
         if (commits == null) return List.of();

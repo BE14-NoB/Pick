@@ -4,9 +4,7 @@ import com.nob.pick.gitactivity.command.application.dto.BranchDiffDTO;
 import com.nob.pick.gitactivity.command.application.dto.CommitDTO;
 import com.nob.pick.gitactivity.command.application.dto.IssueDTO;
 import com.nob.pick.gitactivity.command.application.dto.PullRequestDTO;
-
 import java.util.List;
-import java.util.Map;
 
 public interface GitHubActivityService {
     void createGitIssue(int id, String owner, String repo, String title, String body);

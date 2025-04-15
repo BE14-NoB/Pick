@@ -18,6 +18,6 @@ public class PullRequestDTO {
     private String state;
 
     private int reviewerCount;
-    private int commentCount;           // 일반 댓글 수
     private int reviewCommentCount;     // 코드 리뷰 댓글 수
+    private boolean merged;
 }
