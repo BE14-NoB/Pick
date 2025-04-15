@@ -94,18 +94,8 @@ public class GitHubActivityServiceImpl implements GitHubActivityService {
         int[] page = {1};
 
         while (true) {
-            List<Map<String, Object>> pageIssues = client.get()
-                    .uri(uriBuilder -> uriBuilder
-                            .path("/repos/{owner}/{repo}/issues")
-                            .queryParam("state", "all")
-                            .queryParam("per_page", 100)
-                            .queryParam("page", page[0])
-                            .build(owner, repo))
-                    .retrieve()
-                    .bodyToFlux(new ParameterizedTypeReference<Map<String, Object>>() {
-                    })
-                    .collectList()
-                    .block();
+            List<Map<String, Object>> pageIssues = client.get().uri(uriBuilder -> uriBuilder.path("/repos/{owner}/{repo}/issues").queryParam("state", "all").queryParam("per_page", 100).queryParam("page", page[0]).build(owner, repo)).retrieve().bodyToFlux(new ParameterizedTypeReference<Map<String, Object>>() {
+            }).collectList().block();
 
             if (pageIssues == null || pageIssues.isEmpty()) {
                 break;
@@ -174,15 +164,21 @@ public class GitHubActivityServiceImpl implements GitHubActivityService {
         GitHubAccount account = getGitHubAccount(id);
         WebClient client = buildGitHubClient(account.getAccessToken());
 
-        List<Map<String, Object>> raw = client.get().uri("/repos/{owner}/{repo}/pulls?state=all", account.getUserId(), repo).retrieve().bodyToFlux(new ParameterizedTypeReference<Map<String, Object>>() {
+        List<Map<String, Object>> raw = client.get().uri(uriBuilder -> uriBuilder.path("/repos/{owner}/{repo}/pulls").queryParam("state", "all").build(owner, repo)).retrieve().bodyToFlux(new ParameterizedTypeReference<Map<String, Object>>() {
         }).collectList().block();
 
         return raw.stream().map(pr -> {
             Map<String, Object> user = (Map<String, Object>) pr.get("user");
+            List<Map<String, Object>> reviewers = (List<Map<String, Object>>) pr.get("requested_reviewers");
 
-            return new PullRequestDTO((int) pr.get("number"), (String) pr.get("title"), (String) user.get("login"), (String) user.get("avatar_url"), (String) pr.get("created_at"), (String) pr.get("state"));
+            int reviewerCount = reviewers != null ? reviewers.size() : 0;
+            int commentCount = pr.get("comments") != null ? (int) pr.get("comments") : 0;
+            int reviewCommentCount = pr.get("review_comments") != null ? (int) pr.get("review_comments") : 0;
+
+            return new PullRequestDTO((int) pr.get("number"), (String) pr.get("title"), (String) user.get("login"), (String) user.get("avatar_url"), (String) pr.get("created_at"), (String) pr.get("state"), reviewerCount, commentCount, reviewCommentCount);
         }).toList();
     }
+
 
     @Override
     public List<CommitDTO> getBranchCommit(int id, String owner, String repo, String branchName) {
